@@ -43,6 +43,10 @@ en las viejas, sube `LAST_SYNC` a hoy, y NADA más. No reescribas otras seccione
 - Después de cambios visuales, verificá en navegador (skill `browse`) antes de pushear:
   revisá que no haya errores de consola y que la sección cambiada renderice.
 - No agregues librerías ni build tools: la gracia es que sea un solo HTML que se abre y anda.
+- **Cache-busting:** cada vez que edites `app.js`, bumpeá la query de versión en
+  `index.html` (`<script src="app.js?v=...">`). GitHub Pages cachea con max-age=600, así que
+  sin bump el navegador puede servir un `app.js` viejo durante 10 min. El auto-actualizador
+  no toca `app.js`, así que no necesita bumpear.
 
 ## Guardarraíles
 - No borres archivos sin confirmación. No toques `claude-hq-v3.html`.

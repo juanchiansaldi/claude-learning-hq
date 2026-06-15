@@ -681,4 +681,4 @@ function init(){
     } else if(e.key==='Escape'){const m=document.getElementById('modal');if(m&&m.classList.contains('show'))closeModal()}
   });
 }
-document.addEventListener('DOMContentLoaded',init);
+if(document.readyState!=='loading')init();else document.addEventListener('DOMContentLoaded',init);
