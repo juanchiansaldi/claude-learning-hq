@@ -188,6 +188,20 @@ code.inline{font-family:'JetBrains Mono',monospace;background:var(--card2);borde
 .nov p{font-size:.9rem;color:var(--ink2);line-height:1.55}
 .nov .why{font-size:.84rem;color:var(--ink2);margin-top:8px;padding:9px 12px;background:var(--clay-t);border-radius:9px}
 .nov .why b{color:var(--clay2)}
+.nov.has-more{cursor:pointer;transition:border-color .14s,box-shadow .14s,transform .12s}
+.nov.has-more:hover{border-color:var(--clay);box-shadow:var(--shadow)}
+.nov.has-more:active{transform:scale(.997)}
+.nov-cta{display:inline-flex;align-items:center;gap:7px;margin-top:13px;font-family:'JetBrains Mono',monospace;font-size:.73rem;color:var(--clay);font-weight:600;letter-spacing:.02em}
+.nov-cta .chev{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:6px;background:var(--clay-t);transition:transform .22s}
+.nov.open .nov-cta .chev{transform:rotate(90deg)}
+.nov.open .nov-cta .lbl-c{display:none}
+.nov-cta .lbl-o{display:none}
+.nov.open .nov-cta .lbl-o{display:inline}
+.nov-more{display:none;margin-top:15px;padding-top:16px;border-top:1px dashed var(--line);cursor:default}
+.nov.open .nov-more{display:block;animation:fade .26s}
+.nov-more h4{font-family:'JetBrains Mono',monospace;font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin:0 0 9px;font-weight:600}
+.nov-more h4.howlbl{margin-top:15px}
+.nov-more p{font-size:.92rem;color:var(--ink2);line-height:1.62;margin:0}
 
 /* ===== prompts ===== */
 .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
@@ -390,28 +404,45 @@ const LAST_SYNC = "2026-06-15";
 const NOVEDADES=[
 {date:"2026-06-15",tag:"app",tagc:"slate",fresh:true,title:"Sync inicial de Claude Learning HQ",
  body:"Tu academia quedó montada con las novedades reales de Claude hasta esta fecha. De acá en más, el agente actualizador revisa el changelog cada pocos días y agrega lo nuevo arriba de esta lista.",
- why:"Así nunca te quedás con info vieja: la escuela se mantiene sola."},
+ why:"Así nunca te quedás con info vieja: la escuela se mantiene sola.",
+ more:{detail:"La sección Novedades no es estática: hay un agente programado en la nube que cada 3 días busca lo nuevo en el changelog oficial de Claude, lo agrega arriba de esta lista y publica el sitio solo. Vos no hacés nada; cuando entrás, ya está al día. También podés dispararlo a mano cuando quieras.",
+   code:["# en la carpeta del repo:","claude","# y dentro: seguí actualizador-novedades.md"]}},
 {date:"2026-06-12",tag:"claude code",tagc:"clay",title:"Rate limits de Claude Code duplicados",
  body:"Anthropic duplicó los límites de uso de Claude Code para que se pueda construir con más continuidad. Además, los títulos de sesión ahora se generan en el idioma de tu conversación.",
- why:"Más sesiones largas sin frenar — ideal para builds grandes de webs o agentes."},
+ why:"Más sesiones largas sin frenar — ideal para builds grandes de webs o agentes.",
+ more:{detail:"Los límites (mensajes y tokens por ventana de tiempo) ahora son el doble. En la práctica: sesiones más largas sin que te corte y más margen para un build grande o varios proyectos en el día. No hay que configurar nada; ya está activo. Mirá cuánto consumiste y cuánto te queda con /usage.",
+   code:["/usage   # tu consumo de la sesión, desglosado"]}},
 {date:"2026-06-10",tag:"claude code",tagc:"clay",title:"Sub-agentes anidados hasta 5 niveles",
  body:"Un sub-agente ahora puede lanzar sus propios sub-agentes, hasta 5 niveles de profundidad. También llegó un buscador en el marketplace de plugins.",
- why:"Tareas enormes se dividen en árboles de agentes especializados que trabajan en paralelo."},
+ why:"Tareas enormes se dividen en árboles de agentes especializados que trabajan en paralelo.",
+ more:{detail:"Un sub-agente es un 'Claude secundario' con su propio contexto y permisos. Antes solo el agente principal los creaba; ahora un sub-agente puede crear los suyos, hasta 5 niveles. Sirve para partir una tarea enorme en un árbol de especialistas en paralelo: un coordinador que reparte, varios que construyen, uno que testea. Crealos y administralos con /agents, o pedíselo en lenguaje natural.",
+   code:["/agents","# ej: 'usá un sub-agente por archivo a refactorizar, en paralelo'"]}},
 {date:"2026-06-09",tag:"modelo",tagc:"berry",title:"Claude Fable 5, el modelo más capaz, llega a Claude Code",
  body:"Fable 5 (clase Mythos) ya está disponible para uso general dentro de Claude Code. Es el modelo más potente para razonamiento exigente y trabajo agéntico de largo horizonte. Pensamiento siempre activo; se controla la profundidad con effort.",
- why:"Para los problemas más difíciles. Para el día a día, Opus 4.8 sigue siendo la mejor relación precio/calidad."},
+ why:"Para los problemas más difíciles. Para el día a día, Opus 4.8 sigue siendo la mejor relación precio/calidad.",
+ more:{detail:"Fable 5 es el modelo más capaz de Anthropic, pensado para lo más difícil: razonamiento profundo y tareas agénticas largas que corren muchos minutos solas. El pensamiento está siempre activo; la profundidad se regula con 'effort'. Es más caro que Opus, así que conviene reservarlo para los problemas que se le resisten a todo lo demás. Cambiás de modelo con /model.",
+   code:["/model   # elegir Fable 5 / Opus 4.8 / Sonnet 4.6 / Haiku 4.5"]}},
 {date:"2026-06-06",tag:"claude code",tagc:"clay",title:"Modelos de respaldo (fallbackModel) y deny por glob",
  body:"Podés configurar hasta 3 modelos de fallback: si el principal no está disponible, Claude sigue solo. Y las reglas de permiso aceptan patrones glob en el nombre de la herramienta.",
- why:"Resiliencia: tu agente no se cae si un modelo está saturado."},
+ why:"Resiliencia: tu agente no se cae si un modelo está saturado.",
+ more:{detail:"Con 'fallbackModel' definís hasta 3 modelos de respaldo: si el principal está saturado o caído, Claude sigue trabajando con el siguiente sin frenar la sesión. Se setea en el settings.json (del proyecto o global). Y las reglas de permisos ahora aceptan patrones glob (comodines) en el nombre de la herramienta, así bloqueás familias enteras de comandos de una.",
+   code:['en settings.json:','"fallbackModel": ["claude-opus-4-8", "claude-sonnet-4-6"]'],
+   links:[["Docs de settings","https://docs.claude.com/en/docs/claude-code/settings"]]}},
 {date:"2026-05-28",tag:"modelo",tagc:"berry",title:"Claude Opus 4.8 + Dynamic Workflows",
  body:"Opus 4.8 es el modelo Opus más capaz: mejor en código, razonamiento agéntico y honestidad. ~4x menos probable que deje pasar fallos en su propio código. Llegó 'Dynamic Workflows' en Claude Code: orquestar trabajo entre decenas o cientos de agentes. Fast mode 2.5x más rápido.",
- why:"El default para construir: por defecto trae effort alto/xhigh y system prompt liviano."},
+ why:"El default para construir: por defecto trae effort alto/xhigh y system prompt liviano.",
+ more:{detail:"Opus 4.8 es el mejor modelo Opus para construir: más fino en código y razonamiento, y bastante más honesto (mucho menos propenso a dejar pasar bugs en su propio código). Viene por defecto en effort alto/xhigh. 'Dynamic Workflows' es la capacidad de orquestar decenas o cientos de agentes para problemas enormes — pensá migraciones grandes o auditorías a escala. Es el modelo que conviene por defecto.",
+   code:["/model   # Opus 4.8 es el default recomendado"]}},
 {date:"2026-05-27",tag:"claude code",tagc:"clay",title:"/code-review --fix y skills con disallowed-tools",
  body:"/code-review --fix aplica las correcciones del review directo sobre tus archivos. Las skills pueden declarar disallowed-tools en el frontmatter, y llegó /reload-skills.",
- why:"Del hallazgo al fix en un solo comando, sin copiar y pegar."},
+ why:"Del hallazgo al fix en un solo comando, sin copiar y pegar.",
+ more:{detail:"/code-review revisa tu diff (o un PR) y marca problemas: bugs, riesgos de seguridad y cosas para simplificar. Con la bandera --fix además aplica las correcciones directo sobre tus archivos, así no copiás y pegás a mano. Usalo antes de mergear. Y las skills ahora pueden declarar 'disallowed-tools' en su frontmatter para limitar qué herramientas tienen permitido usar.",
+   code:["/code-review         # solo revisa y reporta","/code-review --fix    # revisa y aplica los arreglos"]}},
 {date:"2026-05-11",tag:"claude code",tagc:"clay",title:"Comando /goal y Agent View (preview)",
  body:"/goal define una condición de 'terminado': Claude trabaja en bucle hasta cumplirla. Y 'claude agents' abre la vista de agentes (research preview) para ver y dirigir varios agentes a la vez.",
- why:"Le decís el objetivo, no los pasos. Clave para que trabaje solo de noche."},
+ why:"Le decís el objetivo, no los pasos. Clave para que trabaje solo de noche.",
+ more:{detail:"/goal es la diferencia entre dar pasos y dar un objetivo: definís la condición de 'terminado' y Claude trabaja en bucle hasta cumplirla, ideal para dejarlo trabajando solo (de noche o mientras hacés otra cosa). 'claude agents' abre la vista de agentes (preview) para ver y dirigir varios a la vez desde un panel.",
+   code:["/goal todos los tests verdes y npm run build sin errores","claude agents   # abrir la vista de agentes"]}},
 ];
 
 /* ===== PROMPTS (biblioteca base) ===== */

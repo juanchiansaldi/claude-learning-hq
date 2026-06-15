@@ -40,10 +40,16 @@ claude
 >    {date:"AAAA-MM-DD", tag:"modelo|claude code|skills|api|app", tagc:"berry|clay|pine|slate|gold",
 >     fresh:true, title:"Título corto y claro",
 >     body:"2-4 frases en español rioplatense explicando qué cambió, sin tecnicismos innecesarios.",
->     why:"Una frase: por qué le importa a quien construye webs y agentes."},
+>     why:"Una frase: por qué le importa a quien construye webs y agentes.",
+>     more:{detail:"Párrafo más largo: qué es a fondo y para qué sirve.",
+>       code:["comando o ejemplo de cómo se usa"],
+>       links:[["texto del link","https://url"]]}},
 >    ```
->    Convención de color (`tagc`): modelo→`berry`, claude code→`clay`, skills/mcp→`pine`,
->    api→`slate`, app/otros→`gold`.
+>    El campo `more` es **obligatorio** (hace que la card se expanda al clickearla mostrando
+>    "Qué es y para qué sirve" + "Cómo se usa"). `more.detail` es texto; `more.code` (opcional)
+>    es un array de líneas copiables (comandos/ejemplos); `more.links` (opcional) es un array de
+>    `["texto","url"]`. Convención de color (`tagc`): modelo→`berry`, claude code→`clay`,
+>    skills/mcp→`pine`, api→`slate`, app/otros→`gold`.
 >
 > 4. **Marcá `fresh:false`** en TODAS las entradas que ya estaban (sacales el resaltado de "nuevo").
 >    Solo las que agregues en esta corrida llevan `fresh:true`.

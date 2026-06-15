@@ -171,12 +171,18 @@ function secNovedades(){
       <div class="meta">fuente: code.claude.com/docs/changelog · anthropic.com/news</div>
     </div>
     <div class="timeline">
-      ${NOVEDADES.map(n=>`<div class="tlitem ${n.fresh?'fresh':''}"><div class="nov">
+      ${NOVEDADES.map(n=>{const hm=!!n.more;return `<div class="tlitem ${n.fresh?'fresh':''}"><div class="nov ${hm?'has-more':''}" ${hm?'onclick="this.classList.toggle(\'open\')"':''}>
         <div class="top"><span class="tag ${n.tagc}">${n.tag}</span>${n.fresh?'<span class="tag new">nuevo</span>':''}<span class="date">${fmtDate(n.date)}</span></div>
         <h3 class="serif">${n.title}</h3>
         <p>${n.body}</p>
         ${n.why?`<div class="why"><b>Por qué te importa:</b> ${n.why}</div>`:''}
-      </div></div>`).join('')}
+        ${hm?`<div class="nov-cta"><span class="lbl-c">Ver cómo se usa</span><span class="lbl-o">Cerrar</span><span class="chev">${svg('<polyline points="9 6 15 12 9 18"/>',2.4)}</span></div>
+        <div class="nov-more" onclick="event.stopPropagation()">
+          <h4>Qué es y para qué sirve</h4><p>${n.more.detail}</p>
+          ${n.more.code?`<h4 class="howlbl">Cómo se usa</h4>${codeBlock(n.more.code)}`:''}
+          ${n.more.links?`<div class="linkrow">${n.more.links.map(linkBtn).join('')}</div>`:''}
+        </div>`:''}
+      </div></div>`}).join('')}
     </div>
     <div class="callout clay" style="margin-top:24px">
       <div class="i">${svg(I.loop,2)}</div>
