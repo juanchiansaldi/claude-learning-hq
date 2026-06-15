@@ -261,18 +261,48 @@ function secRoadmap(){
 }
 function renderRoadmap(){
   const el=document.getElementById('rmbody');if(!el)return;
+  const chev=svg('<polyline points="9 6 15 12 9 18"/>',2.4);
   el.innerHTML=ROADMAP.map((ph,pi)=>{
     const keys=ph.tasks.map((t,ti)=>'rm-'+pi+'-'+ti);
     const done=keys.filter(k=>progress[k]).length,pct=Math.round(done/ph.tasks.length*100);
     return `<div class="phase" id="ph${pi}">
       <div class="ph" onclick="document.getElementById('ph${pi}').classList.toggle('open')">
         <div class="pic">${svg(I[ph.icon],2)}</div>
-        <div class="pt"><div class="wk">${ph.wk}</div><h3 class="serif">${ph.title}</h3><div class="ct">${done}/${ph.tasks.length} tareas completas</div></div>
-        <div class="mini"><div class="bar"><i style="width:${pct}%"></i></div><span class="pp">${pct}%</span><span class="chev">${svg('<polyline points="9 6 15 12 9 18"/>',2.4)}</span></div>
+        <div class="pt"><div class="wk">${ph.wk}</div><h3 class="serif">${ph.title}</h3><div class="ct" id="rmct-${pi}">${done}/${ph.tasks.length} tareas completas</div></div>
+        <div class="mini"><div class="bar"><i id="rmbar-${pi}" style="width:${pct}%"></i></div><span class="pp" id="rmpct-${pi}">${pct}%</span><span class="chev">${chev}</span></div>
       </div>
-      <div class="body">${ph.tasks.map((t,ti)=>{const k='rm-'+pi+'-'+ti;const d=!!progress[k];return `<label class="task ${d?'done':''}"><input type="checkbox" ${d?'checked':''} onchange="toggleTask('${k}','renderRoadmap')"><div><div class="tt">${t[0]}</div><div class="ts">${t[1]}</div></div></label>${extras(t[2])}`}).join('')}</div>
+      <div class="body">${ph.tasks.map((t,ti)=>{const k='rm-'+pi+'-'+ti;const d=!!progress[k];return `
+        <div class="pstep ${d?'done':''}" id="ps-${k}">
+          <div class="prow">
+            <input type="checkbox" ${d?'checked':''} title="Marcar como hecho" onclick="event.stopPropagation();setRoadmapTask(this,'${k}',${pi})">
+            <div class="pmain" onclick="this.closest('.pstep').classList.toggle('open')">
+              <div class="tt">${t.t}</div>
+              <div class="ts">${t.s}</div>
+            </div>
+            <span class="pchev" onclick="this.closest('.pstep').classList.toggle('open')">${chev}</span>
+          </div>
+          <div class="pdetail" onclick="event.stopPropagation()">
+            ${t.detail?`<p class="pintro">${t.detail}</p>`:''}
+            <h5>Paso a paso</h5>
+            <ol class="plist">${t.steps.map(x=>`<li>${esc(x)}</li>`).join('')}</ol>
+            ${t.code?`<div class="pcode">${codeBlock(t.code)}</div>`:''}
+            ${t.prompt?promptBox(t.prompt):''}
+            ${(t.links||t.go)?`<div class="linkrow">${(t.links||[]).map(linkBtn).join('')}${t.go?`<button class="linkbtn" onclick="go('${t.go}')">Ir a la sección →</button>`:''}</div>`:''}
+            ${t.done?`<div class="pdone"><b>✓ Listo cuando:</b> ${t.done}</div>`:''}
+          </div>
+        </div>`}).join('')}</div>
     </div>`;
   }).join('');
+}
+function setRoadmapTask(cb,k,pi){
+  progress[k]=cb.checked;LS.set('progress',progress);
+  const st=cb.closest('.pstep');if(st)st.classList.toggle('done',cb.checked);
+  const ph=ROADMAP[pi];const keys=ph.tasks.map((t,ti)=>'rm-'+pi+'-'+ti);
+  const done=keys.filter(x=>progress[x]).length,pct=Math.round(done/ph.tasks.length*100);
+  const ct=document.getElementById('rmct-'+pi);if(ct)ct.textContent=done+'/'+ph.tasks.length+' tareas completas';
+  const bar=document.getElementById('rmbar-'+pi);if(bar)bar.style.width=pct+'%';
+  const pp=document.getElementById('rmpct-'+pi);if(pp)pp.textContent=pct+'%';
+  renderRail();
 }
 
 /* ---------- CONCEPTOS ---------- */
