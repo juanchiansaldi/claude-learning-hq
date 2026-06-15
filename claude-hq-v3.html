@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude HQ — Base de operaciones</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EDF1F6; --card:#FFFFFF; --card2:#F3F6FA; --raise:#FFFFFF;
+  --ink:#16222D; --ink2:#4B5965; --ink3:#8794A0;
+  --line:#E0E7EE; --line2:#EDF1F6;
+  --clay:#2461C8; --clay2:#1C4DA6; --clay-t:rgba(36,97,200,.10);
+  --pine:#0F8A82; --pine-t:rgba(15,138,130,.10);
+  --slate:#5C7A9C; --slate-t:rgba(92,122,156,.12);
+  --rust:#C24A43; --rust-t:rgba(194,74,67,.10);
+  --gold:#B07F1C; --gold-t:rgba(176,127,28,.12);
+  --code:#16222D; --code-tx:#DCE6EF;
+  --shadow:0 1px 2px rgba(22,34,45,.05), 0 10px 30px -16px rgba(22,34,45,.18);
+  --shadow-sm:0 1px 2px rgba(22,34,45,.05), 0 4px 14px -10px rgba(22,34,45,.14);
+  --r:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,sans-serif;line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased}
+.mono{font-family:'JetBrains Mono',monospace}
+h1,h2,h3,h4,.display{font-family:'Bricolage Grotesque',sans-serif;letter-spacing:-.02em;line-height:1.08}
+a{color:var(--clay2)}
+button{font-family:inherit;cursor:pointer}
+:focus-visible{outline:2.5px solid var(--clay);outline-offset:2px;border-radius:6px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+
+.app{display:grid;grid-template-columns:248px 1fr;min-height:100vh}
+.rail{background:var(--card);border-right:1px solid var(--line);padding:26px 16px;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;gap:3px}
+.brand{padding:0 10px 22px}
+.brand .logo{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:1.05rem;color:var(--ink)}
+.brand .logo b{color:var(--clay)}
+.brand .sub{font-size:.68rem;color:var(--ink3);letter-spacing:.12em;text-transform:uppercase;margin-top:5px}
+.navbtn{display:flex;align-items:center;gap:9px;width:100%;text-align:left;background:none;border:none;color:var(--ink2);font-family:'JetBrains Mono',monospace;font-size:.85rem;padding:9px 11px;border-radius:9px;transition:background .15s,color .15s}
+.navbtn .slash{color:var(--ink3)}
+.navbtn:hover{background:var(--card2);color:var(--ink)}
+.navbtn.active{background:var(--clay);color:#fff;box-shadow:var(--shadow-sm)}
+.navbtn.active .slash{color:rgba(255,255,255,.7)}
+.rail .spacer{flex:1}
+.rail .foot{font-size:.68rem;color:var(--ink3);padding:12px 10px;line-height:1.7}
+main{padding:42px clamp(20px,4.5vw,64px) 90px;max-width:1120px;width:100%}
+section{display:none}
+section.visible{display:block;animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.topbar{display:none}
+@media(max-width:860px){
+  .app{grid-template-columns:1fr}.rail{display:none}
+  .topbar{display:flex;gap:6px;overflow-x:auto;position:sticky;top:0;z-index:50;background:rgba(237,241,246,.94);backdrop-filter:blur(10px);padding:12px 14px;border-bottom:1px solid var(--line);-webkit-overflow-scrolling:touch}
+  .topbar .navbtn{width:auto;white-space:nowrap;font-size:.78rem;padding:7px 11px}
+  .topbar .navbtn.active{box-shadow:none}
+  main{padding:26px 16px 80px}
+}
+
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--clay);margin-bottom:12px;font-weight:500}
+.pagetitle{font-size:clamp(1.9rem,4vw,2.7rem);font-weight:700;margin-bottom:10px}
+.lede{color:var(--ink2);max-width:64ch;margin-bottom:32px;font-size:1.02rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:var(--shadow-sm)}
+.grid{display:grid;gap:15px}
+.grid.c2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.grid.c3{grid-template-columns:repeat(auto-fit,minmax(235px,1fr))}
+.tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.05em;padding:4px 10px;border-radius:99px;font-weight:500;background:var(--card2);color:var(--ink2);border:1px solid var(--line)}
+.tag.clay{color:var(--clay2);background:var(--clay-t);border-color:transparent}
+.tag.pine{color:var(--pine);background:var(--pine-t);border-color:transparent}
+.tag.slate{color:var(--slate);background:var(--slate-t);border-color:transparent}
+.tag.rust{color:var(--rust);background:var(--rust-t);border-color:transparent}
+.tag.gold{color:var(--gold);background:var(--gold-t);border-color:transparent}
+.btn{background:var(--clay);color:#fff;border:none;border-radius:10px;padding:10px 17px;font-weight:600;font-size:.88rem;box-shadow:var(--shadow-sm);transition:filter .15s,transform .1s}
+.btn:hover{filter:brightness(1.05)}.btn:active{transform:translateY(1px)}
+.btn.ghost{background:var(--card);color:var(--ink);border:1px solid var(--line);box-shadow:none}
+.btn.ghost:hover{border-color:var(--ink3);background:var(--card2);filter:none}
+.btn.small{padding:7px 13px;font-size:.8rem}
+.hr{border:none;border-top:1px solid var(--line);margin:30px 0}
+code.inline{font-family:'JetBrains Mono',monospace;background:var(--card2);border:1px solid var(--line);padding:1px 7px;border-radius:6px;font-size:.84em;color:var(--clay2);white-space:nowrap}
+.checklist{list-style:none;display:flex;flex-direction:column;gap:9px}
+.checklist li{position:relative;padding-left:22px;color:var(--ink2);font-size:.92rem;line-height:1.55}
+.checklist li::before{content:"›";position:absolute;left:3px;top:0;color:var(--clay);font-weight:700;font-size:1.05em}
+
+/* interactive bits */
+.codeline{display:flex;align-items:center;gap:8px;background:var(--code);border-radius:9px;padding:8px 8px 8px 13px}
+.codeline code{flex:1;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--code-tx);white-space:pre-wrap;word-break:break-word}
+.copybtn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#A7BACB;width:30px;height:30px;border-radius:7px;display:grid;place-items:center;flex-shrink:0;transition:.15s}
+.copybtn:hover{background:rgba(255,255,255,.18);color:#fff}
+.copybtn svg{width:15px;height:15px}
+.copybtn.light{background:var(--card2);border-color:var(--line);color:var(--ink3)}
+.copybtn.light:hover{background:#fff;color:var(--clay)}
+.linkrow{display:flex;gap:8px;flex-wrap:wrap}
+.linkbtn{display:inline-flex;align-items:center;gap:5px;background:var(--card2);border:1px solid var(--line);color:var(--clay2);font-size:.78rem;font-weight:500;padding:6px 12px;border-radius:8px;text-decoration:none;transition:.15s;cursor:pointer;font-family:inherit}
+.linkbtn:hover{border-color:var(--clay);background:#fff}
+.taskcode{display:flex;flex-direction:column;gap:6px}
+.task-extras{margin:9px 0 4px 31px;display:flex;flex-direction:column;gap:9px}
+.promptchip{background:var(--card2);border:1px solid var(--line);border-radius:11px;padding:14px 15px}
+.promptchip .lbl{font-size:.68rem;font-family:'JetBrains Mono',monospace;color:var(--ink3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:9px;display:block}
+.promptchip pre{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--ink);white-space:pre-wrap;line-height:1.6}
+.promptchip .btn{margin-top:11px}
+
+.pcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow-sm);transition:box-shadow .16s}
+.pcard:hover{box-shadow:var(--shadow)}
+.pcard-head{padding:20px 22px;display:flex;gap:14px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+.pcard h3{font-size:1.08rem;font-weight:600;margin:9px 0 5px}
+.pcard .desc{color:var(--ink2);font-size:.89rem;max-width:60ch}
+.pcard-actions{display:flex;gap:8px;flex-shrink:0}
+.pcard pre{display:none;background:var(--code);border-top:1px solid var(--line);padding:20px 22px;font-family:'JetBrains Mono',monospace;font-size:.79rem;line-height:1.7;color:var(--code-tx);white-space:pre-wrap;max-height:500px;overflow-y:auto}
+.pcard.open pre{display:block}
+.filterrow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.fbtn{background:var(--card);border:1px solid var(--line);color:var(--ink2);font-family:'JetBrains Mono',monospace;font-size:.76rem;padding:7px 14px;border-radius:99px;transition:.15s}
+.fbtn:hover{border-color:var(--ink3)}
+.fbtn.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+/* commands w/ demo */
+.cmd2{border-bottom:1px solid var(--line2);padding:17px 4px}
+.cmd2:last-child{border-bottom:none}
+.cmd2-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cmd2-name{font-family:'JetBrains Mono',monospace;color:var(--clay2);font-weight:600;font-size:.95rem}
+.cmd2 .what{font-size:.92rem;color:var(--ink);margin-top:9px}
+.cmd2 .when{font-size:.83rem;color:var(--ink3);margin-top:3px}
+.cmd2 .when b{color:var(--clay);font-weight:600}
+.demobtn{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:.72rem}
+.demo{display:none;margin-top:13px;background:var(--code);border-radius:11px;padding:15px 17px;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.75;color:var(--code-tx);white-space:pre-wrap}
+.cmd2.open .demo{display:block}
+.demo .u{color:#7FB0F0}.demo .ok{color:#4FD0A6}.demo .wn{color:#F0C36B}.demo .dim{color:#7A8A99}
+.demo .cur{display:inline-block;color:#7FB0F0;animation:blink 1.05s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.demo .ln-out{animation:fadeUp .26s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+.demobtn.playing{opacity:.5;pointer-events:none}
+
+/* atajos */
+.cmd{display:grid;grid-template-columns:180px 1fr;gap:18px;padding:16px 6px;border-bottom:1px solid var(--line2);align-items:start}
+.cmd:last-child{border-bottom:none}
+.cmd .name{font-family:'JetBrains Mono',monospace;color:var(--clay2);font-size:.9rem;font-weight:600}
+.cmd .what{font-size:.92rem;color:var(--ink)}
+.cmd .when{font-size:.83rem;color:var(--ink3);margin-top:4px}
+.cmd .when b{color:var(--clay);font-weight:600}
+@media(max-width:640px){.cmd{grid-template-columns:1fr;gap:5px}}
+
+/* install steps */
+.steps{counter-reset:s;display:flex;flex-direction:column;gap:18px;margin-top:4px}
+.step{display:grid;grid-template-columns:30px 1fr;gap:15px;align-items:start}
+.step .num{counter-increment:s;width:30px;height:30px;border-radius:9px;background:var(--clay-t);color:var(--clay);display:grid;place-items:center;font-family:'JetBrains Mono',monospace;font-weight:600;font-size:.85rem}
+.step .num::before{content:counter(s)}
+.step h4{font-size:.98rem;font-weight:600;margin-bottom:5px}
+.step p{font-size:.88rem;color:var(--ink2);margin-bottom:9px}
+.step .taskcode,.step .linkrow{margin-top:8px}
+.step .taskcode+.linkrow{margin-top:9px}
+
+/* home */
+.hero{padding:8px 0 38px}
+.hero .kicker{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--ink2);background:var(--card);border:1px solid var(--line);padding:6px 13px;border-radius:99px;margin-bottom:22px}
+.hero .kicker .dot{width:7px;height:7px;border-radius:50%;background:var(--pine)}
+.hero h1{font-size:clamp(2.3rem,5.5vw,3.6rem);font-weight:800;line-height:1.04}
+.hero h1 .accent{color:var(--clay)}
+.hero p{color:var(--ink2);max-width:60ch;margin-top:18px;font-size:1.06rem}
+.homegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:15px;margin-top:6px}
+.homecard{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;cursor:pointer;transition:transform .16s,box-shadow .16s,border-color .16s;box-shadow:var(--shadow-sm)}
+.homecard:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:var(--clay)}
+.homecard .cmdline{font-family:'JetBrains Mono',monospace;color:var(--clay);font-size:.82rem;margin-bottom:10px}
+.homecard h3{font-size:1.08rem;font-weight:600;margin-bottom:6px}
+.homecard p{font-size:.86rem;color:var(--ink2)}
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(90px);background:var(--ink);color:var(--paper);padding:11px 22px;border-radius:11px;font-size:.86rem;font-weight:500;transition:transform .28s cubic-bezier(.2,.8,.2,1);z-index:99;box-shadow:var(--shadow)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* roadmap */
+.rm-overview{display:flex;align-items:center;gap:24px;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px;box-shadow:var(--shadow-sm);margin-bottom:26px}
+.rm-overview .meta h3{font-size:1.15rem;font-weight:700;margin-bottom:4px}
+.rm-overview .meta p{color:var(--ink2);font-size:.9rem}
+.rm-overview .nums{display:flex;gap:26px;margin-top:14px}
+.rm-overview .nums .n{font-family:'Bricolage Grotesque';font-size:1.5rem;font-weight:700;color:var(--clay)}
+.rm-overview .nums .l{font-size:.72rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em}
+.phase{background:var(--card);border:1px solid var(--line);border-radius:var(--r);margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow-sm)}
+.phase-head{display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;padding:18px 22px;cursor:pointer;transition:background .15s}
+.phase-head:hover{background:var(--card2)}
+.phase-icon{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:var(--clay-t);color:var(--clay);flex-shrink:0}
+.phase-icon svg{width:22px;height:22px}
+.phase-titles .wk{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--ink3);letter-spacing:.04em}
+.phase-titles h3{font-size:1.12rem;font-weight:600;margin-top:2px}
+.phase-titles .ct{font-size:.8rem;color:var(--clay2);margin-top:3px;font-weight:500}
+.phase-right{display:flex;align-items:center;gap:14px}
+.mini-prog{width:74px}
+.mini-prog .bar{height:6px;background:var(--card2);border:1px solid var(--line);border-radius:99px;overflow:hidden}
+.mini-prog .bar div{height:100%;background:linear-gradient(90deg,var(--clay),var(--pine));border-radius:99px;transition:width .3s}
+.mini-prog .pct{font-size:.68rem;color:var(--ink3);font-family:'JetBrains Mono';text-align:right;margin-top:4px}
+.chev{color:var(--ink3);transition:transform .2s;flex-shrink:0}
+.phase.open .chev{transform:rotate(90deg)}
+.phase-body{display:none;padding:6px 22px 20px;border-top:1px solid var(--line2)}
+.phase.open .phase-body{display:block}
+.task{display:flex;gap:13px;align-items:flex-start;padding:13px 14px;background:var(--card2);border:1px solid var(--line2);border-radius:11px;margin-top:11px;cursor:pointer;transition:border-color .15s}
+.task:hover{border-color:var(--clay)}
+.task input{margin-top:3px;accent-color:var(--clay);width:17px;height:17px;flex-shrink:0;cursor:pointer}
+.task .t-title{font-size:.93rem;font-weight:500;color:var(--ink)}
+.task .t-sub{font-size:.82rem;color:var(--ink2);margin-top:1px}
+.task.done .t-title{color:var(--ink3);text-decoration:line-through}
+.task.done .t-sub{color:var(--ink3)}
+
+/* learn */
+.pathtabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.progressbar{height:8px;background:var(--card2);border:1px solid var(--line);border-radius:99px;overflow:hidden;margin:6px 0 26px}
+.progressbar div{height:100%;background:linear-gradient(90deg,var(--clay),var(--pine));border-radius:99px;transition:width .3s}
+.level{margin-bottom:26px}
+.level-head{display:flex;align-items:baseline;gap:13px;margin-bottom:12px}
+.level-head .lvl{font-family:'JetBrains Mono',monospace;color:var(--clay);font-size:.74rem;letter-spacing:.06em;font-weight:500}
+.level-head h3{font-size:1.1rem;font-weight:600}
+
+/* reto */
+.reto-hero{background:linear-gradient(135deg,var(--card),var(--card2));border:1px solid var(--line);border-radius:var(--r);padding:30px;position:relative;overflow:hidden;box-shadow:var(--shadow-sm)}
+.reto-hero::after{content:">_";position:absolute;right:26px;bottom:-10px;font-family:'JetBrains Mono',monospace;font-size:5.5rem;color:var(--clay-t);font-weight:600;letter-spacing:-.05em}
+.streak{display:flex;gap:30px;margin-top:24px;flex-wrap:wrap}
+.streak .stat .n{font-family:'Bricolage Grotesque';font-size:2rem;font-weight:700;color:var(--clay)}
+.streak .stat .l{font-size:.72rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em}
+
+/* lab */
+.chatbox{display:flex;flex-direction:column;height:580px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow)}
+.chatlog{flex:1;overflow-y:auto;padding:22px;display:flex;flex-direction:column;gap:14px}
+.msg{max-width:86%;padding:13px 16px;border-radius:14px;font-size:.9rem;white-space:pre-wrap;line-height:1.6}
+.msg.user{align-self:flex-end;background:var(--clay);color:#fff}
+.msg.assistant{align-self:flex-start;background:var(--card2);border:1px solid var(--line2)}
+.msg.assistant .mono-block{font-family:'JetBrains Mono',monospace;font-size:.79rem;background:var(--code);color:var(--code-tx);padding:13px;border-radius:10px;margin-top:9px;display:block;white-space:pre-wrap}
+.chatinput{display:flex;gap:10px;padding:15px;border-top:1px solid var(--line)}
+.chatinput textarea{flex:1;background:var(--card2);border:1px solid var(--line);border-radius:11px;color:var(--ink);font-family:inherit;font-size:.9rem;padding:12px 15px;resize:none;height:50px}
+.chatinput textarea:focus{outline:none;border-color:var(--clay)}
+.quickrow{display:flex;gap:8px;flex-wrap:wrap;padding:0 15px 14px}
+.quickrow button{background:var(--card2);border:1px solid var(--line);color:var(--ink2);font-size:.76rem;padding:6px 12px;border-radius:99px;transition:.15s}
+.quickrow button:hover{color:var(--ink);border-color:var(--ink3)}
+.typing{color:var(--ink3);font-size:.82rem;font-family:'JetBrains Mono',monospace;padding:0 22px 10px}
+.sectlabel{font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin:34px 0 14px;display:flex;align-items:center;gap:10px}
+.sectlabel::after{content:"";flex:1;height:1px;background:var(--line)}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast">Copiado</div>
+<nav class="topbar" id="topbar"></nav>
+
+<div class="app">
+  <aside class="rail">
+    <div class="brand"><div class="logo">claude<b>·</b>hq</div><div class="sub">base de operaciones</div></div>
+    <div id="railnav"></div>
+    <div class="spacer"></div>
+    <div class="foot">v3.0 · hecho con Claude<br>para el equipo</div>
+  </aside>
+
+  <main>
+
+  <!-- INICIO -->
+  <section id="inicio">
+    <div class="hero">
+      <span class="kicker"><span class="dot"></span> tu base de conocimiento + entrenamiento</span>
+      <h1>Todo para trabajar con <span class="accent">Claude</span>,<br>en un solo lugar.</h1>
+      <p>Prompts robustos para arrancar proyectos seguros, skills, el stack recomendado, todos los comandos <span class="mono" style="color:var(--clay)">/</span> con demo, un roadmap de 12 semanas y un reto práctico por día.</p>
+    </div>
+    <div class="card" style="margin-bottom:28px;border-color:var(--clay);border-width:1.5px">
+      <div class="eyebrow">reto de hoy</div>
+      <div id="home-reto" style="font-size:1.08rem;font-weight:500;color:var(--ink)"></div>
+      <button class="btn small" style="margin-top:16px" onclick="go('reto')">Ir al reto →</button>
+    </div>
+    <div class="homegrid">
+      <div class="homecard" onclick="go('roadmap')"><div class="cmdline">> /roadmap</div><h3>Roadmap 12 semanas</h3><p>El camino de 0 a experto en Claude Code, con comandos y links a un clic.</p></div>
+      <div class="homecard" onclick="go('prompts')"><div class="cmdline">> /prompts</div><h3>Biblioteca de prompts</h3><p>Kickoffs seguros, CLAUDE.md base, auditorías, QA, frontend. Copiá y pegá.</p></div>
+      <div class="homecard" onclick="go('skills')"><div class="cmdline">> /skills</div><h3>Skills</h3><p>Cómo se instalan, las indispensables y un prompt para crear todas de una.</p></div>
+      <div class="homecard" onclick="go('stack')"><div class="cmdline">> /stack</div><h3>Stack & herramientas</h3><p>GitHub + Vercel + Supabase con seguridad y setup en comandos.</p></div>
+      <div class="homecard" onclick="go('comandos')"><div class="cmdline">> /comandos</div><h3>Comandos slash</h3><p>Cada / explicado, con demo de terminal y botón de copiar.</p></div>
+      <div class="homecard" onclick="go('agentes')"><div class="cmdline">> /agentes</div><h3>Agentes IA · WhatsApp & IG</h3><p>El servicio que te van a pedir: agentes que venden y atienden 24/7.</p></div>
+      <div class="homecard" onclick="go('lab')"><div class="cmdline">> /lab</div><h3>Lab de prompts</h3><p>Chat con Claude adentro de la web para generar y pulir prompts.</p></div>
+    </div>
+  </section>
+
+  <!-- ROADMAP -->
+  <section id="roadmap">
+    <div class="eyebrow">// 12 semanas · 80% práctica</div>
+    <h2 class="pagetitle">Roadmap Claude Code</h2>
+    <p class="lede">De abrir la terminal por primera vez a orquestar agentes en paralelo y deployar con seguridad. Cada tarea trae los comandos listos para copiar y los links que necesitás. Marcá y se guarda solo.</p>
+    <div class="rm-overview">
+      <div id="rm-ring"></div>
+      <div class="meta"><h3>Tu progreso</h3><p>El camino completo, en orden. No saltees fases: cada una asume la anterior.</p>
+        <div class="nums"><div><div class="n" id="rm-done">0</div><div class="l">tareas hechas</div></div><div><div class="n" id="rm-total">0</div><div class="l">tareas totales</div></div><div><div class="n" id="rm-phase">0/6</div><div class="l">fases completas</div></div></div>
+      </div>
+    </div>
+    <div id="rm-phases"></div>
+  </section>
+
+  <!-- PROMPTS -->
+  <section id="prompts">
+    <div class="eyebrow">// biblioteca</div>
+    <h2 class="pagetitle">Prompts</h2>
+    <p class="lede">Prompts probados para copiar y pegar en Claude Code. Los de <b style="color:var(--clay)">Kickoff</b> y <b style="color:var(--clay)">Seguridad</b> deberían usarse en todo proyecto que arranca de cero.</p>
+    <div class="filterrow" id="pfilters"></div>
+    <div class="grid" id="plist"></div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="eyebrow">// capacidades reutilizables</div>
+    <h2 class="pagetitle">Skills</h2>
+    <p class="lede">Una skill es una carpeta con un <code class="inline">SKILL.md</code> que le enseña a Claude un procedimiento o estándar del equipo. Claude la lee sola cuando la tarea lo amerita. Es la forma de que "no haya que repetirle las cosas".</p>
+
+    <div class="grid c2" style="margin-bottom:8px">
+      <div class="card">
+        <span class="tag pine">estructura</span>
+        <h3 style="margin:13px 0 9px;font-weight:600">Anatomía de una skill</h3>
+        <pre class="mono" style="background:var(--code);color:var(--code-tx);border-radius:11px;padding:15px;font-size:.78rem;line-height:1.7;overflow-x:auto">mi-skill/
+├── SKILL.md      ← obligatorio
+├── ejemplos/     ← opcional
+└── scripts/      ← opcional
+
+# SKILL.md
+---
+name: mi-skill
+description: Cuándo debe activarse
+  (¡esto es lo más importante!)
+---
+Instrucciones paso a paso...</pre>
+        <p style="font-size:.85rem;color:var(--ink2);margin-top:11px">La <b>description</b> decide si Claude la usa: escribila pensando "¿qué frases diría alguien que necesita esto?"</p>
+      </div>
+      <div class="card">
+        <span class="tag slate">plugin vs skill</span>
+        <h3 style="margin:13px 0 9px;font-weight:600">Cómo se distribuyen</h3>
+        <ul class="checklist" style="margin-bottom:6px">
+          <li>Una <b>skill</b> es el contenido (un SKILL.md). Un <b>plugin</b> empaqueta una o más skills (y a veces hooks o MCP) para instalarlas de un comando.</li>
+          <li>Un <b>marketplace</b> es un repo de GitHub que distribuye muchos plugins. El de Anthropic viene por defecto.</li>
+          <li>Scope al instalar: <b>User</b> (<code class="inline">~/.claude/skills/</code>, para todos tus proyectos) o <b>Project</b> (<code class="inline">.claude/skills/</code>, solo ese repo).</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sectlabel">cómo instalar una skill</div>
+    <div class="card">
+      <div class="steps">
+        <div class="step"><div class="num"></div><div>
+          <h4>Método 1 — Marketplace de plugins (lo más rápido)</h4>
+          <p>Abrí el navegador de plugins, andá a la pestaña <b>Discover</b>, elegí uno y Enter. Te pregunta el scope (User o Project) y queda activa.</p>
+          <div class="taskcode" id="skill-m1"></div>
+        </div></div>
+        <div class="step"><div class="num"></div><div>
+          <h4>Método 2 — Que la cree Claude (para skills propias del equipo)</h4>
+          <p>La forma recomendada para las nuestras: le pasás el prompt y Claude genera la carpeta y el SKILL.md en <code class="inline">.claude/skills/</code>. Después se comparte con el equipo por Git.</p>
+          <div id="skill-m2"></div>
+        </div></div>
+        <div class="step"><div class="num"></div><div>
+          <h4>Método 3 — Manual</h4>
+          <p>Creás la carpeta a mano y pegás el SKILL.md adentro. Ojo: la carpeta va directo dentro de skills, sin un nivel extra.</p>
+          <div class="taskcode" id="skill-m3"></div>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="sectlabel">skills que ya vienen incluidas</div>
+    <p style="color:var(--ink2);font-size:.9rem;margin:-2px 0 14px">Claude Code trae varias skills "bundled" listas para usar (el set se va actualizando). Las más útiles hoy:</p>
+    <div class="grid c3" id="bundled"></div>
+
+    <div class="sectlabel">los indispensables del equipo</div>
+    <p style="color:var(--ink2);font-size:.9rem;margin:-2px 0 16px">Estas son skills <b>propias</b>: las crea Claude con el prompt de cada tarjeta. Tocá "Copiar prompt", pegalo en Claude Code y listo.</p>
+    <div class="grid c2" id="skill-recs"></div>
+
+    <div class="sectlabel">instalá todo de una</div>
+    <div class="grid c2">
+      <div class="card">
+        <span class="tag clay">las 6 del equipo</span>
+        <h3 style="margin:12px 0 8px;font-weight:600">Prompt maestro</h3>
+        <p style="font-size:.87rem;color:var(--ink2);margin-bottom:6px">Crea las 6 skills del equipo en una sola corrida, pidiéndote OK antes de cada una.</p>
+        <div id="skill-mega"></div>
+      </div>
+      <div class="card">
+        <span class="tag slate">oficiales / comunidad</span>
+        <h3 style="margin:12px 0 8px;font-weight:600">Vía /plugin</h3>
+        <p style="font-size:.87rem;color:var(--ink2);margin-bottom:10px">Agregá el marketplace, abrí <code class="inline">/plugin</code> → Discover y buscá estas. Buenas para empezar: <b>frontend-design</b> (UI), <b>webapp-testing</b> (QA visual), <b>document-skills</b> (PDF/Word/Excel).</p>
+        <div class="taskcode" id="skill-official"></div>
+        <div class="linkrow" style="margin-top:10px" id="skill-official-links"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STACK -->
+  <section id="stack">
+    <div class="eyebrow">// infraestructura por defecto</div>
+    <h2 class="pagetitle">Stack & herramientas</h2>
+    <p class="lede">Todo proyecto nuevo arranca con este stack, pensado para que la seguridad sea el punto de partida y no una etapa final. Abajo tenés el setup en comandos y un prompt que lo arma todo.</p>
+
+    <div class="grid c3" style="margin-bottom:10px" id="stack-tools"></div>
+
+    <div class="sectlabel">setup rápido — comandos</div>
+    <div class="card">
+      <p style="font-size:.88rem;color:var(--ink2);margin-bottom:14px">De cero a proyecto corriendo. Copiá en orden (ajustá <code class="inline">mi-app</code> por el nombre real).</p>
+      <div class="taskcode" id="stack-cmds"></div>
+      <div class="linkrow" style="margin-top:14px" id="stack-links"></div>
+    </div>
+
+    <div class="sectlabel">armá todo de una</div>
+    <div class="card">
+      <span class="tag clay">bootstrap seguro</span>
+      <h3 style="margin:12px 0 8px;font-weight:600">Prompt para Claude Code</h3>
+      <p style="font-size:.87rem;color:var(--ink2);margin-bottom:6px">Levanta el stack completo con la capa de seguridad aplicada desde el primer commit. Para arranque guiado por producto, usá el "Kickoff seguro 0→1" de /prompts.</p>
+      <div id="stack-mega"></div>
+      <div style="margin-top:12px"><button class="linkbtn" onclick="go('prompts')">Ver Kickoff seguro 0→1 →</button></div>
+    </div>
+
+    <div class="sectlabel">capa de ciberseguridad — no negociable</div>
+    <div class="card" style="border-color:var(--rust)">
+      <div class="grid c2">
+        <ul class="checklist">
+          <li><b>RLS</b> en cada tabla de Supabase antes de insertar el primer dato.</li>
+          <li><b>Validación con Zod</b> en todo input: formularios, API routes, server actions.</li>
+          <li><b>Secrets</b> solo en <code class="inline">.env.local</code> + Vercel; excluidos en <code class="inline">.gitignore</code> desde el commit 1.</li>
+          <li><b>Auth</b> verificada en el servidor, nunca solo en el cliente.</li>
+          <li><b>Service role key</b> jamás en el cliente; solo server-side.</li>
+        </ul>
+        <ul class="checklist">
+          <li><b>Headers de seguridad</b> en <code class="inline">next.config</code>: CSP, HSTS, X-Frame-Options, nosniff.</li>
+          <li><b>Rate limiting</b> en endpoints sensibles (login, formularios públicos).</li>
+          <li><b>npm audit / Dependabot</b> en CI: el build falla con vulnerabilidades críticas.</li>
+          <li><b>Sanitización</b> de todo lo que se renderiza desde input de usuario (XSS).</li>
+          <li><b>Backups</b> de Supabase verificados, no asumidos.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sectlabel">conectores / MCP recomendados</div>
+    <p style="color:var(--ink2);font-size:.9rem;margin:-2px 0 16px">Los MCP le dan a Claude acceso a herramientas externas. Se agregan con <code class="inline">/mcp</code> en Claude Code o desde Ajustes → Conectores en Claude.ai.</p>
+    <div class="grid c2" id="mcp-list"></div>
+  </section>
+
+  <!-- COMANDOS -->
+  <section id="comandos">
+    <div class="eyebrow">// claude code cli</div>
+    <h2 class="pagetitle">Comandos slash</h2>
+    <p class="lede">Así le hablamos a Claude Code. Cada comando con qué hace, cuándo usarlo, botón de copiar y una <b style="color:var(--clay)">demo</b> de cómo se ve en la terminal.</p>
+    <div class="card" style="margin-bottom:26px">
+      <h3 style="margin-bottom:12px;font-weight:600">Atajos que no son slash pero tenés que saber</h3>
+      <div id="atajos"></div>
+    </div>
+    <div class="card"><div id="cmdlist"></div>
+      <p style="font-size:.78rem;color:var(--ink3);margin-top:18px">Las demos son ilustrativas para que veas la idea — la salida real varía según tu proyecto.</p>
+    </div>
+  </section>
+
+  <!-- AGENTES -->
+  <section id="agentes">
+    <div class="eyebrow">// el servicio que te van a pedir</div>
+    <h2 class="pagetitle">Agentes de IA · WhatsApp & Instagram</h2>
+    <p class="lede">Lo que los negocios están buscando: un agente que convierta chats en ventas, responda solo 24/7 y se implemente en su WhatsApp o Instagram. Acá tenés los dos caminos para construirlos, cómo funciona por dentro, las herramientas, una ruta de 0 a 100 y un proyecto para arrancar hoy.</p>
+
+    <div class="card" style="border-color:var(--clay);border-width:1.5px;margin-bottom:8px">
+      <div class="eyebrow">qué te van a pedir</div>
+      <div class="grid c3" id="ag-asks"></div>
+    </div>
+
+    <div class="sectlabel">los dos caminos</div>
+    <div class="grid c2" id="ag-paths"></div>
+    <p style="color:var(--ink2);font-size:.88rem;margin-top:14px">Regla práctica: usá <b>no-code</b> para validar rápido o si el foco es Instagram; pasá a <b>código</b> cuando el cliente quiere algo serio, integrado y vendible.</p>
+
+    <div class="sectlabel">cómo funciona por dentro</div>
+    <div class="card"><div id="ag-arch"></div></div>
+
+    <div class="sectlabel">herramientas (con sus links)</div>
+    <div class="grid c2" id="ag-tools"></div>
+
+    <div class="sectlabel">ruta de 0 a 100</div>
+    <div class="progressbar"><div id="ag-progress" style="width:0%"></div></div>
+    <div id="ag-levels"></div>
+
+    <div class="sectlabel">proyecto: tu primer agente</div>
+    <p style="color:var(--ink2);font-size:.9rem;margin:-2px 0 16px">Copiá estos prompts en Claude Code, en orden, para construir el agente sobre tu stack (Next.js + Vercel + Supabase + Claude).</p>
+    <div class="grid" id="ag-project"></div>
+  </section>
+
+  <!-- LEARN -->
+  <section id="learn">
+    <div class="eyebrow">// onboarding por rol</div>
+    <h2 class="pagetitle">Learn: de 0 a 100</h2>
+    <p class="lede">Cuatro rutas por disciplina. El roadmap de /roadmap es el camino profundo de Claude Code; estas rutas cubren todo lo demás. El progreso se guarda.</p>
+    <div class="pathtabs" id="pathtabs"></div>
+    <div class="progressbar"><div id="pathprogress" style="width:0%"></div></div>
+    <div id="pathbody"></div>
+  </section>
+
+  <!-- RETO -->
+  <section id="reto">
+    <div class="eyebrow">// práctica diaria</div>
+    <h2 class="pagetitle">Reto del día</h2>
+    <p class="lede">Una tarea práctica por día, de 10–20 minutos. Rota automáticamente. La constancia le gana al talento.</p>
+    <div class="reto-hero">
+      <span class="tag clay" id="reto-fecha"></span>
+      <h3 id="reto-titulo" style="font-size:1.45rem;font-weight:700;margin:15px 0 8px"></h3>
+      <p id="reto-desc" style="color:var(--ink2);max-width:62ch"></p>
+      <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" id="reto-done-btn" onclick="completarReto()">Marcar como completado</button>
+        <button class="btn ghost" onclick="go('lab')">Practicarlo en el Lab</button>
+      </div>
+      <div class="streak">
+        <div class="stat"><div class="n" id="streak-n">0</div><div class="l">racha (días)</div></div>
+        <div class="stat"><div class="n" id="total-n">0</div><div class="l">retos completados</div></div>
+      </div>
+    </div>
+    <div class="hr"></div>
+    <h3 style="margin-bottom:15px;font-weight:600">Próximos retos</h3>
+    <div class="grid c2" id="reto-proximos"></div>
+  </section>
+
+  <!-- LAB -->
+  <section id="lab">
+    <div class="eyebrow">// claude adentro de la web</div>
+    <h2 class="pagetitle">Lab de prompts</h2>
+    <p class="lede">Un Claude entrenado como ingeniero de prompts. Contale qué proyecto vas a arrancar (o qué problema tenés en uno en curso) y te devuelve un prompt robusto listo para pegar en Claude Code.</p>
+    <div class="chatbox">
+      <div class="chatlog" id="chatlog">
+        <div class="msg assistant">Hola 👋 Soy tu generador de prompts. Decime cosas como:
+• "Voy a arrancar un SaaS de turnos para barberías, dame el prompt de kickoff"
+• "Mejorá este prompt: ..."
+• "Necesito un prompt para que Claude Code audite la seguridad de mi API"</div>
+      </div>
+      <div class="typing" id="typing" style="display:none">claude está escribiendo…</div>
+      <div class="quickrow">
+        <button onclick="quick('Generá un prompt de kickoff completo para un proyecto nuevo. Preguntame primero qué tipo de producto es.')">Kickoff nuevo proyecto</button>
+        <button onclick="quick('Generá un prompt para auditar la seguridad de un proyecto existente en Next.js + Supabase.')">Auditoría de seguridad</button>
+        <button onclick="quick('Generá un prompt para mejorar el diseño visual de mi app sin romper funcionalidad.')">Mejorar diseño</button>
+        <button onclick="quick('Generá un prompt de QA: plan de tests + tests automatizados para mi proyecto.')">QA & tests</button>
+      </div>
+      <div class="chatinput">
+        <textarea id="chatinput" placeholder="Escribí acá… (Enter para enviar)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea>
+        <button class="btn" onclick="sendChat()">Enviar</button>
+      </div>
+    </div>
+  </section>
+
+  </main>
+</div>
+
+<script>
+const ICO_COPY='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+
+/* ===== helpers ===== */
+function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1700);}
+function copyText(t){navigator.clipboard.writeText(t).then(()=>toast('Copiado')).catch(()=>{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove();toast('Copiado');});}
+function codeLine(c){return `<div class="codeline"><code>${escapeHtml(c)}</code><button class="copybtn" title="Copiar" onclick="copyText(this.previousElementSibling.textContent)">${ICO_COPY}</button></div>`;}
+function codeBlock(arr){return `<div class="taskcode">${arr.map(codeLine).join('')}</div>`;}
+function linkBtn(l){return l.go?`<button class="linkbtn" onclick="go('${l.go}')">${l.label}</button>`:`<a class="linkbtn" href="${l.url}" target="_blank" rel="noopener">${l.label} ↗</a>`;}
+function linkRow(arr){return `<div class="linkrow">${arr.map(linkBtn).join('')}</div>`;}
+function promptChip(p,label){return `<div class="promptchip"><span class="lbl">${label||'Prompt para Claude Code'}</span><pre>${escapeHtml(p)}</pre><button class="btn small" onclick="copyText(this.previousElementSibling.textContent)">Copiar prompt</button></div>`;}
+function extrasHTML(ex){let h='';if(ex.code)h+=codeBlock(ex.code);if(ex.links)h+=linkRow(ex.links);if(ex.prompt)h+=promptChip(ex.prompt);return h?`<div class="task-extras">${h}</div>`:'';}
+function taskHTML(k,t,rer){const d=!!progress[k];return `<label class="task ${d?'done':''}"><input type="checkbox" ${d?'checked':''} onchange="toggleTask('${k}',${rer})"><div><div class="t-title">${t[0]}</div><div class="t-sub">${t[1]}</div></div></label>${t[2]?extrasHTML(t[2]):''}`;}
+
+/* ===== DATA: prompts ===== */
+const PROMPTS=[
+{cat:"Kickoff",tag:"clay",title:"Kickoff seguro 0→1 (el prompt madre)",desc:"Para arrancar cualquier proyecto nuevo. Crea la base con Next.js + Supabase + Vercel con toda la capa de seguridad desde el commit 1.",
+text:`Vas a arrancar un proyecto nuevo desde cero. Antes de escribir código, hacé estas 3 cosas en orden:
+
+1. PREGUNTAME lo que necesites para entender el producto (público, features core del MVP, si hay pagos, si hay datos sensibles). No asumas nada importante.
+
+2. PROPONÉ un plan de arquitectura en un archivo PLAN.md y esperá mi OK antes de implementar.
+
+3. RECIÉN AHÍ implementá la base con este stack y estos estándares NO NEGOCIABLES:
+
+STACK
+- Next.js (App Router) + TypeScript estricto (strict: true, sin any)
+- Supabase: Postgres + Auth + Storage
+- Tailwind CSS · Deploy target: Vercel · Repo: GitHub con .gitignore correcto desde el primer commit
+
+SEGURIDAD (implementar TODO, no "después")
+- RLS habilitado en TODAS las tablas de Supabase, con policies escritas y testeadas.
+- Validación con Zod en todo input: formularios, API routes y server actions.
+- Variables de entorno: .env.local + .env.example documentado. NUNCA commitear secrets. La service_role key solo server-side.
+- Verificación de sesión en el SERVIDOR (middleware + checks por ruta).
+- Headers de seguridad en next.config: CSP, HSTS, X-Frame-Options DENY, nosniff, Referrer-Policy.
+- Rate limiting en endpoints sensibles. Sanitizar contenido de usuarios antes de renderizar (XSS). npm audit limpio.
+
+CALIDAD
+- ESLint + Prettier. README con la estructura. CLAUDE.md con las reglas del proyecto. Commits chicos en español.
+
+Al terminar: resumen de qué creaste, las policies de RLS escritas, y un checklist de seguridad marcado.`},
+{cat:"Kickoff",tag:"clay",title:"CLAUDE.md base (memoria permanente)",desc:"Pegá esto y pedile que lo guarde como CLAUDE.md. Son las reglas que va a respetar en TODAS las sesiones del proyecto.",
+text:`Creá un archivo CLAUDE.md en la raíz del proyecto con este contenido (adaptá el stack al repo):
+
+# Reglas del proyecto
+
+## Protección de archivos — CRÍTICO
+- NUNCA borres archivos sin pedirme confirmación explícita.
+- NUNCA modifiques: .env*, migraciones aplicadas, configs de CI/CD, ni nada dentro de /docs/decisiones.
+- NUNCA uses comandos destructivos (rm -rf, git push --force, git reset --hard, DROP TABLE, TRUNCATE) sin mi confirmación en ese momento.
+- Si un cambio afecta más de 5 archivos, mostrame el plan primero y esperá mi OK.
+- Antes de algo riesgoso, sugerí crear una rama o commit de respaldo.
+
+## Seguridad
+- Todo input se valida con Zod. Toda tabla nueva nace con RLS habilitado.
+- Jamás hardcodear secrets. Queries con datos de usuario siempre parametrizadas.
+- Auth se verifica en el servidor.
+
+## Estilo
+- TypeScript estricto, prohibido "any". Componentes chicos. Justificá cada dependencia nueva.
+
+## Flujo
+- Commits chicos en español (feat/fix/refactor/chore). Siempre rama + PR. Al terminar: lint + typecheck + tests.
+
+## Comunicación
+- Si algo es ambiguo, preguntá antes de asumir. Si ves un problema de seguridad, avisá aunque no sea la tarea.`},
+{cat:"Seguridad",tag:"rust",title:"Guardarraíles anti-destrucción",desc:"Para proyectos en curso sin reglas. Frena borrados, cambios masivos y comandos peligrosos.",
+text:`A partir de ahora operás bajo estas reglas. Confirmá que las entendiste y agregalas a CLAUDE.md (crealo si no existe):
+
+1. ARCHIVOS INTOCABLES sin mi confirmación: .env y variantes, migraciones aplicadas, configs de deploy/CI, package-lock.json (salvo instalar algo), y cualquier archivo no relacionado con la tarea actual.
+2. COMANDOS PROHIBIDOS sin confirmación caso por caso: rm -rf, git push --force, git reset --hard, git clean, DROP/TRUNCATE/DELETE sin WHERE, y todo lo que toque producción.
+3. ALCANCE: trabajá SOLO en los archivos necesarios. Si hay que tocar algo más, decime qué y por qué.
+4. ANTES de refactors o cambios en +5 archivos: plan corto → mi OK → ejecutás.
+5. RED DE SEGURIDAD: antes de cambios grandes, commit de respaldo o rama nueva.
+6. Si rompés algo: avisá qué se rompió y el camino de vuelta (no lo tapes con más cambios).`},
+{cat:"Seguridad",tag:"rust",title:"Auditoría de seguridad completa",desc:"Revisión contra OWASP Top 10 en un proyecto existente. Hallazgos priorizados y fix con tu OK.",
+text:`Hacé una auditoría de seguridad completa. Modo SOLO LECTURA primero: no cambies nada hasta que apruebe.
+
+FASE 1 — RELEVAMIENTO: rutas/endpoints, auth y sesiones, queries a DB, uploads, variables de entorno, dependencias.
+
+FASE 2 — AUDITORÍA (OWASP Top 10):
+- Inyección (SQL/comandos por concatenación), Auth rota (¿sesión verificada en server en TODAS las rutas?), Exposición de datos (campos de más, secrets en código/historial), RLS tabla por tabla, XSS, CSRF/CORS, npm audit, rate limiting, headers.
+
+FASE 3 — REPORTE: SECURITY_AUDIT.md con cada hallazgo: [CRÍTICO/ALTO/MEDIO/BAJO] — qué — dónde (archivo:línea) — cómo se explota — cómo se arregla.
+
+FASE 4 — Esperá mi OK y arreglá desde los críticos, un commit por hallazgo.`},
+{cat:"Frontend",tag:"slate",title:"Mejorar diseño sin romper nada",desc:"Eleva el nivel visual de una app existente sin tocar lógica.",
+text:`Subí el nivel visual de esta app SIN cambiar funcionalidad ni lógica. Reglas:
+
+1. Recorré la UI y hacé un diagnóstico honesto: los 10 problemas más importantes.
+2. Proponé una dirección concreta antes de tocar código: paleta (hex + uso), tipografía (display + cuerpo + escala), sistema de espaciado, y un "elemento firma". Esperá mi OK.
+3. Implementá como design tokens (variables CSS / config de Tailwind).
+4. NO cambies props, estados, handlers ni APIs. No agregues librerías pesadas sin preguntar. Accesibilidad AA, focus visible, áreas táctiles >=44px, prefers-reduced-motion.
+5. Pantalla por pantalla, commit por pantalla, con antes/después.`},
+{cat:"Frontend",tag:"slate",title:"Brief para Claude Design",desc:"Para claude.ai: que diseñe un prototipo en artifact antes de pasarlo a Claude Code.",
+text:`Actuá como director de diseño de un estudio conocido por identidades que no se confunden con ninguna otra.
+
+PRODUCTO: [qué es, para quién, cuál es LA acción principal]
+
+1. Antes de diseñar definí: paleta (hex + uso), pareja tipográfica con justificación, concepto de layout, y el "elemento firma".
+2. Autocriticá: si algo se parece a lo que harías para cualquier producto similar, cambialo y decime qué cambiaste.
+3. Construí el prototipo como artifact HTML con datos realistas (nada de "Item 1").
+
+ESTÁNDARES: responsive, AA, focus visible, microinteracciones solo donde aporten, copy en español rioplatense.
+Al final: DESIGN_SPEC.md con tokens y decisiones para pasarle a Claude Code.`},
+{cat:"QA",tag:"pine",title:"QA completo: plan + tests automatizados",desc:"Plan de testing, tests unitarios y E2E, todo corriendo en CI.",
+text:`Armá la capa de QA completa:
+
+1. PLAN — TESTING.md: flujos críticos, casos borde, qué se testea en qué nivel.
+2. UNIT + INTEGRACIÓN — Vitest. Priorizá validaciones, lógica de negocio, transformaciones, helpers de auth.
+3. E2E — Playwright para 3-5 flujos clave (registro→login→acción→logout). Incluí caso "usuario malicioso": rutas protegidas sin sesión, payloads inválidos.
+4. CI — GitHub Action: lint + typecheck + tests en cada PR. No se mergea si falla.
+5. Tests legibles (nombre = comportamiento en español), datos aislados (nunca producción).
+Al terminar: corré la suite y mostrame resultado + qué quedó sin cubrir.`},
+{cat:"QA",tag:"pine",title:"Code review de PR como senior",desc:"Revisar un PR con criterio de seguridad, calidad y mantenibilidad.",
+text:`Revisá este PR como senior exigente pero constructivo. Usá /review o el diff.
+
+1. SEGURIDAD: ¿inputs sin validar, queries inseguras, secrets, endpoints sin auth, datos de más?
+2. CORRECTITUD: ¿hace lo que dice? ¿casos borde?
+3. DISEÑO: ¿proporcional o sobre-ingenierado? ¿duplica algo que ya existe?
+4. MANTENIBILIDAD: ¿se entiende en 6 meses? ¿nombres claros? ¿tests para lo nuevo?
+
+SALIDA: Veredicto (APROBAR / APROBAR CON CAMBIOS / RECHAZAR) · Bloqueantes · Sugerencias · Algo bien hecho.
+Comentarios puntuales con archivo:línea, no reescribas el PR entero.`},
+{cat:"Refactor",tag:"gold",title:"Refactor seguro paso a paso",desc:"Mejorar código existente sin romper comportamiento, con red de seguridad.",
+text:`Refactoricemos [ÁREA/ARCHIVO]. Reglas:
+
+1. RED PRIMERO: si no hay tests, escribí characterization tests que capturen el comportamiento ACTUAL antes de tocar nada.
+2. PLAN: cambios de menor a mayor riesgo. Esperá mi OK.
+3. EJECUCIÓN: un cambio atómico por commit. Después de cada uno: typecheck + tests verdes.
+4. PROHIBIDO: cambiar comportamiento observable, tocar archivos no relacionados, renombrar APIs públicas sin avisar.
+5. Al final: qué mejoró y qué deuda quedó anotada.`},
+{cat:"Deploy",tag:"slate",title:"Deploy a producción guiado",desc:"GitHub → Vercel → Supabase, paso a paso con verificación.",
+text:`Llevemos esto a producción ordenado. Guiame y verificá cada paso:
+
+1. PRE-DEPLOY: build limpio, npm audit sin críticas, .env.example completo, ningún secret en el repo ni en el historial.
+2. SUPABASE: proyecto de prod separado, migraciones aplicadas, RLS verificado tabla por tabla EN PROD, redirect URLs de auth al dominio real.
+3. VERCEL: repo conectado (main=prod), variables por entorno, headers verificados (curl -I).
+4. POST-DEPLOY: smoke test de 3 flujos críticos, dominio + HTTPS, monitoring (Vercel Analytics, Sentry), RUNBOOK.md (rollback, logs, a quién avisar).
+En cada paso decime qué comando correr o clickear y esperá mi confirmación.`},
+{cat:"Kickoff",tag:"clay",title:"Retomar proyecto en curso",desc:"Cuando Claude entra a un repo que no conoce: que entienda antes de tocar.",
+text:`Entraste a un proyecto en curso que no conocés. ANTES de cambiar nada:
+1. EXPLORÁ: carpetas, package.json, README, CLAUDE.md, configs. Mirá los últimos 20 commits.
+2. RESUMÍ en 10 líneas: qué hace, stack, estado (tests/CI/deploy), y las 3 cosas que más te llamaron la atención.
+3. PREGUNTÁ: ¿cuál es la tarea de hoy y qué NO debería tocar?
+4. Si no hay CLAUDE.md, proponé crear uno con las convenciones que detectaste.
+Recién después arrancamos.`},
+];
+
+/* ===== DATA: skills ===== */
+const SKILL_RECS=[
+{t:"security-review",tag:"rust",d:"Se activa al revisar PRs o antes de deploys. Trae el checklist OWASP del equipo y la verificación de RLS.",
+prompt:`Creá una skill de proyecto en .claude/skills/security-review/ con un SKILL.md en formato oficial. La description debe decir que se activa al revisar código, PRs o antes de un deploy. El contenido: checklist OWASP Top 10, verificación tabla-por-tabla de RLS en Supabase, validación con Zod, manejo de secrets, y el formato de reporte [CRÍTICO/ALTO/MEDIO/BAJO] con archivo:línea. Mostrame la description antes de crearla.`},
+{t:"design-system",tag:"slate",d:"Tokens de marca: paleta, tipografías, espaciados, componentes aprobados. Se activa al crear o modificar UI.",
+prompt:`Creá una skill de proyecto en .claude/skills/design-system/ cuya description diga que se activa al crear o modificar UI. Preguntame nuestra paleta, tipografías y espaciados antes de inventar nada; con eso, generá un SKILL.md con los design tokens del equipo y las reglas de uso (contraste AA, focus visible, responsive).`},
+{t:"kickoff-proyecto",tag:"clay",d:"El arranque 0→1 completo como conocimiento permanente: stack, seguridad, estructura, CLAUDE.md.",
+prompt:`Creá una skill de proyecto en .claude/skills/kickoff-proyecto/ que se active con "proyecto nuevo" o "arrancar de cero". El SKILL.md debe contener nuestro proceso de arranque seguro: stack (Next.js + Supabase + Vercel), capa de seguridad obligatoria (RLS, Zod, secrets, headers, rate limiting), estructura de carpetas y creación de CLAUDE.md.`},
+{t:"qa-estandar",tag:"pine",d:"Cómo escribimos tests: naming en español, qué nivel para qué, config de Playwright y CI.",
+prompt:`Creá una skill de proyecto en .claude/skills/qa-estandar/ que se active al pedir tests o QA. El SKILL.md define: naming en español (nombre = comportamiento), qué se testea en unit/integración/E2E, configuración de Vitest y Playwright, y la GitHub Action que bloquea PRs rotos.`},
+{t:"voz-de-marca",tag:"slate",d:"Tono y estilo para todo texto público: emails, copy de UI, propuestas. Con ejemplos 'así sí / así no'.",
+prompt:`Creá una skill de proyecto en .claude/skills/voz-de-marca/ que se active al redactar texto público (emails de ventas, copy de UI, propuestas). Preguntame ejemplos de cómo escribimos antes de generar; el SKILL.md debe incluir tono, qué palabras usar y cuáles evitar, y ejemplos "así sí / así no".`},
+{t:"deploy-runbook",tag:"clay",d:"El procedimiento exacto de deploy del equipo (Vercel + Supabase), con verificaciones y rollback.",
+prompt:`Creá una skill de proyecto en .claude/skills/deploy-runbook/ que se active con "deploy" o "producción". El SKILL.md detalla nuestro procedimiento de deploy (GitHub → Vercel → Supabase), las verificaciones pre y post deploy, y el plan de rollback.`},
+];
+const SKILL_MEGA=`Vamos a crear las 6 skills del equipo, cada una en su carpeta dentro de .claude/skills/ con un SKILL.md en formato oficial (front-matter: name + description que diga CUÁNDO se activa; después las instrucciones).
+
+Reglas:
+- Creá una a la vez. Antes de cada una, mostrame la description que vas a usar y esperá mi OK.
+- Para las que dependan de info nuestra (paleta de marca, tono de voz, stack exacto), preguntame antes de inventar.
+
+Las 6:
+1. security-review — se activa al revisar PRs o antes de un deploy. Incluye checklist OWASP, verificación de RLS, Zod, secrets, formato de reporte.
+2. design-system — se activa al crear/modificar UI. Incluye nuestros design tokens y reglas de accesibilidad.
+3. kickoff-proyecto — se activa con "proyecto nuevo". Incluye stack + capa de seguridad + estructura + CLAUDE.md.
+4. qa-estandar — se activa al pedir tests. Incluye niveles de testing, Vitest/Playwright y la CI que bloquea PRs.
+5. voz-de-marca — se activa al redactar texto público. Incluye tono y ejemplos "así sí / así no".
+6. deploy-runbook — se activa con "deploy". Incluye el procedimiento y el rollback.
+
+Al final, listame las 6 carpetas creadas y confirmame que cada SKILL.md tiene una description accionable.`;
+
+const BUNDLED=[
+{t:"/debug",d:"Diagnóstico sistemático de bugs: aísla la causa antes de proponer el fix."},
+{t:"/loop",d:"Trabaja en ciclos: prueba, observa el resultado y corrige hasta que pase."},
+{t:"/simplify",d:"Simplifica código sin cambiar comportamiento. Menos líneas, misma función."},
+{t:"/batch",d:"Aplica un mismo cambio a muchos archivos de forma consistente."},
+{t:"/claude-api",d:"Asiste a construir sobre la API de Claude con las prácticas correctas."},
+];
+
+/* ===== DATA: stack ===== */
+const STACK_TOOLS=[
+{tag:"slate",lbl:"código",name:"GitHub",d:"Repo privado desde el minuto uno. Branch protection en main, PRs obligatorios, Dependabot activado.",links:[{label:"Crear repo",url:"https://github.com/new"},{label:"GitHub CLI",url:"https://cli.github.com/"}]},
+{tag:"clay",lbl:"deploy",name:"Vercel",d:"Deploy automático por rama. Preview deployments para QA. Variables de entorno en Vercel, nunca en el repo.",links:[{label:"Nuevo proyecto",url:"https://vercel.com/new"},{label:"Docs",url:"https://vercel.com/docs"}]},
+{tag:"pine",lbl:"datos",name:"Supabase",d:"Postgres + Auth + Storage. RLS habilitado en todas las tablas, siempre. Sin excepciones.",links:[{label:"Dashboard",url:"https://supabase.com/dashboard"},{label:"Docs RLS",url:"https://supabase.com/docs/guides/database/postgres/row-level-security"}]},
+];
+const STACK_CMDS=[
+"npx create-next-app@latest mi-app --typescript --tailwind --app --eslint",
+"cd mi-app && npm install @supabase/supabase-js zod",
+"npm install -D supabase && npx supabase init",
+"npm install -g vercel && vercel link",
+"git init && git add -A && git commit -m \"chore: bootstrap del proyecto\"",
+];
+const STACK_LINKS=[
+{label:"Crear repo en GitHub",url:"https://github.com/new"},
+{label:"Conectar Vercel",url:"https://vercel.com/new"},
+{label:"Dashboard de Supabase",url:"https://supabase.com/dashboard"},
+{label:"Docs de Next.js",url:"https://nextjs.org/docs"},
+];
+const STACK_MEGA=`Levantá el stack base de este proyecto con la capa de seguridad aplicada desde el primer commit. Antes de ejecutar comandos que instalen o borren, mostrame el plan y esperá mi OK.
+
+1. Scaffold: Next.js (App Router) + TypeScript estricto + Tailwind + ESLint.
+2. Dependencias: @supabase/supabase-js y zod. supabase CLI como dev dependency.
+3. Estructura: lib/supabase (client server-side y client-side separados), middleware de sesión, carpeta de validaciones Zod.
+4. Seguridad desde el commit 1:
+   - .gitignore con .env*; crear .env.example documentado (sin valores reales).
+   - Helpers de Supabase: service_role SOLO server-side.
+   - Headers de seguridad en next.config (CSP, HSTS, X-Frame-Options DENY, nosniff, Referrer-Policy).
+   - Verificación de sesión en el servidor vía middleware.
+   - Un ejemplo de tabla con RLS habilitado y policy escrita, como plantilla.
+5. CLAUDE.md con las reglas del proyecto (protección de archivos + seguridad + flujo).
+6. Commit inicial chico y descriptivo.
+
+Al terminar: resumen de la estructura, qué quedó server-side vs client-side, y el checklist de seguridad marcado.`;
+const SKILL_OFFICIAL=[
+"/plugin marketplace add anthropics/claude-code",
+"/plugin",
+];
+const SKILL_OFFICIAL_LINKS=[
+{label:"Docs de plugins",url:"https://docs.claude.com/en/docs/claude-code/plugins"},
+{label:"Marketplace oficial",url:"https://github.com/anthropics/claude-code"},
+];
+const SKILL_M1=["/plugin","/plugin marketplace add anthropics/claude-code","/plugin install <nombre>@<marketplace>"];
+const SKILL_M3=["mkdir -p ~/.claude/skills/mi-skill","# pegá el SKILL.md dentro de esa carpeta","# reiniciá la sesión de Claude Code"];
+const SKILL_M2_PROMPT=`Creá una skill de proyecto en .claude/skills/<nombre>/ con un SKILL.md en formato oficial. La description tiene que decir claramente CUÁNDO debe activarse (pensá qué frases diría alguien que necesita esta skill). Después poné las instrucciones paso a paso. Antes de crear el archivo, mostrame la description y esperá mi OK.`;
+
+const MCPS=[
+{t:"GitHub",tag:"slate",d:"Lee issues, crea PRs, responde reviews. Con /install-github-app trabaja PRs directo desde GitHub.",url:"https://docs.claude.com/en/docs/claude-code/github-actions"},
+{t:"Playwright",tag:"pine",d:"Abre un navegador real, navega tu app, saca screenshots y verifica la UI. El estrella para QA visual.",url:"https://github.com/microsoft/playwright-mcp"},
+{t:"Supabase",tag:"pine",d:"Consultar esquema, correr queries, revisar RLS. Conectalo en modo lectura para producción.",url:"https://supabase.com/docs/guides/getting-started/mcp"},
+{t:"Sentry",tag:"rust",d:"Lee los errores de producción y propone fixes con el stack trace real. Cierra el ciclo error → PR.",url:"https://docs.sentry.io/product/sentry-mcp/"},
+{t:"Figma",tag:"slate",d:"Lee diseños de Figma y los implementa fiel al pixel. Útil cuando el diseño no nace en Claude.",url:"https://help.figma.com/hc/en-us/articles/32132100833559"},
+{t:"Context7",tag:"clay",d:"Documentación actualizada de librerías en contexto. Evita que use APIs viejas de Next.js o Supabase.",url:"https://github.com/upstash/context7"},
+];
+
+/* ===== DATA: comandos (name, qué, cuándo, demo) ===== */
+const COMANDOS=[
+["/init","Analiza el repo y genera un CLAUDE.md inicial con descripción y convenciones.","Lo PRIMERO que corrés en un repo nuevo o existente.",
+[{k:"cmd",s:"/init"},{k:"out",s:"Analizando el repositorio…"},{k:"out",s:'<span class="dim">47 archivos · Next.js + TypeScript + Supabase</span>'},{k:"out",s:'<span class="ok">✓ CLAUDE.md creado con las convenciones detectadas</span>'}]],
+["/clear","Borra el historial de la conversación. Contexto limpio.","Cambiás de tarea por completo y querés arrancar fresco.",
+[{k:"cmd",s:"/clear"},{k:"out",s:'<span class="ok">✓ Historial borrado · contexto en 0 tokens</span>'}]],
+["/compact","Resume la conversación para liberar contexto sin perder lo importante. Acepta instrucciones.","La charla se puso larga y Claude se pone lento u olvida cosas.",
+[{k:"cmd",s:"/compact mantené las decisiones de arquitectura"},{k:"out",s:"Resumiendo 142k → 18k tokens…"},{k:"out",s:'<span class="ok">✓ Conservado: stack, modelo de datos, reglas de RLS</span>'}]],
+["/model","Cambia el modelo (Opus, Sonnet, Haiku).","Opus para arquitectura difícil; Sonnet para el día a día; Haiku para tareas mecánicas.",
+[{k:"cmd",s:"/model"},{k:"out",s:'<span class="dim">◯ Opus 4.8   — razonamiento profundo</span>'},{k:"out",s:'<span class="ok">● Sonnet 4.6 — día a día (actual)</span>'},{k:"out",s:'<span class="dim">◯ Haiku 4.5  — rápido y barato</span>'}]],
+["/memory","Abre los archivos de memoria (CLAUDE.md) para editarlos.","Querés revisar o ajustar las reglas permanentes del proyecto.",
+[{k:"cmd",s:"/memory"},{k:"out",s:"Abriendo memoria…"},{k:"out",s:'  ./CLAUDE.md            <span class="dim">(proyecto)</span>'},{k:"out",s:'  ~/.claude/CLAUDE.md    <span class="dim">(global)</span>'}]],
+["/agents","Crea y gestiona subagentes especializados con su propio contexto y permisos.","Tareas grandes con roles separados, o para limitar permisos de una sub-tarea.",
+[{k:"cmd",s:"/agents"},{k:"out",s:"  + Crear subagente"},{k:"out",s:'  · revisor-seguridad  <span class="dim">(solo lectura)</span>'},{k:"out",s:'  · tester             <span class="dim">(corre la suite)</span>'}]],
+["/mcp","Gestiona los servidores MCP: agregar, autenticar, ver herramientas.","Querés darle acceso a GitHub, Supabase, Playwright, Sentry, etc.",
+[{k:"cmd",s:"/mcp"},{k:"out",s:'  <span class="ok">✓ github</span>      conectado · 12 tools'},{k:"out",s:'  <span class="ok">✓ playwright</span>  conectado · 7 tools'},{k:"out",s:"  + Agregar servidor"}]],
+["/permissions","Configura qué puede usar Claude sin preguntar y qué requiere tu OK.","Al inicio de cada proyecto.",
+[{k:"cmd",s:"/permissions"},{k:"out",s:"  Lectura ……… permitir siempre"},{k:"out",s:"  Edición ……… permitir siempre"},{k:"out",s:"  Bash ………… preguntar"},{k:"out",s:'  <span class="wn">rm -rf · DROP · git push --force … bloquear</span>'}]],
+["/hooks","Comandos que corren solos antes/después de las acciones de Claude.","Automatizar estándares: formateo, bloquear archivos, correr tests post-cambio.",
+[{k:"cmd",s:"/hooks"},{k:"out",s:'  PostEdit  → prettier --write     <span class="ok">✓</span>'},{k:"out",s:'  PreCommit → npm run typecheck    <span class="ok">✓</span>'}]],
+["/review","Le pide a Claude que revise un pull request.","Antes de mergear cualquier PR.",
+[{k:"cmd",s:"/review"},{k:"out",s:"Revisando PR #128 (8 archivos)…"},{k:"out",s:'<span class="wn">⚠ Bloqueante: input sin validar en api/login</span>'},{k:"out",s:'<span class="ok">✓ Sugerencia: extraer helper duplicado</span>'}]],
+["/resume","Retoma una conversación anterior con todo su contexto.","Volvés al día siguiente a seguir la misma tarea.",
+[{k:"cmd",s:"/resume"},{k:"out",s:'  ↑ "Auth con Supabase"      <span class="dim">hace 2 h</span>'},{k:"out",s:'  ↑ "Refactor del checkout"  <span class="dim">ayer</span>'},{k:"out",s:"Retomando con el contexto completo…"}]],
+["/add-dir","Agrega directorios adicionales al espacio de trabajo.","Monorepos o cuando necesitás que vea otro proyecto a la vez.",
+[{k:"cmd",s:"/add-dir ../design-system"},{k:"out",s:'<span class="ok">✓ Agregado · ahora veo 2 proyectos</span>'}]],
+["/cost","Muestra los tokens y el costo de la sesión actual.","Control de gastos, sobre todo con Opus o sesiones largas.",
+[{k:"cmd",s:"/cost"},{k:"out",s:'  Sesión: 1.2M tokens · <span class="ok">US$ 3.41</span>'},{k:"out",s:"  Modelo: Sonnet 4.6"}]],
+["/export","Exporta la conversación actual.","Guardar el razonamiento de una decisión o pasarle el contexto a alguien.",
+[{k:"cmd",s:"/export"},{k:"out",s:'<span class="ok">✓ Exportado → ./claude-export-2026-06-13.md</span>'}]],
+["/install-github-app","Instala la app de GitHub para que Claude trabaje directo en PRs.","Una vez por organización. Habilita mencionar @claude en GitHub.",
+[{k:"cmd",s:"/install-github-app"},{k:"out",s:"Abriendo GitHub para autorizar…"},{k:"out",s:'<span class="ok">✓ Listo · mencioná @claude en cualquier PR</span>'}]],
+["/pr-comments","Trae los comentarios del PR actual a la conversación.","Te dejaron feedback en GitHub y querés resolverlo punto por punto.",
+[{k:"cmd",s:"/pr-comments"},{k:"out",s:"PR #128 · 3 comentarios sin resolver"},{k:"out",s:'  1. "faltó el caso null" <span class="dim">— src/cart.ts:44</span>'},{k:"out",s:"Resolviendo uno por uno…"}]],
+["/config","Abre la configuración de Claude Code.","Setup inicial o ajustar el comportamiento por defecto.",
+[{k:"cmd",s:"/config"},{k:"out",s:"  Tema …………… claro"},{k:"out",s:"  Notificaciones … al terminar"},{k:"out",s:"  Auto-compact …… activado"}]],
+["/doctor","Diagnostica la instalación y detecta problemas comunes.","Algo anda raro: comandos que no responden, MCP que no levanta.",
+[{k:"cmd",s:"/doctor"},{k:"out",s:'  Node v20.11  <span class="ok">✓</span>'},{k:"out",s:'  Auth <span class="ok">✓</span> · MCP <span class="ok">✓</span> · Permisos <span class="ok">✓</span>'},{k:"out",s:'  <span class="ok">Todo en orden.</span>'}]],
+["/status","Muestra el estado de la sesión: modelo, cuenta, conectores.","Verificación rápida de con qué estás trabajando.",
+[{k:"cmd",s:"/status"},{k:"out",s:"  Cuenta: equipo@empresa.com"},{k:"out",s:"  Modelo: Sonnet 4.6 · MCP: github, playwright"}]],
+["/terminal-setup","Configura Shift+Enter para salto de línea.","Una sola vez, al instalar.",
+[{k:"cmd",s:"/terminal-setup"},{k:"out",s:'<span class="ok">✓ Shift+Enter configurado para multilínea</span>'}]],
+["/help","Lista todos los comandos disponibles.","Cuando no te acordás de alguno.",
+[{k:"cmd",s:"/help"},{k:"out",s:"Comandos disponibles:"},{k:"out",s:"  /init /clear /compact /model /agents …"}]],
+["/bug","Reporta un bug de Claude Code a Anthropic.","Un comportamiento roto del producto (no de tu código).",
+[{k:"cmd",s:"/bug"},{k:"out",s:"Describí qué pasó…"},{k:"out",s:'<span class="ok">✓ Reporte enviado a Anthropic</span>'}]],
+];
+const ATAJOS=[
+["# texto","Agrega una nota a la memoria (CLAUDE.md) al instante.","Claude hizo algo mal y querés que no se repita. Ej: <code class='inline'># nunca uses any</code>"],
+["! comando","Ejecuta un comando bash directo sin que Claude lo interprete.","Correr <code class='inline'>!git status</code> o <code class='inline'>!npm run dev</code> rápido."],
+["@ archivo","Mete un archivo o carpeta en contexto.","Querés que mire ese archivo exacto: <code class='inline'>@src/app/page.tsx</code>"],
+["Esc / Esc×2","Esc interrumpe; doble Esc abre el historial para editar un mensaje anterior.","Arrancó para el lado equivocado — frenalo temprano, sale más barato."],
+];
+
+/* ===== DATA: roadmap (con extras) ===== */
+const ICONS={
+  cli:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 9 12 4 17"/><line x1="12" y1="17" x2="20" y2="17"/></svg>',
+  doc:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 3 14 8 19 8"/><line x1="9" y1="13" x2="15" y2="13"/></svg>',
+  loop:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2.1l4 4-4 4"/><path d="M3 12.2v-2a4 4 0 0 1 4-4h14"/><path d="M7 21.9l-4-4 4-4"/><path d="M21 11.8v2a4 4 0 0 1-4 4H3"/></svg>',
+  mcp:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="6" rx="1"/><rect x="2" y="13" width="20" height="6" rx="1"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="16" x2="6.01" y2="16"/></svg>',
+  agents:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+  git:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/><circle cx="18" cy="6" r="3"/></svg>',
+};
+const ROADMAP=[
+{wk:"Semana 1–2",icon:"cli",title:"Claude CLI",tasks:[
+  ["Instalar Claude Code y verificar con /doctor","Que todo dé verde antes de seguir.",{code:["npm install -g @anthropic-ai/claude-code","claude","/doctor"],links:[{label:"Guía de instalación",url:"https://docs.claude.com/en/docs/claude-code/setup"}]}],
+  ["Configurar terminal y permisos","Shift+Enter para multilínea; permisos: edición libre, bash con confirmación.",{code:["/terminal-setup","/permissions"]}],
+  ["Primer cambio real en un repo de práctica","Pedile algo chico y mirá cómo explora, planifica y edita.",{prompt:"Agregá un botón de modo oscuro a la app. Antes de tocar código, mostrame en qué archivos vas a trabajar y esperá mi OK."}],
+  ["Dominar los 4 atajos: @ ! # Esc","Archivo en contexto, bash directo, nota a memoria, interrumpir.",{code:["@src/app/page.tsx revisá esto","!git status","# siempre validá inputs con Zod"]}],
+  ["/clear vs /compact","Cuándo limpiar todo y cuándo solo comprimir el contexto.",{code:["/clear","/compact mantené las decisiones de arquitectura"]}],
+  ["Elegir modelo según la tarea","Probá lo mismo con Haiku y Sonnet; compará calidad, velocidad y costo.",{code:["/model"]}],
+]},
+{wk:"Semana 3–4",icon:"doc",title:"CLAUDE.md — memoria y reglas",tasks:[
+  ["Generar CLAUDE.md con /init y leerlo entero","Entender qué detectó y qué convenciones asumió.",{code:["/init"]}],
+  ["Pegar el CLAUDE.md base del equipo","Las reglas de seguridad y guardarraíles, como memoria permanente.",{links:[{label:"Ir a /prompts",go:"prompts"}]}],
+  ["Agregar 3 reglas con # a partir de errores reales","Cada vez que hace algo que no te gusta: # y la regla.",{code:["# nunca borres archivos sin confirmación","# usá Server Components por defecto"]}],
+  ["Reglas anti-destrucción: archivos intocables","Que nunca toque .env, migraciones ni configs sin tu OK.",{links:[{label:"Prompt de guardarraíles",go:"prompts"}]}],
+  ["CLAUDE.md por proyecto vs global","Diferencia entre el del repo y el personal.",{code:[".claude/CLAUDE.md   (proyecto, va a Git)","~/.claude/CLAUDE.md (global, solo tuyo)"]}],
+  ["Probar que respeta las reglas en una tarea","Dale una tarea que tiente a romper una regla y verificá.",{prompt:"Necesito que elimines el archivo viejo config.old.ts. (Esto es una prueba: quiero ver si pedís confirmación antes de borrar, como dice CLAUDE.md.)"}],
+]},
+{wk:"Semana 5–6",icon:"loop",title:"Plan & Loop Modes",tasks:[
+  ["Usar Plan Mode antes de tocar código","Que planifique y muestre el plan; vos aprobás antes de ejecutar.",{code:["(Shift+Tab alterna Plan Mode en la sesión)"],links:[{label:"Docs de Plan Mode",url:"https://docs.claude.com/en/docs/claude-code/common-workflows"}]}],
+  ["Iterar sobre un plan","Rechazá, pedí cambios, revisá. El plan es barato; el código no.",{prompt:"Entrá en Plan Mode y armá un plan para agregar autenticación con Supabase. No escribas código todavía: quiero revisar el plan primero."}],
+  ["Probar la skill /loop","Trabajar en ciclos: prueba, observa, corrige hasta que pase.",{code:["/loop"]}],
+  ["Ajustar esfuerzo vs costo","Cuándo conviene pensar más y cuándo no.",{code:["/model"]}],
+  ["El ciclo plan → implementar → verificar","Loops cortos con checkpoint en cada vuelta.",null],
+  ["Combinar Plan Mode con el kickoff seguro","Que el prompt madre pase por aprobación de plan.",{links:[{label:"Ver Kickoff seguro",go:"prompts"}]}],
+]},
+{wk:"Semana 7–8",icon:"mcp",title:"MCP Servers",tasks:[
+  ["Conectar tu primer MCP con /mcp","Empezá por GitHub o Playwright.",{code:["/mcp"],links:[{label:"Docs de MCP",url:"https://docs.claude.com/en/docs/claude-code/mcp"}]}],
+  ["Agregar Playwright para QA visual","Que abra tu app, navegue y reporte con screenshots.",{code:["claude mcp add playwright npx @playwright/mcp@latest"],links:[{label:"Playwright MCP",url:"https://github.com/microsoft/playwright-mcp"}]}],
+  ["Conectar Supabase en modo lectura","Consultar esquema y revisar RLS sin riesgo.",{links:[{label:"Supabase MCP",url:"https://supabase.com/docs/guides/getting-started/mcp"}]}],
+  ["Conectar Sentry: de error de prod a fix","Cerrar el ciclo con el stack trace real.",{links:[{label:"Sentry MCP",url:"https://docs.sentry.io/product/sentry-mcp/"}]}],
+  ["QA visual real con el MCP","Pedile que recorra el flujo principal y encuentre problemas.",{prompt:"Con el MCP de Playwright, abrí la app en localhost:3000, recorré el flujo de registro → login → dashboard y reportá con screenshots cualquier problema visual o de UX que encuentres."}],
+  ["Buenas prácticas al dar accesos","Mínimo acceso necesario; lectura cuando alcanza.",null],
+]},
+{wk:"Semana 9–10",icon:"agents",title:"Subagentes en paralelo",tasks:[
+  ["Crear tu primer subagente con /agents","Un agente con rol y contexto propio.",{code:["/agents"]}],
+  ["Subagente revisor de seguridad","Su único trabajo: revisar lo que implementa el principal.",{prompt:"Creá un subagente llamado 'revisor-seguridad' con permisos de solo lectura. Su rol: revisar todo cambio buscando inputs sin validar, secrets, endpoints sin auth y tablas sin RLS, y reportar hallazgos con archivo:línea."}],
+  ["Dividir una tarea grande en roles","Uno implementa, otro testea, otro documenta.",null],
+  ["Limitar permisos por subagente","Que el revisor sea solo-lectura, por ejemplo.",{code:["/permissions"]}],
+  ["Orquestar varios agentes a la vez","Trabajo en paralelo sobre partes distintas.",null],
+  ["Patrón 'Best of N'","Un agente propone N soluciones; vos elegís la mejor.",{prompt:"Generá 3 enfoques distintos para resolver [problema]. Para cada uno: idea, pros, contras y riesgo. No implementes todavía: quiero elegir uno."}],
+]},
+{wk:"Semana 11–12",icon:"git",title:"Git Integration",tasks:[
+  ["Rama por feature + commits chicos en español","Flujo de git ordenado desde el principio.",{code:["git checkout -b feat/mi-feature"]}],
+  ["PR completo desde Claude Code","Implementación + descripción del PR + checklist.",{prompt:"Implementá [feature] en una rama nueva, con commits chicos en español. Al terminar, generá la descripción del PR con: qué cambia, cómo probarlo y un checklist de seguridad."}],
+  ["/install-github-app y mencionar @claude","Dejá un comentario pidiendo un cambio y mirá cómo responde solo.",{code:["/install-github-app"],links:[{label:"Docs GitHub",url:"https://docs.claude.com/en/docs/claude-code/github-actions"}]}],
+  ["/review + resolver /pr-comments","Revisión con criterio y resolución del feedback.",{code:["/review","/pr-comments"]}],
+  ["Hooks: lint / format / test automáticos","Que los estándares se apliquen solos.",{code:["/hooks"]}],
+  ["Proyecto real 0→100","Kickoff seguro → QA → deploy. El examen final.",{links:[{label:"Kickoff seguro",go:"prompts"}]}],
+]},
+];
+
+/* ===== DATA: learn ===== */
+const PATHS={
+  cowork:{label:"/cowork",levels:[
+    {lvl:"Nivel 0 — Base",title:"Claude como compañero de trabajo",tasks:[
+      ["Subir un documento y pedir análisis accionable","No pidas 'resumen': pedí decisiones, riesgos y próximos pasos.",null],
+      ["Crear tu primer documento Word/Excel","Algo que necesites esta semana. Iterá hasta que esté listo para enviar.",null],
+      ["Aprender a dar contexto rico","Mismo pedido con y sin contexto (quién lo lee, para qué). Compará.",null]]},
+    {lvl:"Nivel 1 — Conectores",title:"Claude con acceso a tus herramientas",tasks:[
+      ["Conectar Google Drive y buscar info real","'Encontrá la última propuesta a X y resumí qué prometimos'.",{links:[{label:"Conectores en Claude",url:"https://support.claude.com/en/articles/10168395-using-the-google-drive-connector"}]}],
+      ["Análisis cruzado de varios archivos","Subí 2-3 archivos y pedí inconsistencias entre ellos.",null],
+      ["Crear un Proyecto con instrucciones","Un Project con el contexto de tu rol para no repetir lo mismo.",null]]},
+    {lvl:"Nivel 2 — Flujos",title:"Automatizar lo repetitivo",tasks:[
+      ["Plantillar tu tarea semanal más repetitiva","Armá el prompt perfecto y guardalo en /prompts.",{links:[{label:"Ir a /prompts",go:"prompts"}]}],
+      ["Preparación de reuniones en 5 minutos","Agenda + contexto + preguntas inteligentes desde los docs.",null],
+      ["Procesar una reunión transcripta","Minuta + accionables + email de follow-up.",null]]},
+    {lvl:"Nivel 3 — Maestría",title:"Multiplicador del equipo",tasks:[
+      ["Reporte mensual completo","Datos crudos → análisis → documento con gráficos.",null],
+      ["Documentar un proceso del equipo","Eso que solo está en tu cabeza, convertido en guía.",null],
+      ["Enseñarle Cowork a un compañero","Si lo podés explicar y lo adoptan, lo dominás.",null]]},
+  ]},
+  ventas:{label:"/ventas",levels:[
+    {lvl:"Nivel 0 — Base",title:"Research y primer contacto",tasks:[
+      ["Research de un prospecto en 10 minutos","Dolores, noticias recientes, ángulo de entrada. Con búsqueda web.",null],
+      ["Cold email que no parezca cold email","Corto, específico, una sola CTA. Iterá 3 versiones.",null],
+      ["Crear tu prompt de voz de marca","Cómo escribimos: tono, qué sí, qué jamás.",{links:[{label:"Crear la skill voz-de-marca",go:"skills"}]}]]},
+    {lvl:"Nivel 1 — Conversaciones",title:"Manejo de la conversación",tasks:[
+      ["Roleplay de objeciones","Que Claude sea tu prospecto más difícil. Las 5 que más te cuestan.",{prompt:"Actuá como un prospecto escéptico que ya usa un competidor más barato. Voy a intentar venderte; respondé con objeciones realistas y al final decime qué hice bien y qué mejorar."}],
+      ["Preparar una demo importante","Brief + preguntas de descubrimiento + respuestas a objeciones.",null],
+      ["Post-llamada: de notas a seguimiento","Minuta + email de follow-up + próxima acción.",null]]},
+    {lvl:"Nivel 2 — Propuestas",title:"Cerrar con documentos que venden",tasks:[
+      ["Propuesta comercial completa","Problema → solución → plan → inversión. Con tu voz de marca.",null],
+      ["Secuencia de seguimiento (5 toques)","5 mensajes con ángulos distintos para quien no responde.",null],
+      ["Análisis de una venta perdida","El post-mortem honesto: dónde se cayó.",null]]},
+    {lvl:"Nivel 3 — Maestría",title:"Máquina de ventas",tasks:[
+      ["Pipeline review semanal","Deals en riesgo, próximas acciones, dónde enfocar.",null],
+      ["Playbook de ventas del equipo","ICP, mensajes, objeciones, casos de éxito.",null],
+      ["Medí: una semana con Claude vs sin","Los números convencen al resto del equipo.",null]]},
+  ]},
+  design:{label:"/design",levels:[
+    {lvl:"Nivel 0 — Base",title:"De idea a prototipo",tasks:[
+      ["Tu primer prototipo en un artifact","Usá el 'Brief para Claude Design'. Mirá cómo propone dirección.",{links:[{label:"Ver el brief",go:"prompts"}]}],
+      ["Aprender a criticar diseño","Pedile que critique su propio diseño. Iterá 2 rondas.",null],
+      ["Vocabulario de diseño mínimo","Jerarquía, espaciado, contraste, display vs cuerpo.",null]]},
+    {lvl:"Nivel 1 — Sistema",title:"Design tokens y consistencia",tasks:[
+      ["Definir el sistema de diseño","Paleta con usos, escala tipográfica, espaciados. DESIGN_SPEC.md.",null],
+      ["Rediseñar una pantalla fea","Con 'Mejorar diseño sin romper nada'. Antes/después.",{links:[{label:"Ver el prompt",go:"prompts"}]}],
+      ["Crear la skill design-system","Que todo proyecto nazca con la identidad de la casa.",{links:[{label:"Crear la skill",go:"skills"}]}]]},
+    {lvl:"Nivel 2 — Flujo completo",title:"Design → Code",tasks:[
+      ["Prototipo en claude.ai → Claude Code","Diseñá, exportá DESIGN_SPEC.md, que lo implemente fiel.",null],
+      ["QA visual del resultado","Playwright: screenshots vs el prototipo. Corregí diferencias.",null],
+      ["Accesibilidad real","Contraste, focus, teclado y reduced-motion.",null]]},
+    {lvl:"Nivel 3 — Maestría",title:"Criterio propio",tasks:[
+      ["Tres direcciones para el mismo producto","3 propuestas distintas. Elegí una y justificá.",null],
+      ["Microinteracciones con propósito","3 microinteracciones, cada una con razón funcional.",null],
+      ["Rediseño completo end-to-end","De 'funciona' a 'da orgullo mostrarlo'.",null]]},
+  ]},
+};
+
+/* ===== DATA: retos ===== */
+const RETOS=[
+["Domá el contexto","Tomá una conversación larga y usá /compact con instrucciones de qué conservar. Verificá que siga recordando lo importante."],
+["Una regla nueva en memoria","Identificá algo que Claude hizo y no te gustó; agregalo a CLAUDE.md con #. Probá que lo respete."],
+["Cold email en 3 versiones","Research de un prospecto real y 3 versiones del email con ángulos distintos. Elegí la mejor y mandala."],
+["Auditoría express","Corré la auditoría de seguridad solo fase 1 y 2 sobre un proyecto tuyo. Diagnóstico, 15 min."],
+["RLS de memoria","Sin docs: escribí qué policies de RLS necesita una tabla 'posts' donde cada usuario ve solo lo suyo. Verificá con Claude."],
+["El prompt perfecto","La tarea que más repetís: 15 minutos a escribir su prompt perfecto. Guardalo."],
+["Roleplay de objeción","Que Claude diga 'está caro'. Practicá 3 respuestas. Pedile feedback brutal."],
+["Un comando nuevo","Usá hoy un comando de /comandos que nunca usaste en una tarea real."],
+["Crítica de diseño","Una app que uses a diario: ¿por qué funciona su diseño? ¿qué copiarías?"],
+["Test del usuario malicioso","Pedile que intente romper tu app: rutas sin auth, inputs raros, payloads inválidos. Arreglá lo que aparezca."],
+["De notas a minuta","Notas de tu última reunión → minuta + accionables + email en menos de 10 minutos."],
+["Subagente especialista","Creá con /agents un agente con un rol y usalo en una tarea real."],
+["Lee un CLAUDE.md ajeno","Buscá en GitHub un repo con CLAUDE.md. ¿Qué reglas te robarías?"],
+["El hook que te ahorra trabajo","Configurá un hook nuevo. Verificá que dispare solo."],
+["Propuesta en 30 minutos","Propuesta comercial completa en Word. Cronometralo."],
+["Refactor con red","El archivo más feo: tests de caracterización primero, refactor después."],
+["Tres paletas","3 paletas distintas para tu proyecto, con justificación. ¿Cuál y por qué?"],
+["Pregunta antes de asumir","Hoy, antes de cada tarea: 'preguntame lo que necesites'. Notá la diferencia."],
+["Playwright detective","Que navegue tu app y encuentre 3 problemas de UX que no viste."],
+["El post-mortem","Algo que salió mal este mes: post-mortem con Claude. Causas, no culpas."],
+["Documentá lo indocumentado","Ese proceso en tu cabeza: 20 minutos y convertilo en guía."],
+["Modelo correcto","Misma tarea con Haiku y Sonnet. Compará calidad, velocidad, costo."],
+["Headers a prueba","curl -I contra tu app en prod. ¿Están los headers de seguridad?"],
+["Secuencia de 5 toques","Secuencia de seguimiento de 5 mensajes para prospectos fríos."],
+["El elemento firma","¿Por qué elemento recordarían tu proyecto? Si no hay, creálo."],
+["Dependencias al día","npm audit + npm outdated. Actualizá lo crítico sin romper nada."],
+["Enseñá algo","Explicale a alguien algo que aprendiste este mes. Si no lo explicás simple, no lo sabés."],
+["PR ajeno, ojos nuevos","Revisá un PR de otro con el prompt de code review. Un bloqueante y un elogio."],
+["Demo de 2 minutos","Guión de demo de 2 minutos: gancho, problema, solución, cierre."],
+["Backup verificado","¿Tu backup de DB se puede restaurar? Verificalo hoy con Claude."],
+];
+
+/* ===== NAV ===== */
+const TABS=["inicio","roadmap","prompts","skills","stack","comandos","agentes","learn","reto","lab"];
+function buildNav(){
+  const mk=id=>{const b=document.createElement('button');b.className='navbtn';b.dataset.target=id;b.innerHTML=`<span class="slash">/</span>${id}`;b.onclick=()=>go(id);return b;};
+  const rail=document.getElementById('railnav'),top=document.getElementById('topbar');
+  TABS.forEach(id=>{rail.appendChild(mk(id));top.appendChild(mk(id));});
+}
+function go(id){document.querySelectorAll('section').forEach(s=>s.classList.toggle('visible',s.id===id));document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.target===id));window.scrollTo({top:0});}
+
+/* ===== STORAGE ===== */
+let progress={};
+async function loadProgress(){try{const r=await window.storage.get('claudehq3-progress');progress=r?JSON.parse(r.value):{};}catch(e){progress={};}}
+async function saveProgress(){try{await window.storage.set('claudehq3-progress',JSON.stringify(progress));}catch(e){}}
+let retosDone=[];
+async function loadRetos(){try{const r=await window.storage.get('claudehq3-retos');retosDone=r?JSON.parse(r.value):[];}catch(e){retosDone=[];}}
+async function saveRetos(){try{await window.storage.set('claudehq3-retos',JSON.stringify(retosDone));}catch(e){}}
+function toggleTask(k,rer){progress[k]=!progress[k];if(!progress[k])delete progress[k];saveProgress();rer();}
+
+/* ===== PROMPTS ===== */
+let activeCat="Todos";
+function renderPrompts(){
+  const cats=["Todos",...new Set(PROMPTS.map(p=>p.cat))];
+  document.getElementById('pfilters').innerHTML=cats.map(c=>`<button class="fbtn ${c===activeCat?'active':''}" onclick="activeCat='${c}';renderPrompts()">${c}</button>`).join('');
+  const list=PROMPTS.filter(p=>activeCat==="Todos"||p.cat===activeCat);
+  document.getElementById('plist').innerHTML=list.map(p=>{const i=PROMPTS.indexOf(p);
+    return `<div class="pcard" id="pc${i}"><div class="pcard-head"><div><span class="tag ${p.tag}">${p.cat}</span><h3>${p.title}</h3><div class="desc">${p.desc}</div></div><div class="pcard-actions"><button class="btn ghost small" onclick="document.getElementById('pc${i}').classList.toggle('open')">Ver</button><button class="btn small" onclick="copyText(PROMPTS[${i}].text)">Copiar</button></div></div><pre>${escapeHtml(p.text)}</pre></div>`;}).join('');
+}
+
+/* ===== SKILLS ===== */
+function renderSkills(){
+  document.getElementById('skill-m1').innerHTML=SKILL_M1.map(codeLine).join('');
+  document.getElementById('skill-m3').innerHTML=SKILL_M3.map(codeLine).join('');
+  document.getElementById('skill-m2').innerHTML=promptChip(SKILL_M2_PROMPT,'Prompt — crear una skill');
+  document.getElementById('bundled').innerHTML=BUNDLED.map(b=>`<div class="card"><span class="tag pine mono">${b.t}</span><p style="font-size:.85rem;color:var(--ink2);margin-top:10px">${b.d}</p></div>`).join('');
+  document.getElementById('skill-recs').innerHTML=SKILL_RECS.map(s=>`<div class="card"><span class="tag ${s.tag} mono">${s.t}</span><p style="font-size:.87rem;color:var(--ink2);margin:10px 0 12px">${s.d}</p>${promptChip(s.prompt,'Prompt — crear esta skill')}</div>`).join('');
+  document.getElementById('skill-mega').innerHTML=promptChip(SKILL_MEGA,'Prompt maestro — las 6');
+  document.getElementById('skill-official').innerHTML=SKILL_OFFICIAL.map(codeLine).join('');
+  document.getElementById('skill-official-links').innerHTML=SKILL_OFFICIAL_LINKS.map(linkBtn).join('');
+}
+
+/* ===== STACK ===== */
+function renderStack(){
+  document.getElementById('stack-tools').innerHTML=STACK_TOOLS.map(t=>`<div class="card"><span class="tag ${t.tag}">${t.lbl}</span><h3 style="margin:11px 0 6px;font-weight:600">${t.name}</h3><p style="font-size:.85rem;color:var(--ink2);margin-bottom:12px">${t.d}</p>${linkRow(t.links)}</div>`).join('');
+  document.getElementById('stack-cmds').innerHTML=STACK_CMDS.map(codeLine).join('');
+  document.getElementById('stack-links').innerHTML=STACK_LINKS.map(linkBtn).join('');
+  document.getElementById('stack-mega').innerHTML=promptChip(STACK_MEGA,'Prompt — bootstrap seguro');
+  document.getElementById('mcp-list').innerHTML=MCPS.map(m=>`<div class="card"><span class="tag ${m.tag}">${m.t}</span><p style="font-size:.87rem;color:var(--ink2);margin:10px 0 12px">${m.d}</p>${linkRow([{label:'Cómo conectarlo',url:m.url}])}</div>`).join('');
+}
+
+/* ===== COMANDOS ===== */
+function renderComandos(){
+  document.getElementById('atajos').innerHTML=ATAJOS.map(([n,w,c])=>`<div class="cmd"><div class="name">${n}</div><div><div class="what">${w}</div><div class="when"><b>Cuándo:</b> ${c}</div></div></div>`).join('');
+  document.getElementById('cmdlist').innerHTML=COMANDOS.map((c,i)=>{const[n,w,wh]=c;
+    return `<div class="cmd2" id="cmd${i}"><div class="cmd2-head"><span class="cmd2-name">${n}</span><button class="copybtn light" title="Copiar comando" onclick="copyText('${n}')">${ICO_COPY}</button><button class="linkbtn demobtn" id="db${i}" onclick="runDemo(${i})">▶ Ver en acción</button></div><div class="what">${w}</div><div class="when"><b>Cuándo:</b> ${wh}</div><div class="demo"></div></div>`;}).join('');
+}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+async function playDemo(el,lines,btn){
+  el.dataset.playing='1';el.innerHTML='';if(btn)btn.classList.add('playing');
+  for(const ln of lines){
+    if(ln.k==='cmd'){
+      const d=document.createElement('div');
+      d.innerHTML='<span class="u">› </span><span class="typed"></span><span class="cur">▋</span>';
+      el.appendChild(d);
+      const tp=d.querySelector('.typed'),cu=d.querySelector('.cur');
+      for(const ch of ln.s){tp.textContent+=ch;el.scrollTop=el.scrollHeight;await sleep(42);}
+      await sleep(440);cu.remove();
+    }else{
+      const d=document.createElement('div');d.className='ln-out';d.innerHTML=ln.s;el.appendChild(d);
+      el.scrollTop=el.scrollHeight;await sleep(ln.d||320);
+    }
+  }
+  el.dataset.playing='';if(btn){btn.classList.remove('playing');btn.textContent='↻ Repetir';}
+}
+function runDemo(i){
+  const card=document.getElementById('cmd'+i),el=card.querySelector('.demo'),btn=document.getElementById('db'+i);
+  card.classList.add('open');
+  if(el.dataset.playing==='1')return;
+  playDemo(el,COMANDOS[i][3],btn);
+}
+
+/* ===== ROADMAP ===== */
+function ring(pct,size=84){const r=(size-10)/2,c=2*Math.PI*r,off=c*(1-pct/100);
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--line)" stroke-width="8"/><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--clay)" stroke-width="8" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${off}" transform="rotate(-90 ${size/2} ${size/2})" style="transition:stroke-dashoffset .4s"/><text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-family="Bricolage Grotesque" font-weight="700" font-size="${size*0.26}" fill="var(--ink)">${Math.round(pct)}%</text></svg>`;}
+function renderRoadmap(){
+  let total=0,done=0,pdone=0;
+  const html=ROADMAP.map((ph,pi)=>{let pt=ph.tasks.length,pd=0;
+    ph.tasks.forEach((t,ti)=>{total++;if(progress['rm-'+pi+'-'+ti]){done++;pd++;}});
+    const pct=Math.round(pd/pt*100);if(pct===100)pdone++;
+    return `<div class="phase" id="ph${pi}"><div class="phase-head" onclick="document.getElementById('ph${pi}').classList.toggle('open')"><div class="phase-icon">${ICONS[ph.icon]}</div><div class="phase-titles"><div class="wk">${ph.wk}</div><h3>${ph.title}</h3><div class="ct">${pd}/${pt} tareas completas</div></div><div class="phase-right"><div class="mini-prog"><div class="bar"><div style="width:${pct}%"></div></div><div class="pct">${pct}%</div></div><svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></div></div><div class="phase-body">${ph.tasks.map((t,ti)=>taskHTML('rm-'+pi+'-'+ti,t,'renderRoadmap')).join('')}</div></div>`;}).join('');
+  const open=[...document.querySelectorAll('.phase.open')].map(e=>e.id);
+  document.getElementById('rm-phases').innerHTML=html;
+  open.forEach(id=>{const el=document.getElementById(id);if(el)el.classList.add('open');});
+  document.getElementById('rm-ring').innerHTML=ring(total?done/total*100:0);
+  document.getElementById('rm-done').textContent=done;document.getElementById('rm-total').textContent=total;document.getElementById('rm-phase').textContent=pdone+'/6';
+}
+
+/* ===== LEARN ===== */
+let activePath="cowork";
+function renderLearn(){
+  document.getElementById('pathtabs').innerHTML=Object.entries(PATHS).map(([k,p])=>`<button class="fbtn ${k===activePath?'active':''}" onclick="activePath='${k}';renderLearn()">${p.label}</button>`).join('');
+  const path=PATHS[activePath];let total=0,done=0;
+  document.getElementById('pathbody').innerHTML=path.levels.map((lv,li)=>`<div class="level"><div class="level-head"><span class="lvl">${lv.lvl}</span><h3>${lv.title}</h3></div>${lv.tasks.map((t,ti)=>{const k=`ln-${activePath}-${li}-${ti}`;total++;if(progress[k])done++;return taskHTML(k,t,'renderLearn');}).join('')}</div>`).join('');
+  document.getElementById('pathprogress').style.width=(total?Math.round(done/total*100):0)+'%';
+}
+
+/* ===== RETO ===== */
+function dayIndex(d){return Math.floor(d.getTime()/86400000)}
+function todayKey(){return new Date().toISOString().slice(0,10)}
+function renderReto(){
+  const today=new Date(),idx=dayIndex(today)%RETOS.length,[t,d]=RETOS[idx];
+  document.getElementById('reto-fecha').textContent=today.toLocaleDateString('es-UY',{weekday:'long',day:'numeric',month:'long'});
+  document.getElementById('reto-titulo').textContent=t;document.getElementById('reto-desc').textContent=d;
+  document.getElementById('home-reto').textContent='«'+t+'» — '+d;
+  const doneToday=retosDone.includes(todayKey()),btn=document.getElementById('reto-done-btn');
+  btn.textContent=doneToday?'✓ Completado hoy':'Marcar como completado';btn.disabled=doneToday;btn.style.opacity=doneToday?.6:1;
+  let streak=0;const ti=dayIndex(today),set=new Set(retosDone.map(k=>dayIndex(new Date(k+'T12:00:00'))));
+  let cur=set.has(ti)?ti:ti-1;while(set.has(cur)){streak++;cur--;}
+  document.getElementById('streak-n').textContent=streak;document.getElementById('total-n').textContent=retosDone.length;
+  document.getElementById('reto-proximos').innerHTML=[1,2,3,4].map(o=>{const[tt,dd]=RETOS[(idx+o)%RETOS.length];const f=new Date(today.getTime()+o*86400000).toLocaleDateString('es-UY',{weekday:'short',day:'numeric'});return `<div class="card"><span class="tag">${f}</span><h4 style="margin:9px 0 5px;font-size:.98rem;font-weight:600">${tt}</h4><p style="font-size:.82rem;color:var(--ink3)">${dd}</p></div>`;}).join('');
+}
+async function completarReto(){const k=todayKey();if(!retosDone.includes(k)){retosDone.push(k);await saveRetos();renderReto();toast('Reto completado 🔥');}}
+
+/* ===== LAB ===== */
+const SYSTEM_PROMPT=`Sos un ingeniero de prompts senior del equipo. Tu único trabajo: generar y mejorar prompts robustos para Claude Code y Claude.ai, en español rioplatense.
+Reglas:
+1. Si falta info clave (tipo de producto, stack, contexto), hacé máximo 2-3 preguntas cortas ANTES de generar.
+2. Los prompts incluyen: objetivo claro, restricciones explícitas, estándares de seguridad cuando aplica (validación de inputs, RLS si hay Supabase, no commitear secrets, no comandos destructivos sin confirmación), y formato de salida esperado.
+3. Entregá el prompt final entre ### PROMPT ### y ### FIN ###.
+4. Después, máximo 3 líneas de "cómo usarlo".
+5. Si piden mejorar un prompt, primero 2-4 bullets de qué le falta, después la versión mejorada.
+6. Directo y concreto.`;
+let chatHistory=[];
+function quick(t){document.getElementById('chatinput').value=t;sendChat();}
+function addMsg(role,text){const log=document.getElementById('chatlog'),div=document.createElement('div');div.className='msg '+role;
+  if(role==='assistant'&&text.includes('### PROMPT ###')){const p=text.split(/### PROMPT ###|### FIN ###/);div.innerHTML=escapeHtml(p[0]||'')+`<span class="mono-block">${escapeHtml((p[1]||'').trim())}</span><div style="margin-top:9px"><button class="btn small" onclick="copyText(this.dataset.p)">Copiar prompt</button></div>`+escapeHtml(p[2]||'');div.querySelector('button').dataset.p=(p[1]||'').trim();}
+  else div.textContent=text;
+  log.appendChild(div);log.scrollTop=log.scrollHeight;}
+async function sendChat(){
+  const inp=document.getElementById('chatinput'),text=inp.value.trim();if(!text)return;
+  inp.value='';addMsg('user',text);chatHistory.push({role:'user',content:text});
+  document.getElementById('typing').style.display='block';
+  try{const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:1000,system:SYSTEM_PROMPT,messages:chatHistory})});
+    const data=await res.json();const reply=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n')||'(sin respuesta)';
+    chatHistory.push({role:'assistant',content:reply});addMsg('assistant',reply);
+  }catch(e){addMsg('assistant','⚠️ No pude conectar con Claude. Probá de nuevo en unos segundos.');}
+  finally{document.getElementById('typing').style.display='none';}
+}
+
+
+/* ===== DATA: agentes ===== */
+const AG_ASKS=[
+{tag:"clay",t:"Convertir chats en ventas",d:"No solo responder: calificar al interesado y empujarlo al cierre o la reserva."},
+{tag:"pine",t:"Responder 24/7 sin vos",d:"Atención inmediata a cualquier hora, aunque el negocio esté cerrado."},
+{tag:"slate",t:"Implementarlo en su negocio",d:"Conectado a SU WhatsApp o Instagram, su catálogo y su agenda."},
+];
+const AG_PATHS=[
+{tag:"slate",lbl:"rápido de entregar",name:"Camino no-code (ManyChat)",
+pros:["Lo tenés andando en horas, sin servidores.","Ideal para Instagram: comentario → DM automático, y DMs.","Multicanal: IG, Messenger y WhatsApp en un solo lugar."],
+cons:["La IA es más limitada (flujos guiados).","El precio sube con la cantidad de contactos.","WhatsApp suma fees de Meta por conversación, aparte del plan."],
+links:[{label:"ManyChat",url:"https://manychat.com"}]},
+{tag:"clay",lbl:"el que te diferencia",name:"Camino código (Cloud API + Claude)",
+pros:["Control total y conversaciones reales multi-turno.","Barato: infra mínima + tokens de Claude.","Se integra con la agenda, el catálogo y los cobros del cliente.","Encaja con tu stack: Next.js + Vercel + Supabase + Claude."],
+cons:["Hay que montar el webhook y un token permanente.","Un poco más de setup inicial."],
+links:[{label:"WhatsApp Cloud API",url:"https://developers.facebook.com/docs/whatsapp/cloud-api/get-started"},{label:"n8n",url:"https://n8n.io"}]},
+];
+const AG_ARCH=[
+["El cliente escribe","Manda un mensaje por WhatsApp o Instagram."],
+["Meta lo reenvía a tu webhook","Una API route en Vercel, o un flujo en n8n, que escucha los mensajes entrantes."],
+["Buscás su historial","En Supabase: los últimos mensajes de ese número. Es la memoria de la charla."],
+["Claude piensa la respuesta","System prompt del negocio + historial → la API de Claude genera la respuesta."],
+["Si hace falta, actúa","Reserva un turno, genera un link de pago o escala a un humano (tool use)."],
+["Responde al instante","La respuesta vuelve por la API de WhatsApp y el cliente la recibe en el chat."],
+];
+const AG_TOOLS=[
+{tag:"pine",t:"WhatsApp Cloud API (Meta)",d:"El canal oficial. Te dan un número de prueba gratis para empezar sin riesgo.",links:[{label:"Empezar",url:"https://developers.facebook.com/docs/whatsapp/cloud-api/get-started"}]},
+{tag:"clay",t:"Anthropic API (Claude)",d:"El cerebro del agente. Sacá tu API key y conectala como el modelo que responde.",links:[{label:"Console",url:"https://console.anthropic.com"},{label:"Tool use",url:"https://docs.claude.com/en/docs/build-with-claude/tool-use"}]},
+{tag:"slate",t:"ManyChat",d:"No-code para Instagram, WhatsApp y Messenger. El más rápido para flujos de IG.",links:[{label:"Ir",url:"https://manychat.com"}]},
+{tag:"gold",t:"n8n",d:"Orquestador low-code y self-host. El favorito para el flujo 'WhatsApp → IA → CRM → respuesta'.",links:[{label:"n8n",url:"https://n8n.io"},{label:"Docs WhatsApp",url:"https://docs.n8n.io/integrations/builtin/app-nodes/n8n-nodes-base.whatsapp/"}]},
+{tag:"slate",t:"BSP: Twilio / 360dialog",d:"Si no querés lidiar con Meta directo, te dan acceso a WhatsApp más fácil (con costo).",links:[{label:"Twilio",url:"https://www.twilio.com/whatsapp"},{label:"360dialog",url:"https://www.360dialog.com"}]},
+{tag:"pine",t:"Supabase (memoria)",d:"Guardá el historial por número de teléfono; limpialo tras 24h de inactividad.",links:[{label:"Ir a /stack",go:"stack"}]},
+];
+const AG_PATH_LEVELS=[
+{lvl:"Nivel 0 — Definí el agente",title:"Antes de tocar nada",tasks:[
+ ["Elegí UN caso de uso","Soporte/FAQ, calificador de leads, reservas o ventas. Uno solo para arrancar.",{prompt:"Ayudame a definir un agente de WhatsApp para [tipo de negocio]. Haceme preguntas para clarificar: objetivo principal (vender / agendar / responder dudas), qué información necesita saber, qué NO puede hacer, y cuándo tiene que pasar la conversación a un humano. Devolveme un brief de una página."}],
+ ["Escribí el 'cerebro' (system prompt)","El tono, qué puede prometer, qué nunca, y cuándo escala. La plantilla está abajo en el proyecto.",null],
+ ["Definí el handoff a humano","La regla de oro: si no está seguro, no inventa — escala a una persona.",null]]},
+{lvl:"Nivel 1 — Las cuentas",title:"Lo que necesitás abrir",tasks:[
+ ["Sacá tu API key de Claude","Console de Anthropic → API Keys. Es el cerebro del agente.",{links:[{label:"Anthropic Console",url:"https://console.anthropic.com"}]}],
+ ["Activá WhatsApp Cloud API en Meta","Meta for Developers → WhatsApp. Te dan un número de prueba gratis.",{links:[{label:"Empezar con Cloud API",url:"https://developers.facebook.com/docs/whatsapp/cloud-api/get-started"}]}],
+ ["Generá un token PERMANENTE","El token temporal vence a las 24h. Para producción, usá un System User token.",null]]},
+{lvl:"Nivel 2 — Camino rápido (Instagram)",title:"No-code con ManyChat",tasks:[
+ ["Creá ManyChat y conectá Instagram","El más directo para IG. Empezá por el flujo comentario → DM.",{links:[{label:"ManyChat",url:"https://manychat.com"}]}],
+ ["Flujo comentario → DM con paso de IA","El clásico de los ads de IG, ahora con respuesta inteligente.",null],
+ ["Conectá WhatsApp (ojo con los fees)","WhatsApp suma costo por conversación de Meta, aparte del plan de ManyChat.",null]]},
+{lvl:"Nivel 3 — Camino código (el diferencial)",title:"Cloud API + Claude sobre tu stack",tasks:[
+ ["Webhook que recibe mensajes","Una API route en Vercel (o un flujo en n8n) que escucha a Meta.",{links:[{label:"n8n + WhatsApp (docs)",url:"https://docs.n8n.io/integrations/builtin/app-nodes/n8n-nodes-base.whatsapp/"}]}],
+ ["Memoria en Supabase","Historial por número, con RLS. Se limpia tras 24h de inactividad.",{links:[{label:"Ir a /stack",go:"stack"}]}],
+ ["Conectá Claude como cerebro","System prompt del negocio + historial → respuesta.",{links:[{label:"Docs de la API",url:"https://docs.claude.com/en/docs/build-with-claude/overview"}]}],
+ ["Respondé por la API de WhatsApp","Cerrá el loop: la respuesta vuelve al cliente al instante.",null],
+ ["Sumá acciones con tool use","Reservar turno, generar link de pago, escalar. Que no solo charle.",{links:[{label:"Tool use",url:"https://docs.claude.com/en/docs/build-with-claude/tool-use"}]}]]},
+{lvl:"Nivel 4 — Servicio vendible",title:"De demo a producto",tasks:[
+ ["Panel para el cliente","Que vea las conversaciones y pueda tomar el control cuando quiera.",null],
+ ["Métricas que muestran ROI","Conversaciones, respuestas y reservas/ventas generadas.",null],
+ ["Empaquetá precio y onboarding","Setup inicial + mensual. Definí qué entregás y en cuánto.",null]]},
+];
+const AG_PROJECT=[
+{label:"Prompt 1 — agente de WhatsApp end-to-end (tu stack)",p:`Vamos a construir un agente de WhatsApp para [NEGOCIO] sobre nuestro stack (Next.js en Vercel + Supabase + API de Claude). Antes de codear, mostrame el plan en PLAN.md y esperá mi OK.
+
+ARQUITECTURA
+1. Webhook en app/api/whatsapp/route.ts:
+   - GET: verificación del webhook de Meta (responde hub.challenge si el verify token coincide).
+   - POST: recibe el mensaje entrante, responde 200 enseguida y procesa el resto async.
+2. Memoria en Supabase: tabla "conversaciones" (telefono, rol, mensaje, created_at) con RLS. Cargá los últimos 15 mensajes de ese número.
+3. Cerebro: llamá a la API de Claude (claude-sonnet-4-6) con el system prompt del negocio + el historial. Si Claude falla, respondé "dame un segundo" y reintentá.
+4. Respuesta: enviá el texto por la WhatsApp Cloud API (POST a /messages).
+5. Guardá en Supabase tanto el mensaje del cliente como la respuesta.
+
+SEGURIDAD (no negociable)
+- Tokens y phone_number_id SOLO en variables de entorno de Vercel, nunca en el repo.
+- Validá la firma del webhook de Meta (X-Hub-Signature-256).
+- Validá todo input con Zod. RLS en la tabla. Service role key solo server-side.
+- Rate limiting básico por número de teléfono.
+
+ENTREGABLES
+- El código, la migración de la tabla con su policy de RLS, un .env.example documentado y un README con cómo configurar el webhook en Meta. Commits chicos en español.`},
+{label:"Prompt 2 — el cerebro (system prompt del negocio)",p:`Sos el asistente de [NEGOCIO] en WhatsApp. Tu objetivo: [agendar turnos / calificar y cerrar ventas / responder dudas] de forma cálida y breve, como un buen vendedor humano.
+
+QUÉ SÍ HACÉS
+- Respondés corto y claro (es WhatsApp, no un email).
+- Preguntás solo lo necesario para avanzar hacia [la reserva / la venta].
+- Usás ÚNICAMENTE la info real del negocio que está más abajo.
+
+QUÉ NUNCA HACÉS
+- Inventar precios, horarios o promesas que no estén en la info.
+- Dar información médica, legal o financiera sensible.
+
+ESCALÁ A UN HUMANO (y avisá que ya viene alguien) cuando: piden hablar con una persona, hay un reclamo, o algo se sale de lo que sabés.
+
+INFO DEL NEGOCIO
+[pegá acá horarios, servicios, precios, dirección y formas de pago]
+
+TONO: rioplatense, cercano, sin vueltas.`},
+{label:"Prompt 3 — sumar acciones (tool use)",p:`Sumale acciones al agente usando tool use de Claude. Definí estas herramientas y manejá las tool calls dentro del webhook:
+
+1. reservar_turno(servicio, fecha, hora, nombre) → escribe en Supabase y confirma.
+2. generar_link_pago(monto, concepto) → devuelve un link de Mercado Pago o Stripe.
+3. escalar_a_humano(motivo) → marca la conversación y notifica al dueño.
+
+Después de cada tool call, devolvé el resultado a Claude para que redacte la respuesta final al cliente. Mostrame primero el esquema de las tools (nombre, descripción y parámetros) y esperá mi OK antes de implementar.`},
+];
+function renderAgentes(){
+  document.getElementById('ag-asks').innerHTML=AG_ASKS.map(a=>`<div class="card"><span class="tag ${a.tag}">\u2605</span><h3 style="margin:11px 0 6px;font-weight:600;font-size:1.02rem">${a.t}</h3><p style="font-size:.86rem;color:var(--ink2)">${a.d}</p></div>`).join('');
+  document.getElementById('ag-paths').innerHTML=AG_PATHS.map(p=>`<div class="card"><span class="tag ${p.tag}">${p.lbl}</span><h3 style="margin:12px 0 13px;font-weight:600">${p.name}</h3><div style="font-size:.74rem;font-weight:600;color:var(--pine);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px">A favor</div><ul class="checklist" style="margin-bottom:15px">${p.pros.map(x=>`<li>${x}</li>`).join('')}</ul><div style="font-size:.74rem;font-weight:600;color:var(--rust);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px">A tener en cuenta</div><ul class="checklist" style="margin-bottom:15px">${p.cons.map(x=>`<li>${x}</li>`).join('')}</ul>${linkRow(p.links)}</div>`).join('');
+  document.getElementById('ag-arch').innerHTML=`<div class="steps">${AG_ARCH.map(([t,d])=>`<div class="step"><div class="num"></div><div><h4>${t}</h4><p style="margin:0">${d}</p></div></div>`).join('')}</div>`;
+  document.getElementById('ag-tools').innerHTML=AG_TOOLS.map(t=>`<div class="card"><span class="tag ${t.tag}">${t.t}</span><p style="font-size:.87rem;color:var(--ink2);margin:10px 0 12px">${t.d}</p>${linkRow(t.links)}</div>`).join('');
+  let total=0,done=0;
+  document.getElementById('ag-levels').innerHTML=AG_PATH_LEVELS.map((lv,li)=>`<div class="level"><div class="level-head"><span class="lvl">${lv.lvl}</span><h3>${lv.title}</h3></div>${lv.tasks.map((t,ti)=>{const k=`ag-${li}-${ti}`;total++;if(progress[k])done++;return taskHTML(k,t,'renderAgentes');}).join('')}</div>`).join('');
+  document.getElementById('ag-progress').style.width=(total?Math.round(done/total*100):0)+'%';
+  document.getElementById('ag-project').innerHTML=AG_PROJECT.map(pr=>promptChip(pr.p,pr.label)).join('');
+}
+
+/* ===== INIT ===== */
+(async function(){
+  buildNav();renderPrompts();renderSkills();renderStack();renderComandos();
+  await loadProgress();renderRoadmap();renderLearn();renderAgentes();
+  await loadRetos();renderReto();
+  go('inicio');
+})();
+</script>
+</body>
+</html>

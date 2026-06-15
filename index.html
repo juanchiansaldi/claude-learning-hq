@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Learning HQ — La escuela de Claude</title>
+<meta name="description" content="La academia central de Claude: prompts, skills, comandos, agentes de WhatsApp e Instagram, rutas de aprendizaje y novedades que se actualizan solas.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><rect width='48' height='48' rx='12' fill='%23C15F3C'/><g stroke='%23FBF3EA' stroke-width='3.4' stroke-linecap='round'><line x1='24' y1='12' x2='24' y2='36'/><line x1='12' y1='24' x2='36' y2='24'/><line x1='15.5' y1='15.5' x2='32.5' y2='32.5'/><line x1='32.5' y1='15.5' x2='15.5' y2='32.5'/></g></svg>">
+<style>
+:root{
+  --paper:#F6F2EB; --paper2:#EFE8DC; --card:#FFFFFF; --card2:#FBF7F0;
+  --ink:#1E1A15; --ink2:#5B5246; --ink3:#90856F;
+  --line:#E8DFCF; --line2:#F1EADD;
+  --clay:#C15F3C; --clay2:#A8492A; --clay-t:rgba(193,95,60,.10);
+  --pine:#1F6F6B; --pine-t:rgba(31,111,107,.10);
+  --gold:#B07A12; --gold-t:rgba(176,122,18,.13);
+  --berry:#9A3F63; --berry-t:rgba(154,63,99,.10);
+  --slate:#4E6285; --slate-t:rgba(78,98,133,.12);
+  --code:#221D17; --code-tx:#ECE2D2; --code-dim:#9C8F7C;
+  --ok:#2C7A52; --warn:#B26B12;
+  --shadow:0 1px 2px rgba(40,30,18,.05),0 14px 40px -22px rgba(40,30,18,.30);
+  --shadow-sm:0 1px 2px rgba(40,30,18,.05),0 6px 18px -12px rgba(40,30,18,.20);
+  --r:18px; --r2:13px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,sans-serif;line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.serif{font-family:'Fraunces',Georgia,serif}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+h1,h2,h3,h4,.display{font-family:'Fraunces',Georgia,serif;letter-spacing:-.01em;line-height:1.07;font-weight:600}
+a{color:var(--clay2);text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+:focus-visible{outline:2.5px solid var(--clay);outline-offset:2px;border-radius:6px}
+::selection{background:var(--clay);color:#fff}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+
+/* ===== layout ===== */
+.app{display:grid;grid-template-columns:264px 1fr;min-height:100vh}
+.rail{background:linear-gradient(180deg,#FFFDFA,#FBF6EE);border-right:1px solid var(--line);padding:24px 16px;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;gap:2px}
+.rail::-webkit-scrollbar{width:7px}.rail::-webkit-scrollbar-thumb{background:var(--line);border-radius:9px}
+.brand{display:flex;align-items:center;gap:11px;padding:4px 8px 20px}
+.brand .lk{display:flex;align-items:center;gap:11px}
+.logo-mark{width:42px;height:42px;flex-shrink:0}
+.brand .nm{font-family:'Fraunces',serif;font-weight:600;font-size:1.12rem;color:var(--ink);line-height:1.05}
+.brand .nm b{color:var(--clay)}
+.brand .sub{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--ink3);letter-spacing:.18em;text-transform:uppercase;margin-top:3px}
+.navsec{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);padding:14px 12px 5px;font-weight:500}
+.navbtn{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:none;color:var(--ink2);font-family:'JetBrains Mono',monospace;font-size:.83rem;padding:9px 12px;border-radius:10px;transition:background .14s,color .14s;position:relative}
+.navbtn .ic{width:17px;height:17px;flex-shrink:0;color:var(--ink3);transition:color .14s}
+.navbtn:hover{background:var(--card2);color:var(--ink)}
+.navbtn:hover .ic{color:var(--clay)}
+.navbtn.active{background:var(--clay);color:#fff}
+.navbtn.active .ic{color:#fff}
+.navbtn .dot{margin-left:auto;width:7px;height:7px;border-radius:50%;background:var(--clay);box-shadow:0 0 0 4px var(--clay-t)}
+.navbtn.active .dot{background:#fff;box-shadow:0 0 0 4px rgba(255,255,255,.25)}
+.rail .spacer{flex:1;min-height:14px}
+.rail .foot{font-size:.66rem;color:var(--ink3);padding:12px 12px 4px;line-height:1.7;border-top:1px solid var(--line);margin-top:8px}
+.rail .foot b{color:var(--ink2)}
+
+main{padding:46px clamp(20px,4.6vw,72px) 110px;max-width:1180px;width:100%}
+section{display:none}
+section.visible{display:block;animation:fade .34s cubic-bezier(.2,.7,.3,1)}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.topbar,.topnav{display:none}
+@media(max-width:900px){
+  .app{grid-template-columns:1fr}.rail{display:none}
+  .topbar{display:flex;align-items:center;gap:8px;position:sticky;top:0;z-index:60;background:rgba(246,242,235,.92);backdrop-filter:blur(12px);padding:11px 14px;border-bottom:1px solid var(--line)}
+  .topbar .logo-mark{width:30px;height:30px}
+  .topbar .nm{font-family:'Fraunces',serif;font-weight:600;font-size:.98rem}
+  .topbar .nm b{color:var(--clay)}
+  .topnav{display:flex;gap:6px;overflow-x:auto;position:sticky;top:53px;z-index:55;background:rgba(246,242,235,.92);backdrop-filter:blur(12px);padding:9px 12px;border-bottom:1px solid var(--line);-webkit-overflow-scrolling:touch}
+  .topnav::-webkit-scrollbar{display:none}
+  .topnav .navbtn{width:auto;white-space:nowrap;font-size:.76rem;padding:7px 11px}
+  .topnav .navbtn .ic,.topnav .navbtn .dot{display:none}
+  main{padding:24px 15px 90px}
+}
+
+/* ===== type & primitives ===== */
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--clay);margin-bottom:13px;font-weight:500;display:flex;align-items:center;gap:8px}
+.eyebrow::before{content:"";width:22px;height:1.5px;background:var(--clay);display:inline-block}
+.pagetitle{font-size:clamp(2rem,4.4vw,3rem);font-weight:600;margin-bottom:12px;letter-spacing:-.02em}
+.lede{color:var(--ink2);max-width:66ch;margin-bottom:34px;font-size:1.06rem}
+.lede.tight{margin-bottom:22px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px;box-shadow:var(--shadow-sm)}
+.card.flat{box-shadow:none;background:var(--card2)}
+.grid{display:grid;gap:16px}
+.grid.c2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.grid.c3{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.hr{border:none;border-top:1px solid var(--line);margin:34px 0}
+.sectit{font-size:1.4rem;font-weight:600;margin:38px 0 6px;display:flex;align-items:center;gap:10px}
+.sectit .n{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--clay);background:var(--clay-t);width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-weight:600}
+.secsub{color:var(--ink2);margin:0 0 18px;max-width:64ch}
+
+.tag{display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:.64rem;letter-spacing:.04em;padding:4px 10px;border-radius:99px;font-weight:500;background:var(--card2);color:var(--ink2);border:1px solid var(--line)}
+.tag.clay{color:var(--clay2);background:var(--clay-t);border-color:transparent}
+.tag.pine{color:var(--pine);background:var(--pine-t);border-color:transparent}
+.tag.slate{color:var(--slate);background:var(--slate-t);border-color:transparent}
+.tag.berry{color:var(--berry);background:var(--berry-t);border-color:transparent}
+.tag.gold{color:var(--gold);background:var(--gold-t);border-color:transparent}
+.tag.new{color:#fff;background:var(--clay);border-color:transparent}
+
+.btn{display:inline-flex;align-items:center;gap:7px;background:var(--clay);color:#fff;border:none;border-radius:11px;padding:11px 18px;font-weight:600;font-size:.9rem;box-shadow:var(--shadow-sm);transition:filter .15s,transform .08s}
+.btn:hover{filter:brightness(1.06)}.btn:active{transform:translateY(1px)}
+.btn.ghost{background:var(--card);color:var(--ink);border:1px solid var(--line);box-shadow:none}
+.btn.ghost:hover{border-color:var(--clay);background:var(--card2);filter:none}
+.btn.small{padding:8px 14px;font-size:.82rem;border-radius:9px}
+.btn.dark{background:var(--code);color:var(--code-tx)}
+code.inline{font-family:'JetBrains Mono',monospace;background:var(--card2);border:1px solid var(--line);padding:1px 7px;border-radius:6px;font-size:.83em;color:var(--clay2);white-space:nowrap}
+
+.checklist{list-style:none;display:flex;flex-direction:column;gap:10px}
+.checklist li{position:relative;padding-left:24px;color:var(--ink2);font-size:.94rem;line-height:1.55}
+.checklist li::before{content:"";position:absolute;left:2px;top:8px;width:8px;height:8px;border-radius:50%;border:2px solid var(--clay)}
+.checklist li b{color:var(--ink)}
+
+/* ===== code/copy ===== */
+.codeline{display:flex;align-items:center;gap:8px;background:var(--code);border-radius:10px;padding:9px 9px 9px 14px;margin-bottom:7px}
+.codeline code{flex:1;font-family:'JetBrains Mono',monospace;font-size:.79rem;color:var(--code-tx);white-space:pre-wrap;word-break:break-word}
+.copybtn{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:#B7A98F;width:31px;height:31px;border-radius:8px;display:grid;place-items:center;flex-shrink:0;transition:.15s}
+.copybtn:hover{background:rgba(255,255,255,.16);color:#fff}
+.copybtn svg{width:15px;height:15px}
+.copybtn.light{background:var(--card2);border-color:var(--line);color:var(--ink3)}
+.copybtn.light:hover{background:#fff;color:var(--clay)}
+.linkrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.linkbtn{display:inline-flex;align-items:center;gap:5px;background:var(--card2);border:1px solid var(--line);color:var(--clay2);font-size:.78rem;font-weight:500;padding:7px 13px;border-radius:9px;cursor:pointer;font-family:inherit;transition:.15s}
+.linkbtn:hover{border-color:var(--clay);background:#fff}
+.promptbox{background:var(--card2);border:1px solid var(--line);border-radius:13px;padding:16px 17px;margin-top:10px}
+.promptbox .lbl{font-size:.66rem;font-family:'JetBrains Mono',monospace;color:var(--ink3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:9px;display:flex;align-items:center;gap:7px}
+.promptbox pre{font-family:'JetBrains Mono',monospace;font-size:.79rem;color:var(--ink);white-space:pre-wrap;word-break:break-word;line-height:1.65;margin-bottom:11px;max-height:300px;overflow:auto}
+
+/* ===== hero ===== */
+.hero{position:relative;background:linear-gradient(135deg,#FFFCF7 0%,#FBF4EA 100%);border:1px solid var(--line);border-radius:26px;padding:clamp(28px,4vw,52px);overflow:hidden;margin-bottom:24px}
+.hero::after{content:"";position:absolute;right:-90px;top:-90px;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,var(--clay-t),transparent 68%);pointer-events:none}
+.hero .badge{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:99px;padding:6px 14px 6px 8px;font-size:.78rem;color:var(--ink2);margin-bottom:22px;box-shadow:var(--shadow-sm)}
+.hero .badge .pulse{width:9px;height:9px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 rgba(44,122,82,.5);animation:pulse 2.4s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(44,122,82,.45)}70%{box-shadow:0 0 0 9px rgba(44,122,82,0)}100%{box-shadow:0 0 0 0 rgba(44,122,82,0)}}
+.hero h1{font-size:clamp(2.3rem,5.4vw,3.7rem);font-weight:600;letter-spacing:-.025em;max-width:18ch;margin-bottom:16px}
+.hero h1 em{font-style:italic;color:var(--clay)}
+.hero p{color:var(--ink2);max-width:60ch;font-size:1.08rem;margin-bottom:26px}
+.hero .cta{display:flex;gap:11px;flex-wrap:wrap}
+
+/* stat tiles */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:13px;margin-bottom:24px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--r2);padding:17px 18px;box-shadow:var(--shadow-sm)}
+.stat .n{font-family:'Fraunces',serif;font-size:1.9rem;font-weight:600;color:var(--clay);line-height:1}
+.stat .l{font-size:.78rem;color:var(--ink3);margin-top:6px;font-family:'JetBrains Mono',monospace;letter-spacing:.03em}
+.stat.dark{background:var(--code)}.stat.dark .n{color:#fff}.stat.dark .l{color:var(--code-dim)}
+
+/* progress ring */
+.ringwrap{display:flex;align-items:center;gap:26px;flex-wrap:wrap}
+.ring{position:relative;width:128px;height:128px;flex-shrink:0}
+.ring svg{transform:rotate(-90deg)}
+.ring .pct{position:absolute;inset:0;display:grid;place-items:center;font-family:'Fraunces',serif;font-size:1.9rem;font-weight:600;color:var(--ink)}
+.ring .pct small{font-size:.95rem;color:var(--ink3)}
+
+/* feature/quick cards */
+.qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.qcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r2);padding:19px;box-shadow:var(--shadow-sm);cursor:pointer;transition:transform .14s,box-shadow .14s,border-color .14s;text-align:left;display:flex;flex-direction:column;gap:9px}
+.qcard:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:var(--clay)}
+.qcard .ic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:var(--clay-t);color:var(--clay)}
+.qcard .ic svg{width:20px;height:20px}
+.qcard.pine .ic{background:var(--pine-t);color:var(--pine)}
+.qcard.berry .ic{background:var(--berry-t);color:var(--berry)}
+.qcard.slate .ic{background:var(--slate-t);color:var(--slate)}
+.qcard.gold .ic{background:var(--gold-t);color:var(--gold)}
+.qcard h3{font-size:1.05rem;font-weight:600}
+.qcard p{font-size:.86rem;color:var(--ink2);line-height:1.5}
+.qcard .arw{font-family:'JetBrains Mono',monospace;font-size:.74rem;color:var(--clay);margin-top:auto}
+
+/* ===== novedades ===== */
+.syncbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;background:var(--code);color:var(--code-tx);border-radius:var(--r2);padding:15px 19px;margin-bottom:22px}
+.syncbar .l{display:flex;align-items:center;gap:11px;font-size:.85rem}
+.syncbar .l .dot{width:9px;height:9px;border-radius:50%;background:#5BD08A;box-shadow:0 0 10px #5BD08A}
+.syncbar .l b{color:#fff}
+.syncbar .meta{font-family:'JetBrains Mono',monospace;font-size:.74rem;color:var(--code-dim)}
+.timeline{position:relative;padding-left:26px}
+.timeline::before{content:"";position:absolute;left:6px;top:6px;bottom:6px;width:2px;background:var(--line)}
+.tlitem{position:relative;margin-bottom:16px}
+.tlitem::before{content:"";position:absolute;left:-26px;top:22px;width:13px;height:13px;border-radius:50%;background:var(--card);border:2.5px solid var(--clay)}
+.tlitem.fresh::before{background:var(--clay);box-shadow:0 0 0 4px var(--clay-t)}
+.nov{background:var(--card);border:1px solid var(--line);border-radius:var(--r2);padding:17px 19px;box-shadow:var(--shadow-sm)}
+.nov .top{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:8px}
+.nov .date{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--ink3);margin-left:auto}
+.nov h3{font-size:1.08rem;font-weight:600;margin-bottom:5px}
+.nov p{font-size:.9rem;color:var(--ink2);line-height:1.55}
+.nov .why{font-size:.84rem;color:var(--ink2);margin-top:8px;padding:9px 12px;background:var(--clay-t);border-radius:9px}
+.nov .why b{color:var(--clay2)}
+
+/* ===== prompts ===== */
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+.search{flex:1;min-width:200px;display:flex;align-items:center;gap:9px;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:0 14px;box-shadow:var(--shadow-sm)}
+.search svg{width:17px;height:17px;color:var(--ink3);flex-shrink:0}
+.search input{flex:1;border:none;background:none;padding:12px 0;font-family:inherit;font-size:.92rem;color:var(--ink);outline:none}
+.filterrow{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:20px}
+.chip{font-family:'JetBrains Mono',monospace;font-size:.76rem;padding:7px 13px;border-radius:99px;border:1px solid var(--line);background:var(--card);color:var(--ink2);transition:.14s}
+.chip:hover{border-color:var(--clay);color:var(--clay)}
+.chip.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+.pcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r2);padding:19px 20px;box-shadow:var(--shadow-sm);transition:border-color .14s}
+.pcard:hover{border-color:var(--line)}
+.pcard .head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+.pcard h3{font-size:1.08rem;font-weight:600;margin:8px 0 5px}
+.pcard .desc{font-size:.88rem;color:var(--ink2);line-height:1.5}
+.pcard .acts{display:flex;gap:7px;flex-shrink:0}
+.pcard pre{display:none;margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--ink);white-space:pre-wrap;word-break:break-word;line-height:1.65;background:var(--card2);border:1px solid var(--line);border-radius:11px;padding:15px;max-height:380px;overflow:auto}
+.pcard.open pre{display:block}
+.pcard.user{border-left:3px solid var(--pine)}
+
+/* ===== slash command ===== */
+.cmd{border:1px solid var(--line);border-radius:var(--r2);overflow:hidden;margin-bottom:11px;background:var(--card);box-shadow:var(--shadow-sm)}
+.cmd .ch{display:flex;align-items:center;gap:10px;padding:14px 17px;flex-wrap:wrap}
+.cmd .name{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:.94rem;color:var(--ink)}
+.cmd .name b{color:var(--clay)}
+.cmd .what{font-size:.86rem;color:var(--ink2);flex:1;min-width:160px}
+.cmd .when{padding:0 17px 14px;font-size:.84rem;color:var(--ink2)}
+.cmd .when b{color:var(--ink);font-weight:600}
+.cmd .demo{margin:0 13px 13px;background:var(--code);border-radius:10px;padding:13px 15px;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--code-tx);display:none}
+.cmd.open .demo{display:block}
+.cmd .demo .ln{white-space:pre-wrap;word-break:break-word;margin:2px 0}
+.cmd .demo .cm{color:#E9A87E}
+.dim{color:var(--code-dim)}.ok{color:#6FD79B}.wn{color:#E7B86A}
+.demobtn{margin-left:auto}
+
+/* ===== roadmap / paths ===== */
+.phase{border:1px solid var(--line);border-radius:var(--r2);margin-bottom:13px;background:var(--card);box-shadow:var(--shadow-sm);overflow:hidden}
+.phase .ph{display:flex;align-items:center;gap:14px;padding:18px 19px;cursor:pointer}
+.phase .pic{width:42px;height:42px;border-radius:12px;background:var(--clay-t);color:var(--clay);display:grid;place-items:center;flex-shrink:0}
+.phase .pic svg{width:21px;height:21px}
+.phase .pt{flex:1;min-width:0}
+.phase .wk{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase}
+.phase .pt h3{font-size:1.13rem;font-weight:600;margin:3px 0}
+.phase .ct{font-size:.8rem;color:var(--ink2)}
+.phase .mini{display:flex;align-items:center;gap:9px}
+.phase .bar{width:64px;height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.phase .bar i{display:block;height:100%;background:var(--clay);border-radius:99px;transition:width .4s}
+.phase .pp{font-family:'JetBrains Mono',monospace;font-size:.74rem;color:var(--ink2);min-width:34px;text-align:right}
+.phase .chev{color:var(--ink3);transition:transform .2s}
+.phase.open .chev{transform:rotate(90deg)}
+.phase .body{display:none;padding:4px 19px 16px;border-top:1px solid var(--line2)}
+.phase.open .body{display:block;animation:fade .25s}
+
+.task{display:flex;align-items:flex-start;gap:11px;padding:11px 0;cursor:pointer;border-bottom:1px solid var(--line2)}
+.task:last-child{border-bottom:none}
+.task input{appearance:none;width:21px;height:21px;border:2px solid var(--line);border-radius:7px;flex-shrink:0;margin-top:2px;cursor:pointer;transition:.14s;position:relative;background:var(--card)}
+.task input:checked{background:var(--clay);border-color:var(--clay)}
+.task input:checked::after{content:"✓";position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:.78rem;font-weight:700}
+.task .tt{font-size:.94rem;font-weight:600;color:var(--ink)}
+.task .ts{font-size:.84rem;color:var(--ink2);margin-top:2px}
+.task.done .tt{text-decoration:line-through;color:var(--ink3)}
+.extras{margin:2px 0 14px 32px;display:flex;flex-direction:column;gap:9px}
+
+.pathtabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.ptab{display:flex;align-items:center;gap:9px;padding:13px 16px;border:1px solid var(--line);border-radius:13px;background:var(--card);cursor:pointer;transition:.14s;box-shadow:var(--shadow-sm)}
+.ptab .ic{width:30px;height:30px;border-radius:9px;background:var(--clay-t);color:var(--clay);display:grid;place-items:center}
+.ptab .ic svg{width:17px;height:17px}
+.ptab .tt{font-weight:600;font-size:.92rem}
+.ptab .ts{font-size:.74rem;color:var(--ink3)}
+.ptab.active{border-color:var(--clay);background:linear-gradient(180deg,#FFFCF7,#FBF4EA)}
+.ptab.active .ic{background:var(--clay);color:#fff}
+.progressbar{height:9px;border-radius:99px;background:var(--line);overflow:hidden;margin-bottom:22px}
+.progressbar i{display:block;height:100%;background:linear-gradient(90deg,var(--clay),var(--gold));border-radius:99px;transition:width .5s}
+
+/* concept cards */
+.concept{background:var(--card);border:1px solid var(--line);border-radius:var(--r2);padding:18px 20px;box-shadow:var(--shadow-sm)}
+.concept h3{font-size:1.05rem;font-weight:600;margin-bottom:7px;display:flex;align-items:center;gap:9px}
+.concept h3 .k{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--clay);background:var(--clay-t);padding:3px 8px;border-radius:6px;font-weight:600}
+.concept p{font-size:.9rem;color:var(--ink2);line-height:1.58}
+.concept p b{color:var(--ink)}
+
+/* model table */
+.mtable{width:100%;border-collapse:collapse;font-size:.88rem}
+.mtable th{text-align:left;font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);padding:10px 12px;border-bottom:2px solid var(--line)}
+.mtable td{padding:12px;border-bottom:1px solid var(--line2);color:var(--ink2);vertical-align:top}
+.mtable td b{color:var(--ink)}
+.mtable .mono{font-size:.8rem;color:var(--clay2)}
+.mtable tr:hover td{background:var(--card2)}
+@media(max-width:680px){.mtable thead{display:none}.mtable,.mtable tbody,.mtable tr,.mtable td{display:block;width:100%}.mtable tr{border:1px solid var(--line);border-radius:11px;margin-bottom:11px;padding:6px;background:var(--card)}.mtable td{border:none;padding:7px 12px}.mtable td::before{content:attr(data-l);font-family:'JetBrains Mono',monospace;font-size:.62rem;text-transform:uppercase;color:var(--ink3);display:block;margin-bottom:2px}}
+
+/* reto */
+.reto{background:linear-gradient(135deg,var(--code),#332B22);color:var(--code-tx);border-radius:var(--r);padding:30px;position:relative;overflow:hidden}
+.reto::after{content:"";position:absolute;right:-70px;bottom:-70px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(193,95,60,.3),transparent 70%)}
+.reto .k{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:#E9A87E;margin-bottom:14px}
+.reto h3{font-size:1.5rem;color:#fff;margin-bottom:10px;max-width:30ch}
+.reto p{color:#D8CCB8;max-width:58ch;position:relative}
+.reto .row{display:flex;gap:24px;margin-top:22px;position:relative;flex-wrap:wrap;align-items:center}
+
+/* lab */
+.chat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow-sm)}
+.chatlog{padding:20px;display:flex;flex-direction:column;gap:13px;max-height:440px;overflow-y:auto}
+.msg{max-width:84%;padding:12px 15px;border-radius:14px;font-size:.9rem;line-height:1.55;white-space:pre-wrap}
+.msg.u{align-self:flex-end;background:var(--clay);color:#fff;border-bottom-right-radius:5px}
+.msg.a{align-self:flex-start;background:var(--card2);border:1px solid var(--line);border-bottom-left-radius:5px}
+.msg.a b{color:var(--clay2)}
+.chatin{display:flex;gap:9px;padding:13px;border-top:1px solid var(--line);background:var(--card2)}
+.chatin textarea{flex:1;border:1px solid var(--line);border-radius:11px;padding:11px 13px;font-family:inherit;font-size:.9rem;resize:none;height:46px;background:var(--card);color:var(--ink);outline:none}
+.chatin textarea:focus{border-color:var(--clay)}
+.typing{padding:0 20px 12px;font-size:.8rem;color:var(--ink3);font-style:italic}
+
+/* toast + addmodal */
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--code);color:#fff;padding:12px 22px;border-radius:12px;font-size:.88rem;font-weight:500;box-shadow:var(--shadow);opacity:0;transition:.3s;z-index:200;display:flex;align-items:center;gap:9px}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast .dot{width:8px;height:8px;border-radius:50%;background:#5BD08A}
+.modal{position:fixed;inset:0;background:rgba(30,26,21,.5);backdrop-filter:blur(4px);z-index:150;display:none;align-items:center;justify-content:center;padding:20px}
+.modal.show{display:flex;animation:fade .2s}
+.modal .box{background:var(--card);border-radius:var(--r);padding:26px;max-width:560px;width:100%;box-shadow:var(--shadow);max-height:90vh;overflow:auto}
+.modal h3{font-size:1.3rem;margin-bottom:16px}
+.modal label{display:block;font-size:.78rem;font-family:'JetBrains Mono',monospace;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;margin:13px 0 6px}
+.modal input,.modal textarea,.modal select{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px 13px;font-family:inherit;font-size:.9rem;background:var(--card2);color:var(--ink);outline:none}
+.modal textarea{resize:vertical;min-height:130px;font-family:'JetBrains Mono',monospace;font-size:.82rem}
+.modal input:focus,.modal textarea:focus,.modal select:focus{border-color:var(--clay)}
+.modal .actions{display:flex;gap:10px;margin-top:20px;justify-content:flex-end}
+
+.callout{display:flex;gap:13px;background:var(--gold-t);border:1px solid rgba(176,122,18,.25);border-radius:13px;padding:16px 18px;margin:18px 0}
+.callout .i{flex-shrink:0;color:var(--gold)}
+.callout .i svg{width:22px;height:22px}
+.callout p{font-size:.9rem;color:var(--ink2);line-height:1.55}
+.callout p b{color:var(--ink)}
+.callout.pine{background:var(--pine-t);border-color:rgba(31,111,107,.25)}.callout.pine .i{color:var(--pine)}
+.callout.clay{background:var(--clay-t);border-color:rgba(193,95,60,.25)}.callout.clay .i{color:var(--clay)}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"><span class="dot"></span><span id="toast-txt">Copiado</span></div>
+
+<!-- mobile bars -->
+<div class="topbar">
+  <div class="logo-mark" id="logo-m"></div>
+  <div class="nm">Claude <b>Learning HQ</b></div>
+</div>
+<nav class="topnav" id="topnav"></nav>
+
+<div class="app">
+  <aside class="rail">
+    <div class="brand">
+      <div class="logo-mark" id="logo-d"></div>
+      <div>
+        <div class="nm">Claude <b>Learning HQ</b></div>
+        <div class="sub">la escuela de claude</div>
+      </div>
+    </div>
+    <div id="railnav"></div>
+    <div class="spacer"></div>
+    <div class="foot">
+      Tu academia central. Todo lo que sabés de Claude, en un lugar.<br><br>
+      <b>Sync de novedades:</b> <span id="foot-sync">—</span>
+    </div>
+  </aside>
+
+  <main id="main"></main>
+</div>
+
+<!-- add prompt modal -->
+<div class="modal" id="modal">
+  <div class="box">
+    <h3 class="serif">Guardar un prompt nuevo</h3>
+    <p style="font-size:.88rem;color:var(--ink2)">Se guarda en este navegador. Tu colección personal vive con vos.</p>
+    <label>Título</label>
+    <input id="m-title" placeholder="Ej: Landing de alta conversión">
+    <label>Categoría</label>
+    <select id="m-cat">
+      <option value="Web">Web hermosa</option>
+      <option value="WhatsApp">Agente WhatsApp</option>
+      <option value="Instagram">Agente Instagram</option>
+      <option value="Kickoff">Kickoff</option>
+      <option value="Seguridad">Seguridad</option>
+      <option value="QA">QA</option>
+      <option value="Contenido">Contenido</option>
+      <option value="Otro">Otro</option>
+    </select>
+    <label>Descripción corta</label>
+    <input id="m-desc" placeholder="Para qué sirve / cuándo usarlo">
+    <label>El prompt</label>
+    <textarea id="m-text" placeholder="Pegá tu prompt acá…"></textarea>
+    <div class="actions">
+      <button class="btn ghost small" onclick="closeModal()">Cancelar</button>
+      <button class="btn small" onclick="saveUserPrompt()">Guardar prompt</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================= DATA */
+/* ===== última sincronización de novedades (la actualiza el agente) ===== */
+const LAST_SYNC = "2026-06-15";
+
+/* ===== NOVEDADES: el agente actualizador agrega entradas arriba ===== */
+const NOVEDADES=[
+{date:"2026-06-15",tag:"app",tagc:"slate",fresh:true,title:"Sync inicial de Claude Learning HQ",
+ body:"Tu academia quedó montada con las novedades reales de Claude hasta esta fecha. De acá en más, el agente actualizador revisa el changelog cada pocos días y agrega lo nuevo arriba de esta lista.",
+ why:"Así nunca te quedás con info vieja: la escuela se mantiene sola."},
+{date:"2026-06-12",tag:"claude code",tagc:"clay",title:"Rate limits de Claude Code duplicados",
+ body:"Anthropic duplicó los límites de uso de Claude Code para que se pueda construir con más continuidad. Además, los títulos de sesión ahora se generan en el idioma de tu conversación.",
+ why:"Más sesiones largas sin frenar — ideal para builds grandes de webs o agentes."},
+{date:"2026-06-10",tag:"claude code",tagc:"clay",title:"Sub-agentes anidados hasta 5 niveles",
+ body:"Un sub-agente ahora puede lanzar sus propios sub-agentes, hasta 5 niveles de profundidad. También llegó un buscador en el marketplace de plugins.",
+ why:"Tareas enormes se dividen en árboles de agentes especializados que trabajan en paralelo."},
+{date:"2026-06-09",tag:"modelo",tagc:"berry",title:"Claude Fable 5, el modelo más capaz, llega a Claude Code",
+ body:"Fable 5 (clase Mythos) ya está disponible para uso general dentro de Claude Code. Es el modelo más potente para razonamiento exigente y trabajo agéntico de largo horizonte. Pensamiento siempre activo; se controla la profundidad con effort.",
+ why:"Para los problemas más difíciles. Para el día a día, Opus 4.8 sigue siendo la mejor relación precio/calidad."},
+{date:"2026-06-06",tag:"claude code",tagc:"clay",title:"Modelos de respaldo (fallbackModel) y deny por glob",
+ body:"Podés configurar hasta 3 modelos de fallback: si el principal no está disponible, Claude sigue solo. Y las reglas de permiso aceptan patrones glob en el nombre de la herramienta.",
+ why:"Resiliencia: tu agente no se cae si un modelo está saturado."},
+{date:"2026-05-28",tag:"modelo",tagc:"berry",title:"Claude Opus 4.8 + Dynamic Workflows",
+ body:"Opus 4.8 es el modelo Opus más capaz: mejor en código, razonamiento agéntico y honestidad. ~4x menos probable que deje pasar fallos en su propio código. Llegó 'Dynamic Workflows' en Claude Code: orquestar trabajo entre decenas o cientos de agentes. Fast mode 2.5x más rápido.",
+ why:"El default para construir: por defecto trae effort alto/xhigh y system prompt liviano."},
+{date:"2026-05-27",tag:"claude code",tagc:"clay",title:"/code-review --fix y skills con disallowed-tools",
+ body:"/code-review --fix aplica las correcciones del review directo sobre tus archivos. Las skills pueden declarar disallowed-tools en el frontmatter, y llegó /reload-skills.",
+ why:"Del hallazgo al fix en un solo comando, sin copiar y pegar."},
+{date:"2026-05-11",tag:"claude code",tagc:"clay",title:"Comando /goal y Agent View (preview)",
+ body:"/goal define una condición de 'terminado': Claude trabaja en bucle hasta cumplirla. Y 'claude agents' abre la vista de agentes (research preview) para ver y dirigir varios agentes a la vez.",
+ why:"Le decís el objetivo, no los pasos. Clave para que trabaje solo de noche."},
+];
+
+/* ===== PROMPTS (biblioteca base) ===== */
+const PROMPTS=[
+/* WEB HERMOSA */
+{cat:"Web",tag:"slate",title:"Director de diseño — web que no se confunde",desc:"Para arrancar una web hermosa de cero. Le pedís dirección de arte antes de tocar código.",
+text:`Actuá como director de diseño de un estudio conocido por identidades que NO se confunden con ninguna otra. Vamos a diseñar [QUÉ ES] para [PARA QUIÉN]. La acción principal es [QUÉ QUIERO QUE HAGA EL USUARIO].
+
+Antes de escribir una línea de código:
+1. Proponé 4 direcciones visuales distintas para este brief. Cada una en una línea: color de fondo (hex) / color de acento (hex) / tipografía display + cuerpo / una frase de por qué encaja con este producto.
+2. Esperá a que elija una. No avances sin mi OK.
+
+Cuando elija, recién ahí:
+3. Definí el sistema completo: paleta con uso de cada color, escala tipográfica, sistema de espaciado, radios, sombras, y UN "elemento firma" que haga memorable la marca.
+4. Construí la web como un solo archivo HTML autocontenido, responsive, con datos realistas (nada de "Item 1"), microinteracciones donde aporten, accesibilidad AA y focus visible.
+5. NADA de estética genérica de IA: prohibido Inter/Roboto por defecto, gradientes violeta sobre blanco, y layouts predecibles. Buscá carácter.
+
+Al final: resumen de las decisiones de diseño y cómo escalarlas.`},
+{cat:"Web",tag:"slate",title:"Landing de alta conversión",desc:"Una landing que vende, con jerarquía clara y un solo CTA dominante.",
+text:`Construí una landing page de alta conversión para [PRODUCTO/SERVICIO]. Público: [QUIÉN]. Objetivo único: [QUÉ ACCIÓN].
+
+Estructura (en este orden): hero con promesa clara + CTA dominante / prueba social / 3 beneficios concretos (no features) / cómo funciona en 3 pasos / objeciones frecuentes resueltas / CTA final.
+
+Reglas:
+- Una sola acción principal repetida; todo lo demás es secundario.
+- Copy en español rioplatense, directo, sin relleno corporativo. Beneficios antes que características.
+- Diseño con carácter propio (definí paleta y tipografía antes de codear), responsive, AA, carga rápida (sin librerías pesadas).
+- HTML autocontenido en un archivo.
+
+Antes de codear, mostrame el wireframe en texto y el copy del hero. Esperá mi OK.`},
+{cat:"Web",tag:"slate",title:"Mejorar el diseño sin romper la lógica",desc:"Eleva el nivel visual de una app existente sin tocar funcionalidad.",
+text:`Subí el nivel visual de esta app SIN cambiar funcionalidad ni lógica. Reglas:
+
+1. Recorré la UI y dame un diagnóstico honesto: los 10 problemas visuales más importantes.
+2. Antes de tocar código, proponé una dirección concreta: paleta (hex + uso), tipografía (display + cuerpo + escala), sistema de espaciado y un "elemento firma". Esperá mi OK.
+3. Implementá todo como design tokens (variables CSS / config de Tailwind).
+4. NO cambies props, estados, handlers ni APIs. No agregues librerías pesadas sin preguntar. Accesibilidad AA, focus visible, áreas táctiles ≥44px, respetá prefers-reduced-motion.
+5. Pantalla por pantalla, commit por pantalla, con antes/después.`},
+
+/* AGENTE WHATSAPP */
+{cat:"WhatsApp",tag:"pine",title:"Agente de WhatsApp — arquitectura completa",desc:"El prompt madre para construir un agente de atención por WhatsApp con la API oficial.",
+text:`Vamos a construir un agente de IA para WhatsApp para [NEGOCIO]. Antes de codear, preguntame lo que necesites (qué hace el negocio, qué debe resolver el bot, si agenda turnos, si cobra, horario de atención, cuándo escalar a humano).
+
+ARQUITECTURA propuesta (confirmá o ajustá antes de implementar):
+- Canal: WhatsApp Business API (Meta Cloud API) vía webhook. Un proveedor oficial si hace falta (Twilio / 360dialog / Gupshup).
+- Backend: Node/Next.js (o el stack que prefiera) con un endpoint webhook que recibe mensajes y responde.
+- Cerebro: API de Claude (modelo claude-opus-4-8). System prompt con la personalidad y reglas del negocio + tool use para acciones (consultar stock, agendar, derivar a humano).
+- Memoria: guardar la conversación por número de teléfono (Postgres/Supabase) para dar contexto.
+- Handoff: cuando el cliente lo pide o el bot no puede, marca la conversación para un humano con TODO el contexto.
+
+REGLAS NO NEGOCIABLES:
+- Validar y verificar la firma del webhook de Meta. Nunca exponer tokens.
+- Responder rápido al webhook (200) y procesar async.
+- Cumplir políticas de WhatsApp: plantillas aprobadas para iniciar conversación, ventana de 24h, opt-out.
+- Rate limiting y manejo de errores con reintentos.
+
+Primero hacé un PLAN.md con el flujo de un mensaje de punta a punta y esperá mi OK. Después implementás por partes, con tests del webhook.`},
+{cat:"WhatsApp",tag:"pine",title:"Personalidad y reglas del bot (system prompt)",desc:"El system prompt que define cómo habla y qué puede hacer tu agente de WhatsApp.",
+text:`Generá el system prompt para un agente de WhatsApp de [NEGOCIO]. Tiene que incluir:
+
+IDENTIDAD: nombre del asistente, tono (cercano pero profesional, español rioplatense), y que SIEMPRE aclare que es un asistente virtual si se lo preguntan.
+
+QUÉ SABE: [productos/servicios, precios, horarios, ubicación, formas de pago]. Si no sabe algo, lo dice y ofrece derivar a una persona; nunca inventa.
+
+QUÉ PUEDE HACER (tools): [responder consultas, pasar catálogo, agendar turno, tomar pedido, derivar a humano].
+
+LÍMITES: no promete lo que no puede cumplir, no da información médica/legal/financiera sensible, no comparte datos de otros clientes, no negocia precios fuera de lo permitido.
+
+ESTILO DE WHATSAPP: mensajes cortos, uno o dos por respuesta, sin párrafos enormes. Emojis con moderación. Siempre cierra con una pregunta o un próximo paso claro.
+
+HANDOFF: cuando el cliente pida una persona o haya una queja/cancelación/caso complejo, deriva a un humano resumiendo el caso.
+
+Devolvémelo listo para pegar como system prompt, y un set de 8 mensajes de prueba (cliente difícil incluido) para validarlo.`},
+
+/* AGENTE INSTAGRAM */
+{cat:"Instagram",tag:"berry",title:"Agente de Instagram (DMs + comentarios)",desc:"Bot que responde DMs y comentarios de Instagram con la API de Mensajería de Meta.",
+text:`Construyamos un agente de IA para Instagram para [MARCA]. Antes de codear, preguntame lo necesario (qué vende, qué consultas llegan más, si vende por DM, cuándo derivar a humano).
+
+ARQUITECTURA (confirmá antes de implementar):
+- Canal: Instagram Messaging API (Meta) — requiere cuenta Business/Creator vinculada a una página de Facebook. Webhook para DMs y, si aplica, comentarios.
+- Backend: webhook que recibe el evento, arma contexto y responde.
+- Cerebro: API de Claude (claude-opus-4-8) con system prompt de marca + tools (responder, pasar link de compra, derivar a humano).
+- Memoria por usuario para mantener el hilo.
+
+REGLAS:
+- Verificar la firma del webhook y respetar la ventana de mensajería de Instagram (24h) y las políticas de Meta.
+- Responder comentarios públicos con cuidado: cortés, y mover la conversación al DM cuando sea venta o dato sensible.
+- Nunca pedir datos sensibles por comentario público. Opt-out claro.
+- Tono 100% alineado a la marca.
+
+Hacé un PLAN.md con el flujo (DM entra → contexto → respuesta / handoff) y esperá mi OK. Luego implementás con tests del webhook.`},
+{cat:"Instagram",tag:"berry",title:"Calendario de contenido + captions",desc:"Para usar Claude como tu equipo de contenido de Instagram.",
+text:`Actuá como mi estratega de contenido de Instagram para [MARCA / NICHO]. Tono de marca: [DESCRIBÍ].
+
+1. Proponé 12 ideas de posts para las próximas 2 semanas, mezclando formatos (carrusel educativo, reel de gancho, post de prueba social, detrás de escena). Para cada una: gancho de la primera línea, ángulo, y formato.
+2. Para las 4 que más me gusten (te las marco), escribí el caption completo: primera línea que frene el scroll, desarrollo con valor real, CTA, y 8-12 hashtags relevantes (mezcla de volumen alto y nicho).
+3. Sugerí, para cada una, qué mostraría el visual.
+
+Español rioplatense, nada de frases de gurú vacías. Primero las 12 ideas; espero para elegir.`},
+
+/* KICKOFF / SEGURIDAD (de la base sólida del proto) */
+{cat:"Kickoff",tag:"clay",title:"Kickoff seguro 0→1 (el prompt madre)",desc:"Arranca cualquier proyecto nuevo con la capa de seguridad puesta desde el commit 1.",
+text:`Vas a arrancar un proyecto nuevo desde cero. Antes de escribir código, hacé estas 3 cosas en orden:
+
+1. PREGUNTAME lo que necesites para entender el producto (público, features core del MVP, si hay pagos, si hay datos sensibles). No asumas nada importante.
+2. PROPONÉ un plan de arquitectura en PLAN.md y esperá mi OK antes de implementar.
+3. RECIÉN AHÍ implementá la base con este stack y estándares NO NEGOCIABLES:
+
+STACK
+- Next.js (App Router) + TypeScript estricto (strict:true, sin any)
+- Supabase: Postgres + Auth + Storage · Tailwind · deploy a Vercel · repo GitHub con .gitignore correcto desde el primer commit
+
+SEGURIDAD (implementar TODO, no "después")
+- RLS habilitado en TODAS las tablas, con policies escritas y testeadas.
+- Validación con Zod en todo input: forms, API routes y server actions.
+- .env.local + .env.example documentado. NUNCA commitear secrets. service_role key solo server-side.
+- Verificación de sesión en el SERVIDOR (middleware + checks por ruta).
+- Headers de seguridad en next.config: CSP, HSTS, X-Frame-Options DENY, nosniff, Referrer-Policy.
+- Rate limiting en endpoints sensibles. Sanitizar contenido de usuarios (XSS). npm audit limpio.
+
+CALIDAD: ESLint + Prettier. README con la estructura. CLAUDE.md con las reglas. Commits chicos en español.
+
+Al terminar: resumen de qué creaste, las policies de RLS, y un checklist de seguridad marcado.`},
+{cat:"Kickoff",tag:"clay",title:"CLAUDE.md base (memoria permanente)",desc:"Las reglas que Claude respeta en TODAS las sesiones del proyecto. Pedile que lo guarde como CLAUDE.md.",
+text:`Creá un archivo CLAUDE.md en la raíz del proyecto con este contenido (adaptá el stack al repo):
+
+# Reglas del proyecto
+
+## Protección de archivos — CRÍTICO
+- NUNCA borres archivos sin pedirme confirmación explícita.
+- NUNCA modifiques: .env*, migraciones aplicadas, configs de CI/CD, ni nada en /docs/decisiones.
+- NUNCA uses comandos destructivos (rm -rf, git push --force, git reset --hard, DROP TABLE, TRUNCATE) sin mi confirmación en ese momento.
+- Si un cambio afecta más de 5 archivos, mostrame el plan primero y esperá mi OK.
+- Antes de algo riesgoso, sugerí crear una rama o commit de respaldo.
+
+## Seguridad
+- Todo input se valida con Zod. Toda tabla nueva nace con RLS habilitado.
+- Jamás hardcodear secrets. Queries con datos de usuario siempre parametrizadas. Auth se verifica en el servidor.
+
+## Estilo
+- TypeScript estricto, prohibido "any". Componentes chicos. Justificá cada dependencia nueva.
+
+## Flujo
+- Commits chicos en español (feat/fix/refactor/chore). Siempre rama + PR. Al terminar: lint + typecheck + tests.
+
+## Comunicación
+- Si algo es ambiguo, preguntá antes de asumir. Si ves un problema de seguridad, avisá aunque no sea la tarea.`},
+{cat:"Seguridad",tag:"rust",title:"Guardarraíles anti-destrucción",desc:"Para un proyecto en curso sin reglas. Frena borrados, cambios masivos y comandos peligrosos.",
+text:`A partir de ahora operás bajo estas reglas. Confirmá que las entendiste y agregalas a CLAUDE.md (crealo si no existe):
+
+1. ARCHIVOS INTOCABLES sin mi confirmación: .env y variantes, migraciones aplicadas, configs de deploy/CI, package-lock.json (salvo instalar algo), y cualquier archivo no relacionado con la tarea actual.
+2. COMANDOS PROHIBIDOS sin confirmación caso por caso: rm -rf, git push --force, git reset --hard, git clean, DROP/TRUNCATE/DELETE sin WHERE, y todo lo que toque producción.
+3. ALCANCE: trabajá SOLO en los archivos necesarios. Si hay que tocar algo más, decime qué y por qué.
+4. ANTES de refactors o cambios en +5 archivos: plan corto → mi OK → ejecutás.
+5. RED DE SEGURIDAD: antes de cambios grandes, commit de respaldo o rama nueva.
+6. Si rompés algo: avisá qué se rompió y el camino de vuelta (no lo tapes con más cambios).`},
+{cat:"Seguridad",tag:"rust",title:"Auditoría de seguridad (OWASP Top 10)",desc:"Revisión completa en modo solo-lectura, con hallazgos priorizados y fix con tu OK.",
+text:`Hacé una auditoría de seguridad completa. Modo SOLO LECTURA primero: no cambies nada hasta que apruebe.
+
+FASE 1 — RELEVAMIENTO: rutas/endpoints, auth y sesiones, queries a DB, uploads, variables de entorno, dependencias.
+FASE 2 — AUDITORÍA (OWASP Top 10): inyección (SQL/comandos por concatenación), auth rota (¿sesión verificada en server en TODAS las rutas?), exposición de datos (campos de más, secrets en código/historial), RLS tabla por tabla, XSS, CSRF/CORS, npm audit, rate limiting, headers.
+FASE 3 — REPORTE: SECURITY_AUDIT.md con cada hallazgo: [CRÍTICO/ALTO/MEDIO/BAJO] — qué — dónde (archivo:línea) — cómo se explota — cómo se arregla.
+FASE 4 — Esperá mi OK y arreglá desde los críticos, un commit por hallazgo.`},
+{cat:"QA",tag:"gold",title:"QA completo: plan + tests + CI",desc:"Plan de testing, tests unitarios y E2E, todo corriendo en CI.",
+text:`Armá la capa de QA completa:
+
+1. PLAN — TESTING.md: flujos críticos, casos borde, qué se testea en qué nivel.
+2. UNIT + INTEGRACIÓN — Vitest. Priorizá validaciones, lógica de negocio, transformaciones, helpers de auth.
+3. E2E — Playwright para 3-5 flujos clave (registro→login→acción→logout). Incluí caso "usuario malicioso": rutas protegidas sin sesión, payloads inválidos.
+4. CI — GitHub Action: lint + typecheck + tests en cada PR. No se mergea si falla.
+5. Tests legibles (nombre = comportamiento en español), datos aislados (nunca producción).
+Al terminar: corré la suite y mostrame resultado + qué quedó sin cubrir.`},
+{cat:"Contenido",tag:"gold",title:"Voz de marca reutilizable",desc:"Definí el tono una vez y guardalo como skill para todo texto público.",
+text:`Vamos a definir la voz de marca de [NEGOCIO] para que todo texto público suene igual.
+
+1. Preguntame 3 ejemplos de cómo escribimos hoy (o que más me gustan de otros).
+2. Con eso, escribí una guía: tono en una frase, 5 palabras/expresiones que SÍ usamos, 5 que NO, y nivel de formalidad.
+3. Dame 4 ejemplos "así sí / así no" (mismo mensaje, bien y mal).
+4. Al final, ofrecé guardar esto como una skill de proyecto en .claude/skills/voz-de-marca/ para que se aplique sola al redactar.`},
+{cat:"Kickoff",tag:"clay",title:"Retomar un proyecto que no conocés",desc:"Que Claude entienda el repo antes de tocar nada.",
+text:`Entraste a un proyecto en curso que no conocés. ANTES de cambiar nada:
+1. EXPLORÁ: carpetas, package.json, README, CLAUDE.md, configs. Mirá los últimos 20 commits.
+2. RESUMÍ en 10 líneas: qué hace, stack, estado (tests/CI/deploy), y las 3 cosas que más te llamaron la atención.
+3. PREGUNTÁ: ¿cuál es la tarea de hoy y qué NO debería tocar?
+4. Si no hay CLAUDE.md, proponé crear uno con las convenciones que detectaste.
+Recién después arrancamos.`},
+];
+
+/* ===== SLASH COMMANDS ===== */
+const SLASHES=[
+{n:"/loop",hot:true,what:"Repite un prompt o comando en intervalos, o se autorregula el ritmo.",
+when:"Tareas recurrentes o vigilar algo: <b>/loop 5m /revisar-deploy</b> corre cada 5 minutos. Sin intervalo, Claude decide cuándo seguir hasta terminar.",
+demo:[["cm","/loop 10m revisá si hay PRs nuevos y avisame"],["","Bucle activo · corre cada 10 min"],["ok","✓ corrida 1: 0 PRs nuevos"],["ok","✓ corrida 2: 1 PR nuevo → lo reviso"]]},
+{n:"/goal",hot:true,what:"Definís la condición de 'terminado' y Claude trabaja hasta cumplirla.",
+when:"Cuando querés darle un objetivo, no una lista de pasos. Ideal para que trabaje solo (de noche, mientras hacés otra cosa).",
+demo:[["cm","/goal todos los tests verdes y npm run build sin errores"],["","Objetivo fijado. Trabajo hasta cumplirlo…"],["wn","⚠ 3 tests rojos → los arreglo"],["ok","✓ Objetivo cumplido: build limpio, 142 tests verdes"]]},
+{n:"/init",what:"Analiza el repo y genera un CLAUDE.md inicial con descripción y convenciones.",
+when:"Lo PRIMERO que corrés en un repo, nuevo o existente.",
+demo:[["cm","/init"],["","Analizando el repositorio…"],["dim","47 archivos · Next.js + TypeScript + Supabase"],["ok","✓ CLAUDE.md creado con las convenciones detectadas"]]},
+{n:"/clear",what:"Borra el historial de la conversación. Contexto limpio.",
+when:"Cambiás de tarea por completo y querés arrancar fresco.",
+demo:[["cm","/clear"],["ok","✓ Historial borrado · contexto en 0 tokens"]]},
+{n:"/compact",what:"Resume la conversación para liberar contexto sin perder lo importante. Acepta instrucciones.",
+when:"La charla se puso larga y Claude se pone lento u olvida cosas.",
+demo:[["cm","/compact mantené las decisiones de arquitectura"],["","Resumiendo 142k → 18k tokens…"],["ok","✓ Conservado: stack, modelo de datos, reglas de RLS"]]},
+{n:"/model",what:"Cambia el modelo (Fable, Opus, Sonnet, Haiku).",
+when:"Fable 5 / Opus para lo difícil; Sonnet para el día a día; Haiku para tareas mecánicas y rápidas.",
+demo:[["cm","/model"],["dim","◯ Fable 5     — el más capaz"],["ok","● Opus 4.8   — el mejor para construir (actual)"],["dim","◯ Sonnet 4.6 — equilibrado"],["dim","◯ Haiku 4.5  — rápido y barato"]]},
+{n:"/agents",what:"Crea y gestiona subagentes especializados con su propio contexto y permisos.",
+when:"Tareas grandes con roles separados, o para limitar permisos de una sub-tarea. (Hoy anidan hasta 5 niveles.)",
+demo:[["cm","/agents"],["","  + Crear subagente"],["dim","  · revisor-seguridad  (solo lectura)"],["dim","  · tester             (corre la suite)"]]},
+{n:"/mcp",what:"Gestiona los servidores MCP: agregar, autenticar, ver herramientas.",
+when:"Querés darle acceso a GitHub, Supabase, Playwright, WhatsApp, etc.",
+demo:[["cm","/mcp"],["ok","  ✓ github      conectado · 12 tools"],["ok","  ✓ playwright  conectado · 7 tools"],["","  + Agregar servidor"]]},
+{n:"/permissions",what:"Configura qué puede hacer Claude sin preguntar y qué requiere tu OK.",
+when:"Al inicio de cada proyecto. La red de seguridad más importante.",
+demo:[["cm","/permissions"],["","  Lectura ……… permitir siempre"],["","  Edición ……… permitir siempre"],["","  Bash ………… preguntar"],["wn","  rm -rf · DROP · git push --force … bloquear"]]},
+{n:"/hooks",what:"Comandos que corren solos antes/después de las acciones de Claude.",
+when:"Automatizar estándares: formateo, bloquear archivos, correr tests post-cambio.",
+demo:[["cm","/hooks"],["ok","  PostEdit  → prettier --write     ✓"],["ok","  PreCommit → npm run typecheck    ✓"]]},
+{n:"/code-review",what:"Revisa el diff actual o un PR. Con --fix, aplica las correcciones.",
+when:"Antes de mergear. /code-review --fix aplica los arreglos directo sobre tus archivos.",
+demo:[["cm","/code-review --fix"],["","Revisando 8 archivos…"],["wn","⚠ input sin validar en api/login → corregido"],["ok","✓ 2 fixes aplicados al working tree"]]},
+{n:"/resume",what:"Retoma una conversación anterior con todo su contexto.",
+when:"Volvés al día siguiente a seguir la misma tarea.",
+demo:[["cm","/resume"],["dim",'  ↑ "Agente de WhatsApp"   hace 2 h'],["dim",'  ↑ "Refactor del checkout" ayer'],["","Retomando con el contexto completo…"]]},
+{n:"/usage",what:"Muestra el uso y costo de la sesión, desglosado por categoría.",
+when:"Control de gastos. Ahora separa skills, subagentes, plugins y MCP.",
+demo:[["cm","/usage"],["","  Sesión: 1.2M tokens · US$ 3.41"],["dim","  skills 18% · subagentes 31% · mcp 12%"]]},
+{n:"/memory",what:"Abre los archivos de memoria (CLAUDE.md) para editarlos.",
+when:"Querés revisar o ajustar las reglas permanentes del proyecto.",
+demo:[["cm","/memory"],["","  ./CLAUDE.md            (proyecto)"],["dim","  ~/.claude/CLAUDE.md    (global)"]]},
+{n:"/install-github-app",what:"Instala la app de GitHub para que Claude trabaje directo en PRs.",
+when:"Una vez por organización. Habilita mencionar @claude en GitHub.",
+demo:[["cm","/install-github-app"],["","Abriendo GitHub para autorizar…"],["ok","✓ Listo · mencioná @claude en cualquier PR"]]},
+{n:"/doctor",what:"Diagnostica la instalación y detecta problemas comunes.",
+when:"Algo anda raro: comandos que no responden, MCP que no levanta.",
+demo:[["cm","/doctor"],["ok","  Node v20.11  ✓"],["ok","  Auth ✓ · MCP ✓ · Permisos ✓"],["ok","  Todo en orden."]]},
+{n:"/terminal-setup",what:"Configura Shift+Enter para salto de línea.",
+when:"Una sola vez, al instalar.",
+demo:[["cm","/terminal-setup"],["ok","✓ Shift+Enter configurado para multilínea"]]},
+{n:"/help",what:"Lista todos los comandos disponibles.",
+when:"Cuando no te acordás de alguno.",
+demo:[["cm","/help"],["","Comandos disponibles:"],["dim","  /init /clear /compact /model /agents /goal /loop …"]]},
+];
+const ATAJOS=[
+["# texto","Agrega una nota a la memoria (CLAUDE.md) al instante. Ej: <code class='inline'># nunca uses any</code>"],
+["! comando","Ejecuta un comando bash directo, sin que Claude lo interprete. Ej: <code class='inline'>!git status</code>"],
+["@ archivo","Mete un archivo o carpeta en contexto. Ej: <code class='inline'>@src/app/page.tsx</code>"],
+["Esc / Esc×2","Esc interrumpe lo que está haciendo; doble Esc abre el historial para editar un mensaje anterior."],
+];
+
+/* ===== SKILLS recomendadas ===== */
+const SKILL_RECS=[
+{t:"voz-de-marca",tag:"berry",d:"Tono y estilo para todo texto público (DMs, captions, emails). Se activa al redactar.",
+prompt:`Creá una skill de proyecto en .claude/skills/voz-de-marca/ con un SKILL.md en formato oficial. La description debe decir que se activa al redactar texto público (captions de Instagram, mensajes de WhatsApp, emails, copy). Preguntame ejemplos de cómo escribimos antes de inventar; el SKILL.md incluye tono, palabras que sí/no usamos, y ejemplos "así sí / así no".`},
+{t:"agente-wpp",tag:"pine",d:"El estándar para construir agentes de WhatsApp del equipo: arquitectura, seguridad del webhook, handoff.",
+prompt:`Creá una skill de proyecto en .claude/skills/agente-wpp/ que se active con "agente de WhatsApp" o "bot de WhatsApp". El SKILL.md define nuestro estándar: WhatsApp Cloud API + webhook firmado, backend con la API de Claude (claude-opus-4-8), memoria por número, reglas de plantillas/ventana 24h, y handoff a humano con contexto.`},
+{t:"design-system",tag:"slate",d:"Tokens de marca: paleta, tipografías, espaciados. Se activa al crear o modificar UI.",
+prompt:`Creá una skill de proyecto en .claude/skills/design-system/ cuya description diga que se activa al crear o modificar UI. Preguntame paleta, tipografías y espaciados antes de inventar; con eso generá un SKILL.md con los design tokens y reglas (contraste AA, focus visible, responsive).`},
+{t:"security-review",tag:"rust",d:"Checklist OWASP del equipo + verificación de RLS. Se activa al revisar código o antes de un deploy.",
+prompt:`Creá una skill de proyecto en .claude/skills/security-review/ con un SKILL.md cuya description diga que se activa al revisar código/PRs o antes de un deploy. Contenido: checklist OWASP Top 10, verificación tabla-por-tabla de RLS, validación con Zod, manejo de secrets, y formato de reporte [CRÍTICO/ALTO/MEDIO/BAJO] con archivo:línea.`},
+];
+const SKILL_M2_PROMPT=`Creá una skill de proyecto en .claude/skills/<nombre>/ con un SKILL.md en formato oficial. La description tiene que decir claramente CUÁNDO debe activarse (pensá qué frases diría alguien que necesita esta skill). Después poné las instrucciones paso a paso. Antes de crear el archivo, mostrame la description y esperá mi OK.`;
+
+/* ===== CONCEPTOS ===== */
+const CONCEPTOS=[
+{k:"base",t:"Claude Code",d:"La herramienta de Anthropic para programar con Claude desde la terminal (y VS Code, web, escritorio). No es un chat: lee tu repo, edita archivos, corre comandos y trabaja como un desarrollador real."},
+{k:"contexto",t:"Contexto (context window)",d:"Todo lo que Claude 'tiene en la cabeza' en la sesión: tu código, la charla, los archivos. Es finito. Cuando se llena, Claude se pone lento u olvida. Por eso existen <b>/clear</b> y <b>/compact</b>."},
+{k:"tokens",t:"Tokens",d:"La unidad con la que se mide el texto (≈¾ de palabra). Entrada y salida se cobran en tokens. Más contexto = más tokens = más costo y más lento. Mirá el gasto con <b>/usage</b>."},
+{k:"modelos",t:"Modelos",d:"Las 'versiones' de Claude. <b>Fable 5</b> y <b>Opus 4.8</b> para lo difícil, <b>Sonnet 4.6</b> para el día a día, <b>Haiku 4.5</b> para tareas rápidas y baratas. Cambiás con <b>/model</b>."},
+{k:"effort",t:"Effort & pensamiento",d:"Cuánto 'piensa' Claude antes de responder. Más effort = más calidad pero más lento y caro. En modelos nuevos el pensamiento es adaptativo: Claude decide cuánto pensar según la tarea."},
+{k:"CLAUDE.md",t:"CLAUDE.md (memoria)",d:"Un archivo con las reglas permanentes del proyecto. Claude lo lee en cada sesión. Es donde ponés tus guardarraíles de seguridad, estilo y flujo. Editalo con <b>/memory</b> o agregá notas con <b># texto</b>."},
+{k:"skills",t:"Skills",d:"Carpetas con instrucciones especializadas (un SKILL.md) que Claude carga SOLO cuando hacen falta. Convierten conocimiento repetido en algo reutilizable: tu voz de marca, tu estándar de QA, tu forma de armar agentes."},
+{k:"mcp",t:"MCP (servidores)",d:"El estándar abierto que conecta a Claude con herramientas externas: GitHub, Supabase, Playwright, WhatsApp, Sentry. Le da 'manos' para actuar fuera del código. Se gestiona con <b>/mcp</b>."},
+{k:"agentes",t:"Subagentes",d:"Claudes secundarios con su propio contexto y permisos, para sub-tareas. Sirven para paralelizar (varios a la vez) y para aislar permisos. Hoy pueden anidarse hasta 5 niveles. Se crean con <b>/agents</b>."},
+{k:"hooks",t:"Hooks",d:"Comandos que corren automáticamente antes o después de las acciones de Claude. Te dejan imponer estándares sin pedirlos: formatear al guardar, correr tests tras un cambio, bloquear archivos."},
+{k:"permisos",t:"Permisos",d:"Definen qué puede hacer Claude sin preguntarte. Tu primera línea de defensa: permití lectura y edición libres, pero bloqueá comandos destructivos (rm -rf, DROP, push --force). Se configuran con <b>/permissions</b>."},
+{k:"api",t:"API de Claude",d:"Cuando construís un producto (como un agente de WhatsApp), tu app le habla a Claude por la API. Definís el modelo (ej: claude-opus-4-8), el system prompt y las herramientas (tools) que puede usar."},
+];
+
+/* ===== MCPs útiles ===== */
+const MCPS=[
+{t:"GitHub",tag:"slate",d:"Lee issues, crea PRs, responde reviews. Con /install-github-app trabajás PRs desde GitHub."},
+{t:"Playwright",tag:"pine",d:"Abre un navegador real, navega tu app, saca screenshots y verifica la UI. El estrella para QA visual."},
+{t:"Supabase",tag:"pine",d:"Consultar esquema, correr queries, revisar RLS. Conectalo en modo lectura para producción."},
+{t:"WhatsApp / Meta",tag:"berry",d:"Servidores MCP para WhatsApp Business permiten leer y responder conversaciones con contexto."},
+{t:"Sentry",tag:"rust",d:"Lee errores de producción y propone fixes con el stack trace real. Cierra el ciclo error → PR."},
+{t:"Context7",tag:"clay",d:"Documentación actualizada de librerías en contexto. Evita que use APIs viejas."},
+];
+
+/* ===== ROADMAP 12 semanas ===== */
+const ROADMAP=[
+{wk:"Semana 1–2",icon:"cli",title:"Fundamentos de Claude Code",tasks:[
+ ["Instalar Claude Code y verificar con /doctor","Que todo dé verde antes de seguir.",{code:["npm install -g @anthropic-ai/claude-code","claude","/doctor"],links:[["Guía de instalación","https://docs.claude.com/en/docs/claude-code/setup"]]}],
+ ["Configurar terminal y permisos","Shift+Enter para multilínea; edición libre, bash con confirmación, destructivos bloqueados.",{code:["/terminal-setup","/permissions"]}],
+ ["Primer cambio real en un repo de práctica","Pedile algo chico y mirá cómo explora, planifica y edita.",{prompt:"Agregá un botón de modo oscuro a la app. Antes de tocar código, mostrame en qué archivos vas a trabajar y esperá mi OK."}],
+ ["Dominar los 4 atajos: @ ! # Esc","Archivo en contexto, bash directo, nota a memoria, interrumpir.",{code:["@src/app/page.tsx revisá esto","!git status","# siempre validá inputs con Zod"]}],
+]},
+{wk:"Semana 3–4",icon:"doc",title:"Memoria, contexto y modelos",tasks:[
+ ["Crear el primer CLAUDE.md con /init","La memoria permanente del proyecto.",{code:["/init"]}],
+ ["Practicar /clear vs /compact","Cuándo limpiar y cuándo resumir el contexto.",{code:["/compact mantené las decisiones de arquitectura"]}],
+ ["Elegir modelo según la tarea","Fable/Opus para lo difícil, Sonnet para el día a día, Haiku para lo mecánico.",{code:["/model"]}],
+ ["Cargar los guardarraíles anti-destrucción","Pegá el prompt de seguridad y guardalo en CLAUDE.md.",{go:"prompts"}],
+]},
+{wk:"Semana 5–6",icon:"git",title:"Flujo profesional con Git + PRs",tasks:[
+ ["Trabajar siempre con ramas y PRs","Nunca directo a main. Commits chicos en español.",{prompt:"De ahora en más, trabajá siempre en una rama nueva por tarea y abrí un PR. Commits chicos en español. Nunca pushees a main directo."}],
+ ["Conectar GitHub e instalar la app","Para revisar y mergear desde Claude.",{code:["/install-github-app"]}],
+ ["Hacer tu primer /code-review","Revisar un PR antes de mergear.",{code:["/code-review"]}],
+ ["Probar /code-review --fix","Que aplique las correcciones solo.",{code:["/code-review --fix"]}],
+]},
+{wk:"Semana 7–8",icon:"mcp",title:"MCP y herramientas externas",tasks:[
+ ["Conectar tu primer MCP","Empezá por Playwright o GitHub.",{code:["/mcp"]}],
+ ["QA visual con Playwright","Que abra la app, navegue y saque screenshots.",{prompt:"Con Playwright, abrí la app, recorré el flujo de registro→login→acción principal y sacá screenshots de cada paso. Reportá cualquier cosa rota."}],
+ ["Conectar Supabase en modo lectura","Para revisar esquema y RLS sin riesgo.",{code:["/mcp"]}],
+ ["Configurar un hook útil","Formatear al guardar o correr typecheck antes de commitear.",{code:["/hooks"]}],
+]},
+{wk:"Semana 9–10",icon:"loop",title:"Skills, subagentes y autonomía",tasks:[
+ ["Crear tu primera skill","Empezá por la voz de marca o el design system.",{go:"skills"}],
+ ["Usar subagentes para paralelizar","Un revisor de seguridad + un tester en paralelo.",{code:["/agents"]}],
+ ["Probar /goal en una tarea real","Definí el 'terminado' y dejalo trabajar.",{code:["/goal todos los tests verdes y build sin errores"]}],
+ ["Probar /loop para algo recurrente","Vigilar PRs o un deploy.",{code:["/loop 10m revisá si hay PRs nuevos y avisame"]}],
+]},
+{wk:"Semana 11–12",icon:"agents",title:"Construir un producto real",tasks:[
+ ["Elegir: web hermosa o agente de WhatsApp/Instagram","Llevá un proyecto de 0 a deploy.",{go:"agentes"}],
+ ["Arrancar con el kickoff seguro 0→1","La base con seguridad desde el commit 1.",{go:"prompts"}],
+ ["Capa de QA + auditoría de seguridad","Antes de mostrarlo a nadie.",{go:"prompts"}],
+ ["Deploy guiado y RUNBOOK","A producción, ordenado y con plan de rollback.",{prompt:"Llevemos esto a producción ordenado. Guiame paso a paso (build limpio, secrets fuera del repo, RLS verificado en prod, dominio + HTTPS, smoke test de 3 flujos) y creá un RUNBOOK.md con rollback y a quién avisar."}],
+]},
+];
+
+/* ===== PATHS de onboarding (para contratar) ===== */
+const PATHS=[
+{id:"operador",ic:"cli",t:"Operador Claude Code",s:"De cero a manejar Claude con criterio",
+ steps:[
+ ["Instalar y dejar todo en verde","claude + /doctor + /terminal-setup. No avances si algo está rojo."],
+ ["Aprender los conceptos base","Leé la sección Conceptos: contexto, tokens, modelos, CLAUDE.md.",{go:"conceptos"}],
+ ["Configurar permisos seguros","Edición libre, bash con confirmación, destructivos bloqueados.",{code:["/permissions"]}],
+ ["Dominar los 4 atajos","@ archivo · ! comando · # nota · Esc para frenar."],
+ ["Primer cambio real con plan previo","Pedí siempre el plan antes de tocar código."],
+ ["Saber cuándo /clear y cuándo /compact","Mantener el contexto sano."],
+]},
+{id:"web",ic:"doc",t:"Constructor de webs",s:"Webs hermosas y seguras, de 0 a deploy",
+ steps:[
+ ["Completar primero el path de Operador","La base es no negociable."],
+ ["Usar el prompt 'Director de diseño'","Pedí 4 direcciones visuales antes de codear.",{go:"prompts"}],
+ ["Arrancar con el kickoff seguro 0→1","Seguridad desde el commit 1.",{go:"prompts"}],
+ ["Guardar el design-system como skill","Para que la marca se aplique sola.",{go:"skills"}],
+ ["QA visual con Playwright","Recorrer la app y verificar la UI.",{go:"prompts"}],
+ ["Deploy guiado + RUNBOOK","A producción ordenado, con rollback."],
+]},
+{id:"agentes",ic:"agents",t:"Constructor de agentes",s:"Bots de WhatsApp e Instagram que venden",
+ steps:[
+ ["Completar el path de Operador","Sin base, no hay agente que aguante."],
+ ["Entender la arquitectura de un agente","Leé la sección Agentes de punta a punta.",{go:"agentes"}],
+ ["Usar el prompt madre de WhatsApp","Plan primero, implementación por partes.",{go:"prompts"}],
+ ["Escribir el system prompt del bot","Personalidad, límites y handoff a humano.",{go:"prompts"}],
+ ["Conectar el MCP / webhook seguro","Firma verificada, tokens fuera del repo."],
+ ["Probar con casos difíciles","8 mensajes de prueba, incluido un cliente complicado."],
+ ["Guardar el estándar como skill agente-wpp","Para repetir el éxito en el próximo cliente.",{go:"skills"}],
+]},
+];
+
+/* ===== AGENTES: lo que te van a pedir ===== */
+const AG_ASKS=[
+{t:"Atención 24/7",tag:"pine",d:"Que responda consultas frecuentes a cualquier hora sin que nadie esté del otro lado."},
+{t:"Calificar y agendar",tag:"berry",d:"Que filtre interesados reales, tome datos y agende turnos o demos."},
+{t:"Vender por chat",tag:"clay",d:"Que pase catálogo, responda dudas y cierre o derive la venta."},
+];
+const AG_ARCH=[
+ ["1 · Canal","El cliente escribe por WhatsApp o Instagram. Meta manda el mensaje a tu <b>webhook</b> (un endpoint en tu backend). Verificás la firma y respondés 200 al toque."],
+ ["2 · Contexto","Buscás el historial de ese usuario (por número o ID) en tu base (Supabase/Postgres) para que el bot no arranque de cero cada vez."],
+ ["3 · Cerebro","Tu backend llama a la <b>API de Claude</b> (claude-opus-4-8) con el system prompt del negocio + el historial + las <b>tools</b> disponibles (consultar stock, agendar, derivar)."],
+ ["4 · Acción","Si Claude decide usar una tool, tu código la ejecuta (consulta la DB, crea el turno) y le devuelve el resultado para que arme la respuesta final."],
+ ["5 · Respuesta / Handoff","Mandás la respuesta por la API de Meta. Si hay queja o pide una persona, marcás la conversación para un humano con TODO el contexto."],
+];
+const AG_TOOLS=[
+ ["WhatsApp Cloud API","El canal oficial de Meta para WhatsApp. Requiere número de empresa, plantillas aprobadas para iniciar conversación y respetar la ventana de 24h."],
+ ["Instagram Messaging API","Para DMs (y comentarios). Necesita cuenta Business/Creator vinculada a una página de Facebook."],
+ ["API de Claude","El cerebro. Modelo claude-opus-4-8, system prompt con la personalidad y reglas, y tool use para acciones reales."],
+ ["Backend + DB","Node/Next.js para el webhook y la lógica. Supabase/Postgres para memoria de conversaciones. Deploy en Vercel/Render."],
+];
+
+/* ===== retos diarios ===== */
+const RETOS=[
+"Pedile a Claude que cree un CLAUDE.md para uno de tus proyectos y revisá juntos las reglas de seguridad.",
+"Usá /compact en una sesión larga y fijate cuánto contexto recuperás.",
+"Conectá un MCP nuevo (Playwright o GitHub) y hacele hacer una tarea con él.",
+"Creá tu primera skill: la voz de marca de algún proyecto.",
+"Pedí 4 direcciones visuales para una landing y elegí una antes de codear.",
+"Probá /goal con una condición clara y dejalo trabajar hasta cumplirla.",
+"Escribí el system prompt de un agente de WhatsApp y probalo con un cliente difícil.",
+"Hacé una auditoría de seguridad en modo solo-lectura de un proyecto viejo.",
+"Configurá un hook que formatee el código al guardar.",
+"Usá subagentes: uno que revise seguridad y otro que corra los tests, en paralelo.",
+];
+
+/* ===== NAV ===== */
+const NAV=[
+ {g:"empezar",items:[
+   ["inicio","Inicio","home"],
+   ["novedades","Novedades","spark"],
+   ["paths","Ruta 0→100","route"],
+ ]},
+ {g:"aprender",items:[
+   ["roadmap","Roadmap","map"],
+   ["conceptos","Conceptos","book"],
+   ["comandos","Comandos /","terminal"],
+   ["skills","Skills","puzzle"],
+ ]},
+ {g:"construir",items:[
+   ["prompts","Prompts","bolt"],
+   ["agentes","Agentes WPP/IG","chat"],
+   ["lab","Lab","beaker"],
+ ]},
+ {g:"práctica",items:[
+   ["reto","Reto del día","target"],
+ ]},
+];
+</script>
+<script src="app.js"></script>
+</body>
+</html>
