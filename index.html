@@ -275,6 +275,32 @@ code.inline{font-family:'JetBrains Mono',monospace;background:var(--card2);borde
 .ptab.active .ic{background:var(--clay);color:#fff}
 .progressbar{height:9px;border-radius:99px;background:var(--line);overflow:hidden;margin-bottom:22px}
 .progressbar i{display:block;height:100%;background:linear-gradient(90deg,var(--clay),var(--gold));border-radius:99px;transition:width .5s}
+/* path steps expandibles */
+.pstep{border-bottom:1px solid var(--line2)}
+.pstep:last-child{border-bottom:none}
+.prow{display:flex;align-items:flex-start;gap:12px;padding:14px 2px}
+.prow input{appearance:none;width:21px;height:21px;border:2px solid var(--line);border-radius:7px;flex-shrink:0;margin-top:1px;cursor:pointer;transition:.14s;position:relative;background:var(--card)}
+.prow input:checked{background:var(--clay);border-color:var(--clay)}
+.prow input:checked::after{content:"✓";position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:.78rem;font-weight:700}
+.pmain{flex:1;cursor:pointer;min-width:0}
+.pmain .tt{font-size:.97rem;font-weight:600;color:var(--ink)}
+.pmain .ts{font-size:.85rem;color:var(--ink2);margin-top:2px}
+.pstep.done .pmain .tt{text-decoration:line-through;color:var(--ink3)}
+.pchev{cursor:pointer;color:var(--ink3);flex-shrink:0;display:grid;place-items:center;width:27px;height:27px;border-radius:8px;transition:transform .2s,background .14s,color .14s}
+.pchev:hover{background:var(--card2);color:var(--clay)}
+.pchev svg{width:16px;height:16px}
+.pstep.open .pchev{transform:rotate(90deg)}
+.pdetail{display:none;cursor:default;margin:0 0 15px 33px;padding:16px 18px;background:var(--card2);border:1px solid var(--line);border-radius:13px}
+.pstep.open .pdetail{display:block;animation:fade .24s}
+.pdetail .pintro{font-size:.9rem;color:var(--ink2);line-height:1.6;margin-bottom:14px}
+.pdetail h5{font-family:'JetBrains Mono',monospace;font-size:.63rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ink3);margin:0 0 10px;font-weight:600}
+.pdetail ol.plist{margin:0;padding-left:21px;display:flex;flex-direction:column;gap:9px}
+.pdetail ol.plist li{font-size:.91rem;color:var(--ink);line-height:1.55;padding-left:3px}
+.pdetail ol.plist li::marker{color:var(--clay);font-weight:700;font-family:'JetBrains Mono',monospace}
+.pdetail .pcode{margin-top:13px}
+.pdetail .pdone{margin-top:14px;font-size:.87rem;color:var(--ink2);padding:11px 14px;background:var(--pine-t);border-radius:10px}
+.pdetail .pdone b{color:var(--pine)}
+.pdetail .linkrow{margin-top:13px}
 
 /* concept cards */
 .concept{background:var(--card);border:1px solid var(--line);border-radius:var(--r2);padding:18px 20px;box-shadow:var(--shadow-sm)}
@@ -778,31 +804,105 @@ const ROADMAP=[
 const PATHS=[
 {id:"operador",ic:"cli",t:"Operador Claude Code",s:"De cero a manejar Claude con criterio",
  steps:[
- ["Instalar y dejar todo en verde","claude + /doctor + /terminal-setup. No avances si algo está rojo."],
- ["Aprender los conceptos base","Leé la sección Conceptos: contexto, tokens, modelos, CLAUDE.md.",{go:"conceptos"}],
- ["Configurar permisos seguros","Edición libre, bash con confirmación, destructivos bloqueados.",{code:["/permissions"]}],
- ["Dominar los 4 atajos","@ archivo · ! comando · # nota · Esc para frenar."],
- ["Primer cambio real con plan previo","Pedí siempre el plan antes de tocar código."],
- ["Saber cuándo /clear y cuándo /compact","Mantener el contexto sano."],
+ {t:"Instalar y dejar todo en verde",s:"Que Claude Code esté sano antes de empezar (se hace una sola vez).",
+  detail:"Antes de aprender nada, Claude Code tiene que estar instalado y funcionando. Si algo falla acá, todo lo demás falla. Esto se configura una vez y listo.",
+  steps:["Abrí la terminal de tu compu (en Mac: app Terminal; en Windows: PowerShell).","Si no tenés Node.js, instalalo primero desde nodejs.org (es lo único que necesita para instalarse).","Corré el comando de instalación de abajo.","Escribí 'claude' para abrirlo e iniciá sesión con tu cuenta cuando te lo pida.","Adentro, corré /doctor: hace un chequeo completo de la instalación.","Corré /terminal-setup para activar Shift+Enter (saltar de línea sin enviar el mensaje)."],
+  code:["npm install -g @anthropic-ai/claude-code","claude","/doctor","/terminal-setup"],
+  links:[["Guía oficial de instalación","https://docs.claude.com/en/docs/claude-code/setup"]],
+  done:"/doctor muestra todo en verde (Node, Auth, Permisos). Si algo aparece en rojo, arreglá eso antes de seguir."},
+ {t:"Aprender los conceptos base",s:"El vocabulario mínimo para no estar perdido.",
+  detail:"No se puede manejar bien algo que no entendés. Estos 4 conceptos son el 80% de lo que vas a usar todos los días. No hace falta memorizar, alcanza con entender qué es cada cosa.",
+  steps:["Entrá a la sección Conceptos de esta academia (botón de abajo).","Leé sobre contexto, tokens, modelos y CLAUDE.md (los 4 más importantes).","Mirá la tabla de modelos: cuál conviene para qué tarea.","Cerrá la sección sabiendo explicar con tus palabras qué es el contexto."],
+  go:"conceptos",
+  done:"Podés explicar qué es el contexto y para qué sirve el archivo CLAUDE.md."},
+ {t:"Configurar permisos seguros",s:"Tu primera red de seguridad: qué puede hacer Claude solo.",
+  detail:"Los permisos definen qué puede hacer Claude sin pedirte autorización. Bien configurados, trabaja rápido pero nunca hace algo destructivo por su cuenta. Es lo primero que configurás en cada proyecto.",
+  steps:["Dentro de una sesión de Claude, corré /permissions.","Permití 'Lectura' siempre (que lea archivos libremente).","Permití 'Edición' siempre (que edite código sin preguntar cada vez).","Poné 'Bash' en 'preguntar' (que te consulte antes de correr comandos de terminal).","Confirmá que los comandos destructivos (rm -rf, DROP, git push --force) queden BLOQUEADOS."],
+  code:["/permissions"],
+  done:"Claude edita sin molestarte, te pregunta antes de correr comandos, y no puede ejecutar nada destructivo."},
+ {t:"Dominar los 4 atajos",s:"Cuatro símbolos que vas a usar todo el día.",
+  detail:"Estos 4 atajos acortan muchísimo el trabajo. Vale la pena que los uses una vez cada uno hasta que te salgan solos.",
+  steps:["@ + archivo: mete ese archivo en el contexto. Ejemplo: @src/app/page.tsx","! + comando: corre un comando de terminal directo, sin que Claude lo interprete. Ejemplo: !git status","# + texto: guarda una nota permanente en la memoria (CLAUDE.md). Ejemplo: # nunca uses any","Esc: interrumpe a Claude si arrancó para el lado equivocado. Doble Esc abre el historial para editar un mensaje anterior.","Probá cada uno una vez en una sesión real."],
+  code:["@src/app/page.tsx revisá esto","!git status","# siempre validá inputs con Zod"],
+  done:"Usaste los 4 atajos al menos una vez y entendés cuándo sirve cada uno."},
+ {t:"Primer cambio real con plan previo",s:"La regla de oro: el plan ANTES de tocar código.",
+  detail:"El error más caro es dejar que Claude codee de una. Si primero te muestra el plan, corregís barato cuando va para otro lado. Esta costumbre te va a ahorrar horas.",
+  steps:["Abrí un proyecto de práctica (o creá uno con: npx create-next-app@latest prueba).","Pedile un cambio chico, pero exigí el plan primero (usá el prompt de abajo).","Leé el plan que propone: qué archivos va a tocar y qué va a hacer.","Si está bien, decile 'dale'. Si no, corregilo antes de que edite.","Cuando termine, revisá qué cambió de verdad."],
+  prompt:"Agregá un botón de modo oscuro a la app. Antes de tocar código, mostrame en qué archivos vas a trabajar y qué vas a hacer en cada uno. Esperá mi OK antes de editar.",
+  done:"Completaste un cambio donde Claude primero mostró el plan y vos lo aprobaste."},
+ {t:"Saber cuándo usar /clear y cuándo /compact",s:"Mantener el contexto sano para que no se ponga lento.",
+  detail:"El contexto es finito: cuando se llena, Claude se pone lento u olvida cosas. Estos dos comandos lo mantienen sano. La diferencia: uno borra todo, el otro resume conservando lo importante.",
+  steps:["/clear: borra TODO el historial. Usalo cuando cambiás de tarea por completo.","/compact: resume la charla conservando lo clave. Usalo cuando la MISMA tarea se hizo larga.","Probá /compact con una instrucción de qué conservar.","Mirá tu consumo con /usage para tomarle el pulso al contexto."],
+  code:["/compact mantené las decisiones de arquitectura","/clear","/usage"],
+  done:"Sabés decidir entre borrar (cambiás de tema) y resumir (misma tarea, ya larga)."},
 ]},
 {id:"web",ic:"doc",t:"Constructor de webs",s:"Webs hermosas y seguras, de 0 a deploy",
  steps:[
- ["Completar primero el path de Operador","La base es no negociable."],
- ["Usar el prompt 'Director de diseño'","Pedí 4 direcciones visuales antes de codear.",{go:"prompts"}],
- ["Arrancar con el kickoff seguro 0→1","Seguridad desde el commit 1.",{go:"prompts"}],
- ["Guardar el design-system como skill","Para que la marca se aplique sola.",{go:"skills"}],
- ["QA visual con Playwright","Recorrer la app y verificar la UI.",{go:"prompts"}],
- ["Deploy guiado + RUNBOOK","A producción ordenado, con rollback."],
+ {t:"Completar primero el path de Operador",s:"Sin base, construir una web es perder tiempo.",
+  detail:"Construir encima de una base floja se paga caro después. Si todavía no manejás Claude Code con criterio, terminá el path de Operador antes de seguir acá.",
+  steps:["Completá los 6 pasos del path 'Operador Claude Code' (la pestaña de arriba).","Confirmá que tenés los permisos seguros configurados.","Volvé a este path cuando /doctor te dé todo verde."],
+  done:"Tenés el path Operador completo."},
+ {t:"Usar el prompt 'Director de diseño'",s:"Pedí dirección de arte antes de que codee nada.",
+  detail:"El error más común es dejar que Claude codee de una y salga una web genérica. Primero pedile que proponga opciones visuales y elegís vos. Así la web tiene carácter propio.",
+  steps:["Andá a Prompts y filtrá por la categoría Web.","Copiá el prompt 'Director de diseño'.","Completá los corchetes: qué es la web, para quién, y cuál es la acción principal.","Pegáselo a Claude y mirá las 4 direcciones visuales que propone.","Elegí UNA antes de que escriba una sola línea de código."],
+  go:"prompts",
+  done:"Claude te propuso 4 direcciones visuales y elegiste una."},
+ {t:"Arrancar con el kickoff seguro 0→1",s:"La base del proyecto con seguridad desde el commit 1.",
+  detail:"Este prompt arma la base del proyecto con la seguridad ya puesta (validaciones, secrets afuera del repo, headers, sesión verificada en el servidor). Hacerlo bien al principio evita arreglos carísimos después.",
+  steps:["Copiá el prompt 'Kickoff seguro 0→1' (Prompts, categoría Kickoff).","Respondé las preguntas que te haga sobre el producto (público, si hay pagos, datos sensibles).","Revisá y aprobá el PLAN.md antes de que implemente.","Dejá que arme la base; al final revisá el checklist de seguridad que te entrega."],
+  go:"prompts",
+  done:"El proyecto base está creado, con CLAUDE.md y el checklist de seguridad marcado."},
+ {t:"Guardar el design-system como skill",s:"Que la identidad visual se aplique sola en cada pantalla.",
+  detail:"Para no repetir la paleta y las tipografías en cada pantalla nueva, las guardás como una skill. Claude la carga sola cada vez que toca la UI, así todo queda consistente sin que se lo pidas.",
+  steps:["Andá a la sección Skills.","Copiá el prompt de la skill 'design-system'.","Cuando Claude te pregunte, pasale la paleta y tipografías que elegiste en el paso 2.","Revisá la 'description' (qué dice cuándo se activa) antes de crear el archivo."],
+  go:"skills",
+  done:"Existe la carpeta .claude/skills/design-system/ y se activa al crear o modificar UI."},
+ {t:"QA visual con Playwright",s:"Ver la web funcionar de verdad antes de mostrarla.",
+  detail:"Antes de mostrarle la web a nadie, hay que verla andar. Playwright es un MCP que deja a Claude abrir un navegador real, recorrer tu web y sacar capturas. Así encontrás lo roto antes que el cliente.",
+  steps:["Conectá el MCP de Playwright con /mcp.","Pedile a Claude que recorra el flujo principal de la web y saque screenshots de cada paso.","Mirá las capturas: ¿se ve bien en celular? ¿algo desalineado o roto?","Arreglá lo que aparezca, pantalla por pantalla."],
+  code:["/mcp"],
+  done:"Tenés capturas del flujo principal y arreglaste lo que estaba mal."},
+ {t:"Deploy guiado + RUNBOOK",s:"Publicar ordenado, con plan de rescate.",
+  detail:"Publicar bien: build limpio, ningún secret en el repo, dominio con HTTPS, y un documento de rescate (RUNBOOK) por si algo se rompe en producción. Claude te guía paso a paso.",
+  steps:["Pedile el deploy guiado paso a paso (usá el prompt de abajo).","Verificá: build sin errores y ningún secret subido al repo.","Conectá el dominio y confirmá que carga con HTTPS.","Pedile que cree un RUNBOOK.md con cómo hacer rollback y a quién avisar si falla."],
+  prompt:"Llevemos esto a producción ordenado. Guiame paso a paso (build limpio, secrets fuera del repo, RLS verificado en prod, dominio + HTTPS, smoke test de 3 flujos clave) y creá un RUNBOOK.md con el rollback y a quién avisar. Confirmá cada paso conmigo antes de avanzar.",
+  done:"La web está online, con HTTPS, y existe un RUNBOOK.md de rescate."},
 ]},
 {id:"agentes",ic:"agents",t:"Constructor de agentes",s:"Bots de WhatsApp e Instagram que venden",
  steps:[
- ["Completar el path de Operador","Sin base, no hay agente que aguante."],
- ["Entender la arquitectura de un agente","Leé la sección Agentes de punta a punta.",{go:"agentes"}],
- ["Usar el prompt madre de WhatsApp","Plan primero, implementación por partes.",{go:"prompts"}],
- ["Escribir el system prompt del bot","Personalidad, límites y handoff a humano.",{go:"prompts"}],
- ["Conectar el MCP / webhook seguro","Firma verificada, tokens fuera del repo."],
- ["Probar con casos difíciles","8 mensajes de prueba, incluido un cliente complicado."],
- ["Guardar el estándar como skill agente-wpp","Para repetir el éxito en el próximo cliente.",{go:"skills"}],
+ {t:"Completar el path de Operador",s:"Un agente corre solo: la base es obligatoria.",
+  detail:"Un agente es un producto que funciona sin vos mirando. Si no dominás Claude Code, no vas a poder mantenerlo cuando algo falle. Base primero.",
+  steps:["Completá el path 'Operador Claude Code'.","Leé en Conceptos qué es la 'API de Claude' (es el cerebro que tu agente va a usar)."],
+  go:"conceptos",
+  done:"Path Operador completo y entendés qué es la API de Claude."},
+ {t:"Entender la arquitectura de un agente",s:"Cómo viaja un mensaje, de punta a punta.",
+  detail:"Antes de codear, tenés que tener clarísimo el recorrido de un mensaje: del cliente al webhook, al cerebro (Claude), a la acción, y de vuelta. Sin ese mapa mental, te perdés en el código.",
+  steps:["Andá a la sección Agentes WPP/IG.","Leé los 5 pasos del flujo de un mensaje, en orden.","Mirá las piezas que se usan (WhatsApp Cloud API, API de Claude, backend, base de datos).","Asegurate de entender qué es el 'handoff' a humano y por qué es clave."],
+  go:"agentes",
+  done:"Podés explicar el recorrido de un mensaje desde que el cliente escribe hasta que recibe respuesta."},
+ {t:"Usar el prompt madre de WhatsApp",s:"Armar toda la arquitectura del bot con un prompt.",
+  detail:"Este prompt arma la arquitectura completa del agente. Igual que con las webs: plan primero, implementación por partes. No lo dejes construir todo de una.",
+  steps:["Andá a Prompts y filtrá por WhatsApp.","Copiá 'Agente de WhatsApp — arquitectura completa'.","Respondé lo que te pregunte sobre el negocio (qué hace, qué resuelve el bot, cuándo deriva).","Aprobá el PLAN.md (el flujo de un mensaje) antes de que implemente.","Dejá que lo construya por partes, con tests del webhook."],
+  go:"prompts",
+  done:"Tenés el PLAN.md del agente aprobado y la base armada."},
+ {t:"Escribir el system prompt del bot",s:"La personalidad, los límites y el handoff.",
+  detail:"El system prompt es la personalidad y las reglas del bot: cómo habla, qué sabe, qué NO puede hacer, y cuándo pasa a un humano. Es lo que separa un bot útil de uno que espanta clientes.",
+  steps:["Copiá 'Personalidad y reglas del bot' (Prompts, WhatsApp).","Completá: nombre del asistente, qué vende el negocio, precios y horarios.","Definí los límites: qué no debe prometer ni inventar nunca.","Definí cuándo deriva a un humano (queja, cancelación, caso complejo).","Probalo con los 8 mensajes de prueba que te genera, incluido un cliente difícil."],
+  go:"prompts",
+  done:"Tenés el system prompt listo y probado con casos difíciles."},
+ {t:"Conectar el MCP / webhook seguro",s:"La parte sensible: firma verificada y tokens afuera.",
+  detail:"Acá está la seguridad real. El webhook que recibe los mensajes tiene que verificar la firma de Meta, y los tokens nunca van al código. Si esto está flojo, te secuestran el bot.",
+  steps:["Pedile a Claude que implemente el webhook verificando la firma de Meta.","Guardá los tokens en variables de entorno, NUNCA dentro del código ni en el repo.","Respondé 200 rápido al webhook y procesá el mensaje de forma asíncrona.","Probá que un mensaje entrante llegue y dispare una respuesta."],
+  done:"El webhook verifica la firma, los tokens están fuera del repo, y un mensaje de prueba recibe respuesta."},
+ {t:"Probar con casos difíciles",s:"Romperlo a propósito antes de que lo haga un cliente.",
+  detail:"Un bot que solo aguanta el 'hola' no sirve. Hay que estresarlo a propósito: mensajes confusos, quejas, pedidos fuera de tema. Ahí se ve si está listo.",
+  steps:["Mandale mensajes confusos, quejas y pedidos fuera de tema.","Verificá que NO invente datos cuando no sabe algo.","Verificá que derive a un humano cuando corresponde.","Ajustá el system prompt según lo que falle, y volvé a probar."],
+  done:"El bot maneja un cliente difícil sin inventar ni trabarse, y deriva cuando debe."},
+ {t:"Guardar el estándar como skill agente-wpp",s:"Para armar el próximo cliente en una fracción del tiempo.",
+  detail:"Cuando te salga bien, capturá tu forma de armar agentes en una skill. El próximo cliente lo construís muchísimo más rápido, sin reinventar nada.",
+  steps:["Andá a la sección Skills.","Copiá el prompt de la skill 'agente-wpp'.","Revisá que capture tu arquitectura (webhook firmado, memoria por número, handoff a humano).","Creala y usala en el próximo proyecto."],
+  go:"skills",
+  done:"Existe .claude/skills/agente-wpp/ con tu estándar, listo para repetir."},
 ]},
 ];
 

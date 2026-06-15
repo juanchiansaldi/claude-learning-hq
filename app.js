@@ -209,13 +209,44 @@ function renderPaths(){
   const keys=p.steps.map((s,i)=>'pt-'+p.id+'-'+i);
   const done=keys.filter(k=>progress[k]).length;
   document.getElementById('pathbar').style.width=(done/p.steps.length*100)+'%';
+  const chev=svg('<polyline points="9 6 15 12 9 18"/>',2.4);
   document.getElementById('pathbody').innerHTML=`<div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;flex-wrap:wrap;gap:8px">
       <h3 class="serif" style="font-size:1.25rem">${p.t}</h3>
-      <span class="tag clay">${done}/${p.steps.length} pasos</span>
+      <span class="tag clay" id="pathcount">${done}/${p.steps.length} pasos</span>
     </div>
-    ${p.steps.map((s,i)=>{const k='pt-'+p.id+'-'+i;const d=!!progress[k];return `<label class="task ${d?'done':''}"><input type="checkbox" ${d?'checked':''} onchange="toggleTask('${k}','renderPaths')"><div><div class="tt">${i+1}. ${s[0]}</div><div class="ts">${s[1]}</div></div></label>${extras(s[2])}`}).join('')}
+    <p class="secsub" style="margin-bottom:14px">Clickeá cada paso para ver exactamente qué hacer. Marcá el check cuando lo completes.</p>
+    ${p.steps.map((s,i)=>{const k='pt-'+p.id+'-'+i;const d=!!progress[k];return `
+      <div class="pstep ${d?'done':''}" id="ps-${k}">
+        <div class="prow">
+          <input type="checkbox" ${d?'checked':''} title="Marcar como hecho" onclick="event.stopPropagation();setPathTask(this,'${k}')">
+          <div class="pmain" onclick="this.closest('.pstep').classList.toggle('open')">
+            <div class="tt">${i+1}. ${s.t}</div>
+            <div class="ts">${s.s}</div>
+          </div>
+          <span class="pchev" onclick="this.closest('.pstep').classList.toggle('open')">${chev}</span>
+        </div>
+        <div class="pdetail" onclick="event.stopPropagation()">
+          ${s.detail?`<p class="pintro">${s.detail}</p>`:''}
+          <h5>Paso a paso</h5>
+          <ol class="plist">${s.steps.map(x=>`<li>${esc(x)}</li>`).join('')}</ol>
+          ${s.code?`<div class="pcode">${codeBlock(s.code)}</div>`:''}
+          ${s.prompt?promptBox(s.prompt):''}
+          ${(s.links||s.go)?`<div class="linkrow">${(s.links||[]).map(linkBtn).join('')}${s.go?`<button class="linkbtn" onclick="go('${s.go}')">Ir a la sección →</button>`:''}</div>`:''}
+          ${s.done?`<div class="pdone"><b>✓ Listo cuando:</b> ${s.done}</div>`:''}
+        </div>
+      </div>`}).join('')}
   </div>`;
+}
+function setPathTask(cb,k){
+  progress[k]=cb.checked;LS.set('progress',progress);
+  const st=cb.closest('.pstep');if(st)st.classList.toggle('done',cb.checked);
+  const p=PATHS.find(x=>x.id===pathSel);
+  const keys=p.steps.map((s,i)=>'pt-'+p.id+'-'+i);
+  const done=keys.filter(x=>progress[x]).length;
+  const bar=document.getElementById('pathbar');if(bar)bar.style.width=(done/p.steps.length*100)+'%';
+  const c=document.getElementById('pathcount');if(c)c.textContent=done+'/'+p.steps.length+' pasos';
+  renderRail();
 }
 function selPath(id){pathSel=id;renderPaths()}
 
