@@ -414,6 +414,32 @@ kbd{font-family:'JetBrains Mono',monospace;font-size:.66rem;background:var(--car
 .pal-foot{display:flex;gap:16px;padding:11px 17px;border-top:1px solid var(--line);font-size:.72rem;color:var(--ink3);background:var(--card2);flex-wrap:wrap}
 .pal-foot span{display:flex;align-items:center;gap:6px}
 .databox{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+
+/* ===== plantillas ===== */
+.tpl{background:var(--card);border:1px solid var(--line);border-radius:var(--r2);padding:21px 22px;box-shadow:var(--shadow-sm);cursor:pointer;transition:border-color .14s,box-shadow .14s}
+.tpl:hover{border-color:var(--clay);box-shadow:var(--shadow)}
+.tpl .thead{display:flex;gap:14px;align-items:flex-start}
+.tpl .tic{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;flex-shrink:0;background:var(--clay-t);color:var(--clay)}
+.tpl .tic svg{width:22px;height:22px}
+.tpl.pine .tic{background:var(--pine-t);color:var(--pine)}
+.tpl.berry .tic{background:var(--berry-t);color:var(--berry)}
+.tpl.slate .tic{background:var(--slate-t);color:var(--slate)}
+.tpl.gold .tic{background:var(--gold-t);color:var(--gold)}
+.tpl h3{font-size:1.16rem;font-weight:600}
+.tpl .tsub{font-size:.9rem;color:var(--ink2);margin-top:3px}
+.tpl .tstack{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px}
+.tpl-more{display:none;margin-top:16px;padding-top:16px;border-top:1px dashed var(--line);cursor:default}
+.tpl.open .tpl-more{display:block;animation:fade .24s}
+.tpl.open .cta-more .chev{transform:rotate(90deg)}
+.tpl.open .cta-more .lbl-c{display:none}
+.tpl.open .cta-more .lbl-o{display:inline}
+.tpl-more h5{font-family:'JetBrains Mono',monospace;font-size:.63rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin:0 0 9px;font-weight:600}
+.tpl-more ul.incl{list-style:none;display:flex;flex-direction:column;gap:7px;margin:0}
+.tpl-more ul.incl li{font-size:.9rem;color:var(--ink2);line-height:1.5;padding-left:21px;position:relative}
+.tpl-more ul.incl li::before{content:"✓";position:absolute;left:0;color:var(--pine);font-weight:700}
+.tpl-more ol.plist{margin:0;padding-left:21px;display:flex;flex-direction:column;gap:8px}
+.tpl-more ol.plist li{font-size:.9rem;color:var(--ink);line-height:1.5}
+.tpl-more ol.plist li::marker{color:var(--clay);font-weight:700;font-family:'JetBrains Mono',monospace}
 </style>
 </head>
 <body>
@@ -638,6 +664,62 @@ text:`Actuá como mi estratega de contenido de Instagram para [MARCA / NICHO]. T
 3. Sugerí, para cada una, qué mostraría el visual.
 
 Español rioplatense, nada de frases de gurú vacías. Primero las 12 ideas; espero para elegir.`},
+{cat:"Instagram",tag:"berry",title:"Plan de crecimiento 30 días",desc:"Un calendario accionable para crecer en Instagram, sin consejos de gurú.",
+text:`Actuá como estratega de Instagram para [MARCA / NICHO]. Objetivo: [crecer seguidores / generar consultas / vender]. Tono: [DESCRIBÍ].
+
+1. Diagnóstico rápido: 3 cosas que probablemente estén frenando el crecimiento hoy.
+2. Plan de 30 días: qué postear cada semana (mezcla de reels de gancho, carruseles de valor, prueba social, detrás de escena), con una frecuencia realista.
+3. Para la semana 1, dame los 4 posts completos: gancho de la primera línea, guion/estructura, CTA y hashtags.
+4. 3 métricas para mirar y qué significa cada una.
+
+Español rioplatense, sin frases vacías. Primero el diagnóstico y el plan; espero para pedirte el contenido.`},
+
+/* WHATSAPP extra */
+{cat:"WhatsApp",tag:"pine",title:"Campaña de difusión con plantillas aprobadas",desc:"Mandar una campaña por WhatsApp sin que te bloqueen, respetando las reglas de Meta.",
+text:`Ayudame a armar una campaña de difusión por WhatsApp para [NEGOCIO], cumpliendo las políticas de Meta:
+
+1. Explicame simple las reglas que importan: plantillas (templates) aprobadas para iniciar conversación, la ventana de 24h, y el opt-out obligatorio.
+2. Redactá 3 variantes de plantilla para [OBJETIVO: promo / recordatorio / novedad], con variables {{1}} donde corresponda, listas para mandar a aprobar.
+3. Decime qué categoría de plantilla usar y por qué (marketing / utility).
+4. Buenas prácticas para no caer en spam: segmentación, frecuencia y cómo manejar las respuestas.
+
+Si algo no se puede hacer sin violar las políticas, decímelo en vez de inventar un atajo.`},
+
+/* DEBUG / DEPLOY / PERFORMANCE / REFACTOR */
+{cat:"Debug",tag:"rust",title:"Investigar un bug hasta la causa raíz",desc:"Diagnóstico sistemático: primero la causa, después el fix. Nada de parches a ciegas.",
+text:`Hay un bug: [DESCRIBÍ QUÉ PASA Y QUÉ ESPERABAS]. No lo arregles todavía. Seguí este orden:
+
+1. INVESTIGAR: reproducí el problema. Mostrame los pasos exactos y qué observás (logs, error, comportamiento).
+2. ANALIZAR: rastreá desde el síntoma hacia atrás. ¿Qué archivos y funciones participan? Mostrame el camino del dato.
+3. HIPÓTESIS: decime cuál es la causa raíz más probable y por qué. Si hay dudas, proponé cómo confirmarla.
+4. RECIÉN AHÍ, con mi OK, arreglá la causa (no el síntoma): un commit con el fix + un test que lo cubra para que no vuelva.
+
+Regla: no toques nada que no esté relacionado con este bug.`},
+{cat:"Deploy",tag:"slate",title:"Deploy a producción guiado + RUNBOOK",desc:"Llevar el proyecto a producción ordenado, paso a paso, con plan de rescate.",
+text:`Llevemos esto a producción ordenado. Guiame y verificá cada paso, esperando mi confirmación:
+
+1. PRE-DEPLOY: build limpio, npm audit sin críticas, .env.example completo, ningún secret en el repo ni en el historial de git.
+2. BASE DE DATOS: proyecto de producción separado, migraciones aplicadas, RLS verificado tabla por tabla EN PROD, redirect URLs de auth al dominio real.
+3. HOSTING: repo conectado (main = prod), variables de entorno por ambiente, headers de seguridad verificados (curl -I).
+4. POST-DEPLOY: smoke test de 3 flujos críticos, dominio + HTTPS andando, monitoreo (analytics + errores).
+5. RUNBOOK.md: cómo hacer rollback, dónde ver los logs, y a quién avisar si se cae.`},
+{cat:"Web",tag:"slate",title:"Optimizar performance (Core Web Vitals)",desc:"Hacer la web rápida de verdad, midiendo antes y después.",
+text:`Optimizá la performance de esta web SIN cambiar funcionalidad. Trabajá con datos, no a ojo:
+
+1. MEDÍ primero: LCP, CLS, INP y peso total de la página. Mostrame el estado actual.
+2. DIAGNOSTICÁ los 5 mayores problemas (imágenes pesadas, JS de más, fuentes que bloquean el render, falta de lazy-load, etc.).
+3. ARREGLÁ de mayor a menor impacto, un cambio por commit: optimizar y lazy-load de imágenes, code-splitting, precargar fuentes, sacar dependencias innecesarias.
+4. VOLVÉ a medir y mostrame el antes/después.
+
+No rompas el diseño ni la accesibilidad en el camino.`},
+{cat:"Refactor",tag:"gold",title:"Refactor seguro paso a paso",desc:"Mejorar código existente sin cambiar el comportamiento, con red de seguridad.",
+text:`Refactoricemos [ÁREA / ARCHIVO]. Reglas:
+
+1. RED PRIMERO: si no hay tests, escribí characterization tests que capturen el comportamiento ACTUAL antes de tocar nada.
+2. PLAN: listá los cambios de menor a mayor riesgo. Esperá mi OK.
+3. EJECUCIÓN: un cambio atómico por commit. Después de cada uno: typecheck + tests en verde.
+4. PROHIBIDO: cambiar comportamiento observable, tocar archivos no relacionados, o renombrar APIs públicas sin avisar.
+5. Al final: qué mejoró y qué deuda quedó anotada.`},
 
 /* KICKOFF / SEGURIDAD (de la base sólida del proto) */
 {cat:"Kickoff",tag:"clay",title:"Kickoff seguro 0→1 (el prompt madre)",desc:"Arranca cualquier proyecto nuevo con la capa de seguridad puesta desde el commit 1.",
@@ -1099,6 +1181,35 @@ const PATHS=[
 ]},
 ];
 
+/* ===== PLANTILLAS: recetas de proyectos ===== */
+const PLANTILLAS=[
+{c:"slate",ic:"doc",t:"Landing de conversión",s:"Una página que vende, lista para publicar.",go:"Web",
+ stack:["HTML o Next.js","Vercel","Formulario → email/Sheet"],
+ incluye:["Hero con promesa clara y un solo CTA","Prueba social (testimonios, logos, números)","Beneficios concretos y objeciones resueltas","Formulario de contacto que funciona de verdad","Responsive y rápida"],
+ pasos:["Usá el prompt 'Director de diseño' para la identidad visual (4 opciones, elegís una).","Usá 'Landing de alta conversión' para la estructura y el copy.","Conectá el formulario a tu email o a una Google Sheet.","Deploy a Vercel y listo."],
+ arranque:"Quiero una landing de conversión para [PRODUCTO]. Objetivo único: [ACCIÓN]. Antes de codear, proponé 4 direcciones visuales y la estructura (hero, prueba social, beneficios, objeciones, CTA) y esperá mi OK. Después implementá en un solo archivo, responsive, con el formulario funcionando."},
+{c:"slate",ic:"book",t:"Web institucional + blog",s:"Sitio de empresa con páginas y blog editable.",go:"Web",
+ stack:["Next.js (App Router)","Markdown o CMS","Vercel"],
+ incluye:["Home, Nosotros, Servicios, Contacto","Blog con posts en Markdown","SEO básico (metatags + sitemap)","Diseño con identidad propia"],
+ pasos:["Arrancá con el 'Kickoff seguro 0→1' para la base.","Definí la estructura de páginas y el sistema de diseño.","Armá el blog leyendo Markdown de una carpeta /content.","SEO básico + deploy a Vercel."],
+ arranque:"Construí un sitio institucional con blog para [EMPRESA]. Páginas: Home, Nosotros, Servicios, Contacto. El blog lee posts en Markdown de /content. Antes de codear, mostrame la arquitectura y el sistema de diseño y esperá mi OK. Incluí SEO básico (metatags + sitemap). Stack Next.js + Vercel."},
+{c:"pine",ic:"chat",t:"Bot de turnos por WhatsApp",s:"Agenda citas por chat, 24/7.",go:"WhatsApp",
+ stack:["WhatsApp Cloud API","Backend Node/Next.js","API de Claude","Supabase","Calendar (opcional)"],
+ incluye:["Webhook con firma verificada","System prompt del asistente","Tomar datos y agendar el turno","Confirmación y recordatorio","Handoff a humano"],
+ pasos:["Usá 'Agente de WhatsApp — arquitectura completa' (plan primero).","Escribí el system prompt con 'Personalidad y reglas del bot'.","Agregá la tool de agendar (a tu base o a Google Calendar).","Probá con casos difíciles antes de mostrarlo."],
+ arranque:"Construyamos un bot de WhatsApp para agendar turnos en [NEGOCIO]. Tiene que: saludar, entender qué turno quiere, ofrecer horarios disponibles, tomar nombre y confirmar. Antes de codear, hacé un PLAN.md con el flujo de un mensaje y las tools (consultar disponibilidad, crear turno). Webhook con firma verificada y tokens fuera del repo."},
+{c:"berry",ic:"agents",t:"Bot de ventas por Instagram",s:"Responde DMs, califica y acerca la venta.",go:"Instagram",
+ stack:["Instagram Messaging API","Backend","API de Claude","Catálogo (DB o link)"],
+ incluye:["Responder DMs con la voz de marca","Pasar catálogo o link de compra","Calificar el interés del cliente","Derivar a humano para cerrar"],
+ pasos:["Usá 'Agente de Instagram (DMs + comentarios)'.","System prompt con la voz de marca.","Tool para mandar el catálogo / link de compra.","Definí cuándo deriva a una persona."],
+ arranque:"Construyamos un agente de Instagram para [MARCA] que responda DMs, pase el catálogo y derive la venta a una persona cuando el cliente está listo. Antes de codear, PLAN.md con el flujo (DM entra → contexto → respuesta / handoff). Cuenta Business, webhook firmado, ventana de 24h respetada."},
+{c:"gold",ic:"bolt",t:"Tienda simple (e-commerce MVP)",s:"Catálogo + carrito + pago, sin sobre-ingeniería.",go:"Kickoff",
+ stack:["Next.js","Supabase","Stripe o Mercado Pago","Vercel"],
+ incluye:["Catálogo de productos","Carrito","Checkout con pago real","Panel para cargar productos","RLS y validaciones"],
+ pasos:["Arrancá con el 'Kickoff seguro 0→1'.","Modelo de datos: productos y órdenes (con RLS).","Integrá el pago (Stripe / Mercado Pago) solo del lado del servidor.","QA + auditoría de seguridad antes de cobrar de verdad."],
+ arranque:"Construyamos una tienda online MVP para [NEGOCIO]: catálogo, carrito, checkout con [Stripe / Mercado Pago] y un panel para cargar productos. Stack Next.js + Supabase + Vercel. Antes de codear, PLAN.md con el modelo de datos (productos, órdenes con RLS) y dónde va cada validación. La clave de pago solo server-side."},
+];
+
 /* ===== AGENTES: lo que te van a pedir ===== */
 const AG_ASKS=[
 {t:"Atención 24/7",tag:"pine",d:"Que responda consultas frecuentes a cualquier hora sin que nadie esté del otro lado."},
@@ -1147,6 +1258,7 @@ const NAV=[
    ["skills","Skills","puzzle"],
  ]},
  {g:"construir",items:[
+   ["plantillas","Plantillas","layers"],
    ["prompts","Prompts","bolt"],
    ["agentes","Agentes WPP/IG","chat"],
    ["lab","Lab","beaker"],

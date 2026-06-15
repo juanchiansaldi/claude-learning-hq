@@ -21,6 +21,7 @@ mcp:'<rect x="2" y="3" width="20" height="6" rx="1"/><rect x="2" y="13" width="2
 loop:'<path d="M17 2.1l4 4-4 4"/><path d="M3 12.2v-2a4 4 0 0 1 4-4h14"/><path d="M7 21.9l-4-4 4-4"/><path d="M21 11.8v2a4 4 0 0 1-4 4H3"/>',
 agents:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
 bulb:'<path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1V18h6v-1.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2Z"/>',
+layers:'<path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/>',
 };
 const svg=(p,w)=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w||2}" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
 const ICO_COPY=svg(I.copy,2);
@@ -106,7 +107,7 @@ function buildAll(){
   const m=document.getElementById('main');
   m.innerHTML=[
     secInicio(),secNovedades(),secPaths(),secRoadmap(),secConceptos(),
-    secComandos(),secSkills(),secPrompts(),secAgentes(),secLab(),secReto()
+    secComandos(),secSkills(),secPlantillas(),secPrompts(),secAgentes(),secLab(),secReto()
   ].join('');
   bindLab();
 }
@@ -458,6 +459,36 @@ function saveUserPrompt(){
 function delUserPrompt(i){if(i<0)return;userPrompts.splice(i,1);LS.set('uprompts',userPrompts);renderPrompts();rebuildInicio()}
 function rebuildInicio(){const el=document.getElementById('sec-inicio');if(el){const wrap=document.createElement('div');wrap.innerHTML=secInicio();el.replaceWith(wrap.firstElementChild);if(current==='inicio')document.getElementById('sec-inicio').classList.add('visible')}}
 
+/* ---------- PLANTILLAS ---------- */
+function secPlantillas(){
+  const chev=svg('<polyline points="9 6 15 12 9 18"/>',2.4);
+  return `<section id="sec-plantillas">
+    <div class="eyebrow">arrancá un proyecto ya</div>
+    <h2 class="pagetitle">Plantillas</h2>
+    <p class="lede tight">Recetas completas para proyectos reales. Cada una trae el stack, qué incluye, los pasos y el prompt para arrancar. Clickeá para ver la receta entera.</p>
+    <div class="grid c2">
+    ${PLANTILLAS.map(p=>`<div class="tpl ${p.c}" onclick="this.classList.toggle('open')">
+      <div class="thead">
+        <div class="tic">${svg(I[p.ic]||I.layers,2)}</div>
+        <div style="min-width:0"><h3 class="serif">${p.t}</h3><div class="tsub">${p.s}</div>
+          <div class="tstack">${p.stack.map(s=>`<span class="tag">${esc(s)}</span>`).join('')}</div>
+        </div>
+      </div>
+      <div class="cta-more"><span class="lbl-c">Ver la receta</span><span class="lbl-o">Cerrar</span><span class="chev">${chev}</span></div>
+      <div class="tpl-more" onclick="event.stopPropagation()">
+        <h5>Qué incluye</h5>
+        <ul class="incl">${p.incluye.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>
+        <h5 style="margin-top:15px">Cómo arrancar</h5>
+        <ol class="plist">${p.pasos.map(x=>`<li>${esc(x)}</li>`).join('')}</ol>
+        ${promptBox(p.arranque,'Prompt de arranque')}
+        ${p.go?`<div class="linkrow"><button class="linkbtn" onclick="promptFilter='${p.go}';go('prompts');renderPrompts()">Ver prompts de ${p.go} →</button></div>`:''}
+      </div>
+    </div>`).join('')}
+    </div>
+    <div class="callout clay" style="margin-top:22px"><div class="i">${svg(I.bulb,2)}</div><p><b>Cómo se usan:</b> elegí una plantilla, copiá el prompt de arranque, completá los corchetes y pegáselo a Claude Code. Siempre pedí el plan antes de que codee. Para el detalle paso a paso, mirá la <button class="linkbtn" style="padding:2px 8px" onclick="go('paths')">Ruta 0→100</button>.</p></div>
+  </section>`;
+}
+
 /* ---------- AGENTES ---------- */
 function secAgentes(){
   return `<section id="sec-agentes">
@@ -565,6 +596,7 @@ function buildSearchIndex(){
   ROADMAP.forEach(ph=>ph.tasks.forEach(t=>idx.push({ty:"Roadmap",ic:"map",tt:t.t,ts:ph.wk+" · "+ph.title,sec:"roadmap"})));
   PATHS.forEach(p=>p.steps.forEach(s=>idx.push({ty:"Ruta",ic:"route",tt:s.t,ts:p.t,sec:"paths"})));
   SKILL_RECS.forEach(s=>idx.push({ty:"Skill",ic:"puzzle",tt:s.t,ts:s.d,sec:"skills"}));
+  PLANTILLAS.forEach(p=>idx.push({ty:"Plantilla",ic:p.ic||"layers",tt:p.t,ts:p.s,sec:"plantillas"}));
   return idx;
 }
 let PAL_IDX=[];
