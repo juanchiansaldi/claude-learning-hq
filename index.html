@@ -131,6 +131,10 @@ code.inline{font-family:'JetBrains Mono',monospace;background:var(--card2);borde
 .linkbtn:hover{border-color:var(--clay);background:#fff}
 .promptbox{background:var(--card2);border:1px solid var(--line);border-radius:13px;padding:16px 17px;margin-top:10px}
 .promptbox .lbl{font-size:.66rem;font-family:'JetBrains Mono',monospace;color:var(--ink3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:9px;display:flex;align-items:center;gap:7px}
+.promptbox .lbl svg{width:13px;height:13px;flex-shrink:0;color:var(--clay)}
+.phase .chev{display:grid;place-items:center;width:20px;height:20px;flex-shrink:0}
+.phase .chev svg{width:16px;height:16px}
+.nov-cta .chev svg{width:13px;height:13px}
 .promptbox pre{font-family:'JetBrains Mono',monospace;font-size:.79rem;color:var(--ink);white-space:pre-wrap;word-break:break-word;line-height:1.65;margin-bottom:11px;max-height:300px;overflow:auto}
 
 /* ===== hero ===== */
@@ -376,16 +380,64 @@ code.inline{font-family:'JetBrains Mono',monospace;background:var(--card2);borde
 .callout p b{color:var(--ink)}
 .callout.pine{background:var(--pine-t);border-color:rgba(31,111,107,.25)}.callout.pine .i{color:var(--pine)}
 .callout.clay{background:var(--clay-t);border-color:rgba(193,95,60,.25)}.callout.clay .i{color:var(--clay)}
+
+/* ===== buscador global (⌘K) ===== */
+.railsearch{display:flex;align-items:center;gap:9px;width:100%;background:var(--card2);border:1px solid var(--line);border-radius:11px;padding:10px 12px;margin:2px 0 8px;color:var(--ink3);font-size:.83rem;transition:.14s;font-family:inherit}
+.railsearch:hover{border-color:var(--clay);color:var(--ink2);background:var(--card)}
+.railsearch svg{width:16px;height:16px;flex-shrink:0}
+.railsearch span{flex:1;text-align:left}
+kbd{font-family:'JetBrains Mono',monospace;font-size:.66rem;background:var(--card);border:1px solid var(--line);border-radius:5px;padding:2px 6px;color:var(--ink3);line-height:1}
+.topsearch{margin-left:auto;background:var(--card);border:1px solid var(--line);border-radius:9px;width:36px;height:36px;display:grid;place-items:center;color:var(--ink2);flex-shrink:0}
+.topsearch svg{width:17px;height:17px}
+.palette{position:fixed;inset:0;background:rgba(30,26,21,.42);backdrop-filter:blur(5px);z-index:180;display:none;align-items:flex-start;justify-content:center;padding:78px 20px 20px}
+.palette.show{display:flex;animation:fade .16s}
+.pal-box{background:var(--card);border:1px solid var(--line);border-radius:17px;width:100%;max-width:610px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;max-height:72vh}
+.pal-search{display:flex;align-items:center;gap:12px;padding:16px 19px;border-bottom:1px solid var(--line)}
+.pal-search svg{width:19px;height:19px;color:var(--ink3);flex-shrink:0}
+.pal-search input{flex:1;border:none;background:none;font-family:inherit;font-size:1.02rem;color:var(--ink);outline:none}
+.pal-results{overflow-y:auto;padding:8px}
+.pal-empty{padding:30px;text-align:center;color:var(--ink3);font-size:.9rem}
+.pal-sec{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);padding:10px 12px 5px;font-weight:600}
+.pal-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:11px;cursor:pointer}
+.pal-item .ic{width:33px;height:33px;border-radius:9px;background:var(--card2);color:var(--clay);display:grid;place-items:center;flex-shrink:0}
+.pal-item .ic svg{width:16px;height:16px}
+.pal-item .tx{flex:1;min-width:0}
+.pal-item .tt{font-size:.93rem;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pal-item .ts{font-size:.78rem;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.pal-item .ty{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--ink3);background:var(--card2);border:1px solid var(--line);padding:3px 8px;border-radius:6px;flex-shrink:0}
+.pal-item:hover{background:var(--card2)}
+.pal-item.sel{background:var(--clay);}
+.pal-item.sel .ic{background:rgba(255,255,255,.2);color:#fff}
+.pal-item.sel .tt{color:#fff}
+.pal-item.sel .ts{color:rgba(255,255,255,.8)}
+.pal-item.sel .ty{background:rgba(255,255,255,.16);color:#fff;border-color:transparent}
+.pal-foot{display:flex;gap:16px;padding:11px 17px;border-top:1px solid var(--line);font-size:.72rem;color:var(--ink3);background:var(--card2);flex-wrap:wrap}
+.pal-foot span{display:flex;align-items:center;gap:6px}
+.databox{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
 </style>
 </head>
 <body>
 
 <div class="toast" id="toast"><span class="dot"></span><span id="toast-txt">Copiado</span></div>
 
+<!-- command palette -->
+<div class="palette" id="palette" onclick="if(event.target===this)closePalette()">
+  <div class="pal-box">
+    <div class="pal-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+      <input id="pal-input" placeholder="Buscar prompts, comandos, conceptos, secciones…" autocomplete="off" oninput="renderPal(this.value)">
+      <kbd>esc</kbd>
+    </div>
+    <div class="pal-results" id="pal-results"></div>
+    <div class="pal-foot"><span><kbd>↑</kbd><kbd>↓</kbd> navegar</span><span><kbd>↵</kbd> abrir</span><span><kbd>esc</kbd> cerrar</span></div>
+  </div>
+</div>
+
 <!-- mobile bars -->
 <div class="topbar">
   <div class="logo-mark" id="logo-m"></div>
   <div class="nm">Claude <b>Learning HQ</b></div>
+  <button class="topsearch" onclick="openPalette()" aria-label="Buscar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></button>
 </div>
 <nav class="topnav" id="topnav"></nav>
 
@@ -398,6 +450,7 @@ code.inline{font-family:'JetBrains Mono',monospace;background:var(--card2);borde
         <div class="sub">la escuela de claude</div>
       </div>
     </div>
+    <button class="railsearch" onclick="openPalette()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg><span>Buscar…</span><kbd>⌘K</kbd></button>
     <div id="railnav"></div>
     <div class="spacer"></div>
     <div class="foot">

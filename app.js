@@ -156,6 +156,18 @@ function secInicio(){
     <div class="qgrid">
       ${quick.map(q=>`<button class="qcard ${q[2]}" onclick="go('${q[0]}')"><div class="ic">${svg(I[q[1]],2)}</div><h3 class="serif">${q[3]}</h3><p>${q[4]}</p><span class="arw">abrir →</span></button>`).join('')}
     </div>
+    <div class="card flat" style="margin-top:22px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
+      <div>
+        <h3 class="serif" style="font-size:1.08rem;margin-bottom:4px">Respaldo de tus datos</h3>
+        <p style="font-size:.87rem;color:var(--ink2);max-width:54ch">Tu progreso, tu racha y tus prompts viven en este navegador. Exportá un archivo para no perderlos nunca, o pasarlos a otra compu.</p>
+      </div>
+      <div class="databox">
+        <button class="btn ghost small" onclick="exportData()">↓ Exportar</button>
+        <button class="btn ghost small" onclick="document.getElementById('importfile').click()">↑ Importar</button>
+        <input type="file" id="importfile" accept="application/json" style="display:none" onchange="importData(this)">
+        <button class="btn ghost small" onclick="openPalette()">⌘K Buscar</button>
+      </div>
+    </div>
   </section>`;
 }
 
@@ -541,6 +553,80 @@ function completarReto(){
   toast('¡Sumado! Racha: '+streak.n+' 🔥');rebuildInicio();renderRail();
 }
 
+/* ============================================================= BUSCADOR (⌘K) */
+let palFiltered=[], palSel=0;
+function buildSearchIndex(){
+  const idx=[];
+  NAV.forEach(g=>g.items.forEach(it=>idx.push({ty:"Ir a",ic:it[2],tt:it[1],ts:"Sección de la academia",sec:it[0]})));
+  SLASHES.forEach(c=>idx.push({ty:"Comando",ic:"terminal",tt:c.n,ts:c.what,sec:"comandos"}));
+  CONCEPTOS.forEach(c=>idx.push({ty:"Concepto",ic:"book",tt:c.t,ts:c.d.replace(/<[^>]+>/g,""),sec:"conceptos"}));
+  allPrompts().forEach(p=>idx.push({ty:"Prompt",ic:"bolt",tt:p.title,ts:p.desc||p.cat,sec:"prompts",q:p.title}));
+  NOVEDADES.forEach(n=>idx.push({ty:"Novedad",ic:"spark",tt:n.title,ts:n.body,sec:"novedades"}));
+  ROADMAP.forEach(ph=>ph.tasks.forEach(t=>idx.push({ty:"Roadmap",ic:"map",tt:t.t,ts:ph.wk+" · "+ph.title,sec:"roadmap"})));
+  PATHS.forEach(p=>p.steps.forEach(s=>idx.push({ty:"Ruta",ic:"route",tt:s.t,ts:p.t,sec:"paths"})));
+  SKILL_RECS.forEach(s=>idx.push({ty:"Skill",ic:"puzzle",tt:s.t,ts:s.d,sec:"skills"}));
+  return idx;
+}
+let PAL_IDX=[];
+function openPalette(){
+  PAL_IDX=buildSearchIndex();
+  document.getElementById('palette').classList.add('show');
+  const inp=document.getElementById('pal-input');inp.value='';
+  renderPal('');
+  setTimeout(()=>inp.focus(),30);
+}
+function closePalette(){document.getElementById('palette').classList.remove('show')}
+function renderPal(q){
+  q=q.trim().toLowerCase();
+  if(q){
+    const hit=PAL_IDX.filter(x=>(x.tt+' '+(x.ts||'')+' '+x.ty).toLowerCase().includes(q));
+    hit.sort((a,b)=>(a.tt.toLowerCase().includes(q)?0:1)-(b.tt.toLowerCase().includes(q)?0:1));
+    palFiltered=hit.slice(0,40);
+  }
+  else{palFiltered=PAL_IDX.filter(x=>x.ty==="Ir a").concat(PAL_IDX.filter(x=>x.ty==="Comando").slice(0,4))}
+  palSel=0;
+  const el=document.getElementById('pal-results');
+  if(!palFiltered.length){el.innerHTML='<div class="pal-empty">Nada encontrado. Probá otra palabra.</div>';return}
+  el.innerHTML=palFiltered.map((x,i)=>`<div class="pal-item ${i===0?'sel':''}" onclick="palGo(${i})" onmousemove="palHover(${i})">
+    <div class="ic">${svg(I[x.ic]||I.bolt,2)}</div>
+    <div class="tx"><div class="tt">${esc(x.tt)}</div><div class="ts">${esc((x.ts||'').slice(0,90))}</div></div>
+    <span class="ty">${x.ty}</span></div>`).join('');
+}
+function palHover(i){if(i===palSel)return;palSel=i;updPalSel()}
+function updPalSel(){const it=document.querySelectorAll('#pal-results .pal-item');it.forEach((el,i)=>el.classList.toggle('sel',i===palSel));const c=it[palSel];if(c)c.scrollIntoView({block:'nearest'})}
+function palGo(i){
+  const x=palFiltered[i];if(!x)return;
+  closePalette();go(x.sec);
+  if(x.sec==='prompts'&&x.q){promptFilter='Todos';promptQuery=x.q;const s=document.getElementById('psearch');if(s)s.value=x.q;renderPrompts()}
+}
+
+/* ===== respaldo de datos ===== */
+function exportData(){
+  const data={_app:"claude-learning-hq",progress:LS.get('progress',{}),uprompts:LS.get('uprompts',[]),streak:LS.get('streak',{}),novseen:LS.get('novseen',null),last:LS.get('last','inicio')};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='claude-learning-hq-backup.json';document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  toast('Backup descargado ✓');
+}
+function importData(input){
+  const f=input.files&&input.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const d=JSON.parse(r.result);
+      if(d.progress&&typeof d.progress==='object')LS.set('progress',d.progress);
+      if(Array.isArray(d.uprompts))LS.set('uprompts',d.uprompts);
+      if(d.streak&&typeof d.streak==='object')LS.set('streak',d.streak);
+      progress=LS.get('progress',{});userPrompts=LS.get('uprompts',[]);streak=LS.get('streak',streak);
+      buildAll();renderRail();renderRoadmap();renderPaths();renderPrompts();go(current);
+      toast('Datos importados ✓');
+    }catch(e){toast('Archivo inválido ✗')}
+    input.value='';
+  };
+  r.readAsText(f);
+}
+
 /* ============================================================= INIT */
 function init(){
   document.getElementById('logo-d').innerHTML=LOGO;
@@ -552,5 +638,15 @@ function init(){
   renderPrompts();
   const last=LS.get('last','inicio');
   go(last||'inicio');
+  document.addEventListener('keydown',e=>{
+    const pal=document.getElementById('palette');const open=pal.classList.contains('show');
+    if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();open?closePalette():openPalette();return}
+    if(open){
+      if(e.key==='Escape'){e.preventDefault();closePalette()}
+      else if(e.key==='ArrowDown'){e.preventDefault();palSel=Math.min(palSel+1,palFiltered.length-1);updPalSel()}
+      else if(e.key==='ArrowUp'){e.preventDefault();palSel=Math.max(palSel-1,0);updPalSel()}
+      else if(e.key==='Enter'){e.preventDefault();palGo(palSel)}
+    } else if(e.key==='Escape'){const m=document.getElementById('modal');if(m&&m.classList.contains('show'))closeModal()}
+  });
 }
 document.addEventListener('DOMContentLoaded',init);
