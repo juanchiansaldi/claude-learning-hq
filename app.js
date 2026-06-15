@@ -310,8 +310,16 @@ function secConceptos(){
   return `<section id="sec-conceptos">
     <div class="eyebrow">los cimientos</div>
     <h2 class="pagetitle">Conceptos clave</h2>
-    <p class="lede">Si entendés estos 11 conceptos, entendés Claude. Cero relleno: qué es cada cosa y para qué te sirve.</p>
-    <div class="grid c2">${CONCEPTOS.map(c=>`<div class="concept"><h3 class="serif"><span class="k">${c.k}</span> ${c.t}</h3><p>${c.d}</p></div>`).join('')}</div>
+    <p class="lede">Si entendés estos 12 conceptos, entendés Claude. Cero relleno: qué es cada cosa, y un ejemplo real de cómo se usa (clickeá cada uno).</p>
+    <div class="grid c2">${CONCEPTOS.map(c=>{const hm=!!c.ej;const chev=svg('<polyline points="9 6 15 12 9 18"/>',2.4);return `<div class="concept ${hm?'has-more':''}" ${hm?'onclick="this.classList.toggle(\'open\')"':''}>
+      <h3 class="serif"><span class="k">${c.k}</span> ${c.t}</h3>
+      <p>${c.d}</p>
+      ${hm?`<div class="cta-more"><span class="lbl-c">Ver ejemplo real</span><span class="lbl-o">Cerrar</span><span class="chev">${chev}</span></div>
+      <div class="concept-more" onclick="event.stopPropagation()">
+        <h5>Ejemplo · cómo se usa</h5><p>${c.ej}</p>
+        ${c.code?`<div class="pcode">${codeBlock(c.code)}</div>`:''}
+      </div>`:''}
+    </div>`}).join('')}</div>
     <div class="sectit"><span class="n">↗</span> Modelos de Claude (hoy)</div>
     <p class="secsub">Cuál usar para qué. Cambiás de modelo con <code class="inline">/model</code>.</p>
     <div class="card" style="padding:6px 8px">

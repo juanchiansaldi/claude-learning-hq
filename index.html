@@ -308,6 +308,21 @@ code.inline{font-family:'JetBrains Mono',monospace;background:var(--card2);borde
 .concept h3 .k{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--clay);background:var(--clay-t);padding:3px 8px;border-radius:6px;font-weight:600}
 .concept p{font-size:.9rem;color:var(--ink2);line-height:1.58}
 .concept p b{color:var(--ink)}
+.concept{transition:border-color .14s,box-shadow .14s}
+.concept.has-more{cursor:pointer}
+.concept.has-more:hover{border-color:var(--clay);box-shadow:var(--shadow)}
+.cta-more{display:inline-flex;align-items:center;gap:7px;margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:.71rem;color:var(--clay);font-weight:600;letter-spacing:.02em}
+.cta-more .chev{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:6px;background:var(--clay-t);transition:transform .22s}
+.cta-more .chev svg{width:13px;height:13px}
+.concept.open .cta-more .chev{transform:rotate(90deg)}
+.concept.open .cta-more .lbl-c{display:none}
+.cta-more .lbl-o{display:none}
+.concept.open .cta-more .lbl-o{display:inline}
+.concept-more{display:none;margin-top:13px;padding-top:14px;border-top:1px dashed var(--line);cursor:default}
+.concept.open .concept-more{display:block;animation:fade .24s}
+.concept-more h5{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin:0 0 8px;font-weight:600}
+.concept-more p{font-size:.89rem;color:var(--ink);line-height:1.6;margin:0}
+.concept-more .pcode{margin-top:12px}
 
 /* model table */
 .mtable{width:100%;border-collapse:collapse;font-size:.88rem}
@@ -736,18 +751,41 @@ const SKILL_M2_PROMPT=`Creá una skill de proyecto en .claude/skills/<nombre>/ c
 
 /* ===== CONCEPTOS ===== */
 const CONCEPTOS=[
-{k:"base",t:"Claude Code",d:"La herramienta de Anthropic para programar con Claude desde la terminal (y VS Code, web, escritorio). No es un chat: lee tu repo, edita archivos, corre comandos y trabaja como un desarrollador real."},
-{k:"contexto",t:"Contexto (context window)",d:"Todo lo que Claude 'tiene en la cabeza' en la sesión: tu código, la charla, los archivos. Es finito. Cuando se llena, Claude se pone lento u olvida. Por eso existen <b>/clear</b> y <b>/compact</b>."},
-{k:"tokens",t:"Tokens",d:"La unidad con la que se mide el texto (≈¾ de palabra). Entrada y salida se cobran en tokens. Más contexto = más tokens = más costo y más lento. Mirá el gasto con <b>/usage</b>."},
-{k:"modelos",t:"Modelos",d:"Las 'versiones' de Claude. <b>Fable 5</b> y <b>Opus 4.8</b> para lo difícil, <b>Sonnet 4.6</b> para el día a día, <b>Haiku 4.5</b> para tareas rápidas y baratas. Cambiás con <b>/model</b>."},
-{k:"effort",t:"Effort & pensamiento",d:"Cuánto 'piensa' Claude antes de responder. Más effort = más calidad pero más lento y caro. En modelos nuevos el pensamiento es adaptativo: Claude decide cuánto pensar según la tarea."},
-{k:"CLAUDE.md",t:"CLAUDE.md (memoria)",d:"Un archivo con las reglas permanentes del proyecto. Claude lo lee en cada sesión. Es donde ponés tus guardarraíles de seguridad, estilo y flujo. Editalo con <b>/memory</b> o agregá notas con <b># texto</b>."},
-{k:"skills",t:"Skills",d:"Carpetas con instrucciones especializadas (un SKILL.md) que Claude carga SOLO cuando hacen falta. Convierten conocimiento repetido en algo reutilizable: tu voz de marca, tu estándar de QA, tu forma de armar agentes."},
-{k:"mcp",t:"MCP (servidores)",d:"El estándar abierto que conecta a Claude con herramientas externas: GitHub, Supabase, Playwright, WhatsApp, Sentry. Le da 'manos' para actuar fuera del código. Se gestiona con <b>/mcp</b>."},
-{k:"agentes",t:"Subagentes",d:"Claudes secundarios con su propio contexto y permisos, para sub-tareas. Sirven para paralelizar (varios a la vez) y para aislar permisos. Hoy pueden anidarse hasta 5 niveles. Se crean con <b>/agents</b>."},
-{k:"hooks",t:"Hooks",d:"Comandos que corren automáticamente antes o después de las acciones de Claude. Te dejan imponer estándares sin pedirlos: formatear al guardar, correr tests tras un cambio, bloquear archivos."},
-{k:"permisos",t:"Permisos",d:"Definen qué puede hacer Claude sin preguntarte. Tu primera línea de defensa: permití lectura y edición libres, pero bloqueá comandos destructivos (rm -rf, DROP, push --force). Se configuran con <b>/permissions</b>."},
-{k:"api",t:"API de Claude",d:"Cuando construís un producto (como un agente de WhatsApp), tu app le habla a Claude por la API. Definís el modelo (ej: claude-opus-4-8), el system prompt y las herramientas (tools) que puede usar."},
+{k:"base",t:"Claude Code",d:"La herramienta de Anthropic para programar con Claude desde la terminal (y VS Code, web, escritorio). No es un chat: lee tu repo, edita archivos, corre comandos y trabaja como un desarrollador real.",
+ ej:"Lo abrís escribiendo 'claude' en la terminal, parado en la carpeta de tu proyecto. Desde ahí le hablás en español: 'agregá un botón de login'. Él lee tu código, propone un plan, edita los archivos y corre los comandos. No copiás y pegás como en un chat web.",
+ code:["cd mi-proyecto","claude"]},
+{k:"contexto",t:"Contexto (context window)",d:"Todo lo que Claude 'tiene en la cabeza' en la sesión: tu código, la charla, los archivos. Es finito. Cuando se llena, Claude se pone lento u olvida. Por eso existen <b>/clear</b> y <b>/compact</b>.",
+ ej:"Estuviste 2 horas en la misma sesión y Claude empieza a olvidar decisiones o va lento: el contexto se llenó. Si seguís en la misma tarea, /compact lo resume conservando lo importante. Si cambiás de tema por completo, /clear lo borra y arrancás liviano.",
+ code:["/compact mantené las decisiones de arquitectura","/clear"]},
+{k:"tokens",t:"Tokens",d:"La unidad con la que se mide el texto (≈¾ de palabra). Entrada y salida se cobran en tokens. Más contexto = más tokens = más costo y más lento. Mirá el gasto con <b>/usage</b>.",
+ ej:"Una página de texto son ~500-800 tokens; una sesión larga puede gastar millones. Antes de asustarte por la factura, mirá el consumo real con /usage. Si una tarea es simple, bajá a un modelo más barato (Sonnet/Haiku) para gastar menos tokens.",
+ code:["/usage"]},
+{k:"modelos",t:"Modelos",d:"Las 'versiones' de Claude. <b>Fable 5</b> y <b>Opus 4.8</b> para lo difícil, <b>Sonnet 4.6</b> para el día a día, <b>Haiku 4.5</b> para tareas rápidas y baratas. Cambiás con <b>/model</b>.",
+ ej:"Estás peleando con un bug raro que no sale → /model y subís a Opus 4.8 o Fable 5. Tenés que renombrar 20 variables o algo mecánico → bajás a Haiku 4.5, rápido y barato. La regla: tan capaz como la tarea necesite, no más.",
+ code:["/model"]},
+{k:"effort",t:"Effort & pensamiento",d:"Cuánto 'piensa' Claude antes de responder. Más effort = más calidad pero más lento y caro. En modelos nuevos el pensamiento es adaptativo: Claude decide cuánto pensar según la tarea.",
+ ej:"En Claude Code casi no lo tocás: Claude decide cuánto pensar. Lo notás en que para una tarea difícil 'piensa' un rato antes de responder (mejor resultado, un toque más lento). Si construís con la API, lo regulás con el parámetro effort: de 'low' (rápido y barato) a 'max' (máxima calidad)."},
+{k:"CLAUDE.md",t:"CLAUDE.md (memoria)",d:"Un archivo con las reglas permanentes del proyecto. Claude lo lee en cada sesión. Es donde ponés tus guardarraíles de seguridad, estilo y flujo. Editalo con <b>/memory</b> o agregá notas con <b># texto</b>.",
+ ej:"Generás uno con /init, o cuando Claude hace algo mal le escribís '# nunca borres archivos sin preguntar' y lo agrega solo. Ahí viven tus reglas: 'siempre validá con Zod', 'nunca toques .env'. Las respeta en todas las sesiones futuras del proyecto.",
+ code:["/init","# nunca uses any","/memory"]},
+{k:"skills",t:"Skills",d:"Carpetas con instrucciones especializadas (un SKILL.md) que Claude carga SOLO cuando hacen falta. Convierten conocimiento repetido en algo reutilizable: tu voz de marca, tu estándar de QA, tu forma de armar agentes.",
+ ej:"Definís tu voz de marca una vez como skill. Después, cada vez que pedís un caption de Instagram, Claude la carga solo y escribe con ese tono, sin que se lo recuerdes. Viven en .claude/skills/ y se activan según su 'description'. Mirá la sección Skills para crear la tuya.",
+ code:["/reload-skills"]},
+{k:"mcp",t:"MCP (servidores)",d:"El estándar abierto que conecta a Claude con herramientas externas: GitHub, Supabase, Playwright, WhatsApp, Sentry. Le da 'manos' para actuar fuera del código. Se gestiona con <b>/mcp</b>.",
+ ej:"Querés que Claude pruebe tu web en un navegador real → conectás el MCP de Playwright con /mcp. Querés que revise tu base de datos → conectás Supabase. Sin MCP solo lee y escribe código; con MCP, actúa en el mundo real.",
+ code:["/mcp"]},
+{k:"agentes",t:"Subagentes",d:"Claudes secundarios con su propio contexto y permisos, para sub-tareas. Sirven para paralelizar (varios a la vez) y para aislar permisos. Hoy pueden anidarse hasta 5 niveles. Se crean con <b>/agents</b>.",
+ ej:"Tarea grande: lanzás un subagente 'revisor de seguridad' (solo lectura) y otro 'tester' que trabajan en paralelo mientras el principal coordina. Termina mucho más rápido, y la sub-tarea peligrosa queda con permisos limitados.",
+ code:["/agents"]},
+{k:"hooks",t:"Hooks",d:"Comandos que corren automáticamente antes o después de las acciones de Claude. Te dejan imponer estándares sin pedirlos: formatear al guardar, correr tests tras un cambio, bloquear archivos.",
+ ej:"Configurás un hook PostEdit que corre 'prettier' cada vez que Claude guarda un archivo: el código queda siempre formateado sin que lo pidas. Otro clásico: correr el typecheck antes de cada commit para que nunca se cuele un error de tipos.",
+ code:["/hooks"]},
+{k:"permisos",t:"Permisos",d:"Definen qué puede hacer Claude sin preguntarte. Tu primera línea de defensa: permití lectura y edición libres, pero bloqueá comandos destructivos (rm -rf, DROP, push --force). Se configuran con <b>/permissions</b>.",
+ ej:"Al empezar un proyecto: /permissions → lectura y edición libres (trabaja rápido), bash en 'preguntar' (te consulta antes de cada comando), y rm -rf / DROP / push --force bloqueados. Resultado: avanza solo pero nunca hace un desastre irreversible.",
+ code:["/permissions"]},
+{k:"api",t:"API de Claude",d:"Cuando construís un producto (como un agente de WhatsApp), tu app le habla a Claude por la API. Definís el modelo (ej: claude-opus-4-8), el system prompt y las herramientas (tools) que puede usar.",
+ ej:"Tu agente de WhatsApp NO usa Claude Code: tu backend llama a la API de Claude. En cada mensaje del cliente mandás el modelo (claude-opus-4-8), el system prompt con la personalidad del bot, el historial, y las tools (consultar stock, agendar). Claude devuelve la respuesta o pide usar una tool.",
+ code:['model: "claude-opus-4-8"','system: "Sos el asistente de…"']},
 ];
 
 /* ===== MCPs útiles ===== */
