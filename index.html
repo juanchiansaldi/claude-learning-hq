@@ -520,22 +520,33 @@ kbd{font-family:'JetBrains Mono',monospace;font-size:.66rem;background:var(--car
 <script>
 /* ============================================================= DATA */
 /* ===== última sincronización de novedades (la actualiza el agente) ===== */
-const LAST_SYNC = "2026-06-22";
+const LAST_SYNC = "2026-06-25";
 
 /* ===== NOVEDADES: el agente actualizador agrega entradas arriba ===== */
 const NOVEDADES=[
-{date:"2026-06-22",tag:"modelo",tagc:"berry",fresh:true,title:"Fable 5 deja los planes incluidos: desde el 23/6 requiere créditos",
+{date:"2026-06-24",tag:"claude code",tagc:"clay",fresh:true,title:"/rewind recupera la sesión después de un /clear",
+ body:"A partir de la v2.1.191, /rewind puede retroceder al momento justo antes de que usaste /clear y restaurar el contexto borrado. Antes, /clear era definitivo: limpiaba el historial sin vuelta atrás. También en esta versión: las redes que autorizás en el sandbox se recuerdan por toda la sesión sin volver a preguntar, y el uso de CPU durante respuestas en streaming bajó un 37%.",
+ why:"Si limpiaste el contexto sin querer en medio de una sesión larga, ahora la recuperás sin arrancar de cero.",
+ more:{detail:"/rewind ya existía para deshacer ediciones y retroceder a checkpoints anteriores. La v2.1.191 le agrega una opción nueva: si corriste /clear (que borra el historial pero conserva los archivos en disco), ahora podés usar /rewind para saltar justo antes de ese /clear y restaurar el hilo de la conversación. Muy útil cuando limpiaste el chat para liberar tokens y te arrepentiste, o cuando el agente perdió el hilo después del borrado. Abrís /rewind con el comando o presionando Esc dos veces con el input vacío.",
+   code:["/rewind   # abre el menú de rewind","# elegí 'Before /clear' para restaurar el contexto borrado","# shortcut: Esc Esc con el input vacío"],
+   links:[["Changelog v2.1.191","https://code.claude.com/docs/en/changelog"]]}},
+{date:"2026-06-23",tag:"app",tagc:"gold",fresh:true,title:"Claude Tag: Claude entra como miembro a tus canales de Slack",
+ body:"Claude Tag es la nueva integración de Slack: en lugar de un bot privado, Claude se incorpora como miembro del canal y cualquier persona puede mencionarlo con @Claude. Es multiplayer — el mismo Claude interactúa con todo el equipo, todos ven qué está haciendo y cualquiera puede retomar la tarea. Beta disponible hoy para planes Enterprise y Team. El bot viejo de Claude en Slack se retira el 3 de agosto.",
+ why:"Si tu equipo ya vive en Slack, es la forma más directa de meter Claude en el flujo de trabajo sin cambiar de herramienta.",
+ more:{detail:"Claude Tag reemplaza la integración anterior de Claude en Slack. La diferencia clave es que es multiplayer: un solo @Claude vive en el canal, cualquier miembro puede taguearlo, ver en qué está trabajando y continuar la conversación desde donde la dejó otro. Claude descompone el pedido en pasos, los trabaja en background y entrega el resultado en el canal. Los administradores de workspace tienen 30 días desde el 23 de junio para migrar a Claude Tag antes de que Anthropic retire la integración vieja el 3 de agosto de 2026.",
+   links:[["Anuncio oficial de Claude Tag","https://www.anthropic.com/news/introducing-claude-tag"]]}},
+{date:"2026-06-22",tag:"modelo",tagc:"berry",fresh:false,title:"Fable 5 deja los planes incluidos: desde el 23/6 requiere créditos",
  body:"El período de acceso gratuito a Fable 5 en los planes Pro, Max, Team y Enterprise terminó el 22 de junio. A partir del 23, usarlo descuenta de créditos de uso a precios de API: $10/M tokens de entrada y $50/M de salida, el doble de Opus 4.8. Anthropic planea reincorporarlo a los planes cuando la capacidad lo permita, sin fecha confirmada.",
  why:"Si estás usando Fable 5 para builds o agentes, ahora tiene costo extra — revisá si Opus 4.8 cubre tus necesidades antes de seguir.",
  more:{detail:"Desde el 9 de junio, Fable 5 estuvo incluido sin cargo adicional en los planes Pro, Max, Team y Enterprise (seat-based). A partir del 23 de junio ese acceso se cierra: usarlo consume créditos de uso facturados a precios de API. En la API, Fable 5 cuesta $10 por millón de tokens de entrada y $50 por millón de tokens de salida, el doble que Opus 4.8. Para la mayoría de tareas de construcción de webs y agentes, Opus 4.8 sigue siendo la mejor relación precio-calidad. Anthropic anunció que volverá a incluirlo en los planes cuando la infraestructura lo permita, sin fecha confirmada.",
    code:["/model   # para cambiar a Opus 4.8 si Fable 5 resulta demasiado caro"],
    links:[["Precios de la API de Claude","https://www.anthropic.com/pricing"],["Anuncio de Fable 5","https://www.anthropic.com/news/claude-fable-5-mythos-5"]]}},
-{date:"2026-06-19",tag:"claude code",tagc:"clay",fresh:true,title:"Auto mode protege tu repo: bloquea comandos destructivos",
+{date:"2026-06-19",tag:"claude code",tagc:"clay",fresh:false,title:"Auto mode protege tu repo: bloquea comandos destructivos",
  body:"En auto mode, Claude Code ahora bloquea git reset --hard, git checkout -- ., git clean y terraform/pulumi/cdk destroy a menos que vos lo pidas explícitamente. También bloquea git commit --amend si el commit no lo hizo Claude en esta sesión. Llega además /config --help para listar todas las claves disponibles.",
  why:"Para sesiones desatendidas: tu repo y tu infra están protegidos aunque el agente tenga acceso amplio.",
  more:{detail:"El auto mode reemplaza los prompts de permiso por un clasificador que evalúa cada acción. Ahora ese clasificador también bloquea comandos que destruyen trabajo local o infraestructura sin haberlos pedido: git reset --hard, git checkout -- ., git clean -fd, git stash drop, terraform destroy, pulumi destroy y cdk destroy. git commit --amend queda bloqueado si el commit no lo creó Claude en esta sesión, protegiendo tu historial. Son defaults de seguridad: si los necesitás, simplemente pedíselos al agente y los habilita para ese contexto. Y /config --help ahora lista todas las claves de configuración para no tener que buscar en la doc.",
    code:["/config --help   # lista todas las claves configurables","# en auto mode estos ya no corren sin pedirlo:","git reset --hard   # bloqueado","terraform destroy  # bloqueado"]}},
-{date:"2026-06-17",tag:"claude code",tagc:"clay",fresh:true,title:"/config key=value: cambiá settings inline desde la sesión",
+{date:"2026-06-17",tag:"claude code",tagc:"clay",fresh:false,title:"/config key=value: cambiá settings inline desde la sesión",
  body:"Podés cambiar cualquier setting de Claude Code con /config key=value directamente en la conversación, sin abrir el menú interactivo. Funciona en modo -p y Remote Control también. Además: auto-retry si se corta la API durante una respuesta, y runtime Bun actualizado a 1.4.",
  why:"Controlás la sesión por prompts, clave para scripts y agentes que se autoconfiguran.",
  more:{detail:"La nueva sintaxis /config key=value permite cambiar configuraciones de Claude Code desde la línea de comandos dentro de la sesión sin entrar al menú interactivo. Funciona en modo interactivo, en modo -p (no interactivo) y en Remote Control, así podés parametrizar sesiones scripted o que se autoconfiguran. El auto-retry en desconexiones es también importante: si la API se corta en el medio de una respuesta (incluso durante el thinking), Claude Code reintenta automáticamente sin mostrar error ni perder el progreso. El runtime se actualizó a Bun 1.4 para mejor rendimiento general.",
