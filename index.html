@@ -520,32 +520,39 @@ kbd{font-family:'JetBrains Mono',monospace;font-size:.66rem;background:var(--car
 <script>
 /* ============================================================= DATA */
 /* ===== última sincronización de novedades (la actualiza el agente) ===== */
-const LAST_SYNC = "2026-07-04";
+const LAST_SYNC = "2026-07-07";
 
 /* ===== NOVEDADES: el agente actualizador agrega entradas arriba ===== */
 const NOVEDADES=[
-{date:"2026-07-03",tag:"claude code",tagc:"clay",fresh:true,
+{date:"2026-07-06",tag:"claude code",tagc:"clay",fresh:true,
+ title:"v2.1.202: tamaño de workflow configurable, /review vuelve a modo rápido y trazabilidad OTel",
+ body:"Tres cambios clave en v2.1.202: /config ahora tiene 'dynamic workflow size' (small/medium/large) para controlar cuántos agentes genera Claude en workflows dinámicos. /review <pr> vuelve a ser revisión de un solo paso rápido — para análisis multi-agente usá /code-review <nivel> <pr#>. Y los workflows emiten atributos OpenTelemetry (workflow.run_id y workflow.name) para armar un trace completo de cada corrida.",
+ why:"Con workflow size controlás el gasto de tokens en workflows grandes; la distinción /review vs /code-review aclara cuándo invertir en análisis profundo.",
+ more:{detail:"'Dynamic workflow size' en /config es consultivo, no un límite forzado: le indica a Claude qué tan grandes deben ser los workflows dinámicos, pero el modelo puede excederlo si la tarea lo requiere. Los atributos OTel (workflow.run_id y workflow.name) se suman a los ya existentes: con ellos podés agrupar todos los spans de una corrida en Datadog, Grafana o cualquier otro collector y reconstruir el árbol de agentes completo. El cambio en /review es importante: vuelve a ser revisión rápida de un solo paso, ideal para chequeos antes de mergear. Para análisis profundo multi-agente (bugs, seguridad, rendimiento) usá /code-review con nivel medium, high o max. También en esta versión: mejoras en la lista de /workflows (títulos más anchos, columna de tiempo, nombres de modelos más cortos) y mensajes de error más claros en MCP cuando falta el campo type en la config.",
+   code:["/config   # buscá 'Dynamic workflow size' y elegí small/medium/large","/review 123             # revisión rápida de un solo paso de la PR #123","/code-review medium 123  # revisión multi-agente más profunda","# atributos OTel disponibles en esta versión:","# workflow.run_id  → ID único de la corrida","# workflow.name   → nombre del workflow"],
+   links:[["Changelog v2.1.202","https://code.claude.com/docs/en/changelog"]]}},
+{date:"2026-07-03",tag:"claude code",tagc:"clay",fresh:false,
  title:"AskUserQuestion ya no avanza solo + modo de permiso renombrado a 'Manual'",
  body:"Con v2.1.200, los diálogos de AskUserQuestion ya no continúan automáticamente después de un timeout: esperan tu respuesta. Si querés mantener el comportamiento anterior, configuralo con /config. También: el 'modo predeterminado' de permisos ahora se llama 'Manual' en toda la CLI y en las extensiones de VS Code y JetBrains.",
  why:"Agentes desatendidos que preguntan algo ya no avanzan solos: no pasan a un estado inesperado sin tu aprobación.",
  more:{detail:"Hasta v2.1.199, cuando un agente ejecutaba AskUserQuestion y vos no respondías en el tiempo configurado, el agente continuaba automáticamente con el valor por defecto. Desde v2.1.200 ese comportamiento cambió: por defecto el agente espera indefinidamente hasta que respondas. Si necesitás el comportamiento anterior (que continúe después de un timeout inactivo), configuralo con /config. En cuanto al naming, el modo de permiso que antes se llamaba 'default' ahora se llama 'Manual' en la CLI, la ayuda, VS Code y JetBrains — en settings.json también se acepta 'default' por retrocompatibilidad.",
    code:["/config   # para configurar el timeout inactivo de AskUserQuestion","# en settings.json: \"defaultMode\": \"manual\"  (o \"default\", igual funciona)","# --permission-mode manual  también funciona en CLI"],
    links:[["Changelog v2.1.200","https://code.claude.com/docs/en/changelog"]]}},
-{date:"2026-07-02",tag:"claude code",tagc:"clay",fresh:true,
+{date:"2026-07-02",tag:"claude code",tagc:"clay",fresh:false,
  title:"Skills apiladas: `/skill-a /skill-b do XYZ` carga hasta 5 a la vez",
  body:"Desde v2.1.199, podés combinar varias skills en un solo comando: '/skill-a /skill-b do XYZ' las carga todas antes de ejecutar la tarea. Antes solo se activaba la primera. El límite es 5 skills por invocación.",
  why:"Combinás contexto de múltiples skills en una sola instrucción, sin tener que activarlas por separado.",
  more:{detail:"Antes de v2.1.199, cuando escribías '/skill-a /skill-b do XYZ', Claude Code solo cargaba la primera skill e ignoraba las demás. Ahora carga todas las skills iniciales listadas, hasta un máximo de 5. Útil cuando el trabajo combina ámbitos de varias skills: por ejemplo '/code-review /dataviz revisá este componente de gráficos' carga el contexto de revisión de código Y el de diseño de visualizaciones antes de analizar.",
    code:["/code-review /dataviz revisá este componente   # carga 2 skills","# límite: 5 skills por invocación","# se cargan en el orden en que aparecen en el comando"],
    links:[["Changelog v2.1.199","https://code.claude.com/docs/en/changelog"]]}},
-{date:"2026-07-01",tag:"claude code",tagc:"clay",fresh:true,
+{date:"2026-07-01",tag:"claude code",tagc:"clay",fresh:false,
  title:"Claude en Chrome disponible para todos + /dataviz, nueva skill de gráficos",
  body:"Claude en Chrome deja la beta y queda disponible para todos los usuarios de planes pagos (v2.1.198). En la misma versión llegó /dataviz: una skill integrada que da guías de diseño de gráficos y dashboards, con un validador de paleta de colores que podés correr directamente. El agente Explore también mejora: ahora hereda el modelo de la sesión (opus) en lugar de correr en haiku.",
  why:"Claude en Chrome automatiza el navegador real para testing y scraping; /dataviz asegura que los gráficos sean visualmente correctos y accesibles.",
  more:{detail:"Claude en Chrome pasó de preview a disponibilidad general (GA) en v2.1.198. Permite a Claude Code controlar Chromium para automatizar flujos de usuario, tomar capturas de pantalla, testear UI y hacer scraping de páginas que requieren interacción. La skill /dataviz es nueva y se activa antes de crear cualquier gráfico, diagrama o panel: define tipología de gráficos, paleta de colores accesible con validador ejecutable, y reglas de legibilidad en modo claro y oscuro. Escribe una referencia de paleta en 'references/palette.md' que podés personalizar con los colores de tu marca. El agente Explore (el sub-agente de exploración de código) ahora hereda el modelo de la sesión principal limitado a opus, en lugar de ejecutarse siempre en haiku — mejor calidad en exploración de repos grandes.",
    code:["/dataviz    # cargá la skill antes de crear cualquier gráfico o dashboard","# Claude en Chrome se activa cuando pedís tareas en el navegador, ej:","\"andá a la URL X, completá el formulario Y y copiá el resultado\""],
    links:[["Changelog v2.1.198","https://code.claude.com/docs/en/changelog"]]}},
-{date:"2026-07-01",tag:"claude code",tagc:"clay",fresh:true,
+{date:"2026-07-01",tag:"claude code",tagc:"clay",fresh:false,
  title:"v2.1.198: Agentes en background hacen commit, push y PR borrador solos",
  body:"Los subagentes ahora corren en background por defecto (antes era rollout gradual). Los agentes lanzados desde 'claude agents' que terminan trabajo de código en un worktree hacen commit, push y abren un PR borrador automáticamente, sin frenar a preguntar. Además llegaron los hooks 'agent_needs_input' y 'agent_completed' para recibir notificaciones cuando un agente espera tu input o termina.",
  why:"Dejás correr un agente de noche y al volver encontrás el PR borrador listo, sin haber intervenido ni una sola vez.",
