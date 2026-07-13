@@ -520,18 +520,25 @@ kbd{font-family:'JetBrains Mono',monospace;font-size:.66rem;background:var(--car
 <script>
 /* ============================================================= DATA */
 /* ===== última sincronización de novedades (la actualiza el agente) ===== */
-const LAST_SYNC = "2026-07-10";
+const LAST_SYNC = "2026-07-13";
 
 /* ===== NOVEDADES: el agente actualizador agrega entradas arriba ===== */
 const NOVEDADES=[
-{date:"2026-07-09",tag:"claude code",tagc:"clay",fresh:true,
+{date:"2026-07-11",tag:"claude code",tagc:"clay",fresh:true,
+ title:"v2.1.207: Auto mode de serie en Bedrock/Vertex/Foundry + parche de inyección en plugins",
+ body:"Dos cambios que impactan directo en builders empresariales. Auto mode ahora está habilitado por defecto en Amazon Bedrock, Vertex AI y Microsoft Foundry: ya no necesitás la variable CLAUDE_CODE_ENABLE_AUTO_MODE para activarlo. Además, se cerró una vulnerabilidad de inyección de shell en hooks de plugins y MCP: la sintaxis ${user_config.*} en comandos de shell queda rechazada y tenés que migrar al formato exec (array de args) o a variables de entorno.",
+ why:"Si usás plugins con hooks en formato shell y tenías ${user_config.*}, esta versión te rompe algo — migrá antes de actualizar.",
+ more:{detail:"En v2.1.207, auto mode deja de requerir opt-in en Bedrock, Vertex AI y Foundry. Antes había que setear CLAUDE_CODE_ENABLE_AUTO_MODE=1 en el entorno; ahora está habilitado por defecto para esas plataformas y podés desactivarlo con disableAutoMode en settings. Bedrock, Vertex y Claude Platform en AWS también pasan a usar Opus 4.8 como modelo por defecto. En materia de seguridad, el parche más importante cierra una vulnerabilidad de inyección de shell: si tus hooks de plugins, monitors o el headersHelper de MCP usan la sintaxis ${user_config.*} en comandos de shell, esa sintaxis ahora está rechazada. La migración es a formato exec (array de args) o a leer valores desde variables de entorno con $CLAUDE_PLUGIN_OPTION_<KEY>. También se arreglaron: el congelamiento de la terminal al streamear listas o bloques de código muy largos, que settings remotos se guardaran como consentidos en runs no-interactivos sin mostrar el diálogo, el auto-updater que pisaba symlinks o launchers custom en ~/.local/bin/claude, y múltiples bugs de corrupción en .git/config de worktrees.",
+   code:["# Para deshabilitar auto mode en Bedrock/Vertex si no lo querés:","# en settings.json: { \"disableAutoMode\": true }","","# Migración de hooks: de formato shell a exec","# Antes (rechazado desde v2.1.207):","# { \"type\": \"command\", \"command\": \"mi-tool ${user_config.api_key}\" }","# Después (formato exec):","# { \"type\": \"command\", \"command\": \"mi-tool\", \"args\": [\"$CLAUDE_PLUGIN_OPTION_API_KEY\"] }"],
+   links:[["Changelog v2.1.207","https://code.claude.com/docs/en/changelog"],["GitHub Release v2.1.207","https://github.com/anthropics/claude-code/releases/tag/v2.1.207"]]}},
+{date:"2026-07-09",tag:"claude code",tagc:"clay",fresh:false,
  title:"v2.1.205–206: /doctor optimiza CLAUDE.md, gateways de Anthropic y auto-upgrade de agentes",
  body:"Dos versiones con mejoras para builders: /doctor ahora analiza los CLAUDE.md chequeados en el repo y propone recortarlos para ahorrar tokens de contexto. /login soporta endpoints públicos de gateway operados por Anthropic (útil en entornos remotos y en Claude Code on the Web). Y los agentes en background se actualizan a la nueva versión de Claude Code automáticamente, sin interrumpir la sesión activa.",
  why:"Si tu proyecto acumula un CLAUDE.md pesado, /doctor te dice qué sacarle antes de que empiece a costar tokens innecesarios.",
  more:{detail:"En v2.1.206, /doctor —el diagnóstico de configuración de Claude Code— ganó una nueva capacidad: analiza los archivos CLAUDE.md que están chequeados en el repo y propone recortarlos si detecta contenido que consume contexto sin aportar valor (secciones repetidas, instrucciones obsoletas, documentación que podría estar en otro lado). Además, /login ahora soporta endpoints públicos de gateway de Anthropic: útil para entornos remotos (Claude Code on the Web, runners de CI) donde el login normal no está disponible. En cuanto a los agentes en background, ahora se actualizan a la versión nueva de Claude Code justo después de una actualización, sin necesidad de reiniciar la sesión. En v2.1.205 se sumó también un bloqueo en auto mode que impide que cualquier proceso externo modifique los archivos de transcripción de sesión, cerrando un vector de manipulación.",
    code:["/doctor   # analizá CLAUDE.md y otras configuraciones del proyecto","/login    # ahora soporta gateways públicos de Anthropic para entornos remotos","# los agentes en background se actualizan solos tras 'claude update'"],
    links:[["Changelog v2.1.206","https://code.claude.com/docs/en/changelog"],["Claude Code on the Web","https://code.claude.com/docs/en"]]}},
-{date:"2026-07-08",tag:"api",tagc:"slate",fresh:true,
+{date:"2026-07-08",tag:"api",tagc:"slate",fresh:false,
  title:"API keys con fecha de expiración desde la consola",
  body:"Ya podés configurar una fecha de expiración al crear claves de API o Admin API en la consola de Claude. Elegís un preset, una duración personalizada o 'nunca'. Para claves con vida de al menos 7 días, Anthropic te avisa por mail antes de que venzan. Las claves existentes no se ven afectadas. El Admin API ahora expone el campo expires_at en los endpoints de listado.",
  why:"Si manejás clientes corporativos o tenés que cumplir con SOC 2, ISO 27001 u otras normas, ahora podés rotar claves automáticamente sin acordarte de hacerlo a mano.",
