@@ -520,11 +520,18 @@ kbd{font-family:'JetBrains Mono',monospace;font-size:.66rem;background:var(--car
 <script>
 /* ============================================================= DATA */
 /* ===== última sincronización de novedades (la actualiza el agente) ===== */
-const LAST_SYNC = "2026-07-13";
+const LAST_SYNC = "2026-07-16";
 
 /* ===== NOVEDADES: el agente actualizador agrega entradas arriba ===== */
 const NOVEDADES=[
-{date:"2026-07-11",tag:"claude code",tagc:"clay",fresh:true,
+{date:"2026-07-15",tag:"claude code",tagc:"clay",fresh:true,
+ title:"v2.1.211: --forward-subagent-text, fix de prompt-caching en Bedrock/Vertex y permisos por repo",
+ body:"La versión más cargada de fixes en mucho tiempo. Lo más impactante para builders: el nuevo flag --forward-subagent-text incluye el output de subagentes en el stream JSON (útil para monitorear pipelines multi-agente); se corrige el bug de prompt-caching en Bedrock, Vertex, Mantle y Foundry que facturaba el bloque de sistema como tokens frescos en cada request; y los permisos 'always allow' ahora se guardan en la raíz del repo y persisten en todos los worktrees de la sesión.",
+ why:"El fix de prompt-caching en Bedrock/Vertex puede bajar tus costos directamente; el fix de modelo en subagentes hace los workflows multi-agente más predecibles.",
+ more:{detail:"v2.1.211 trae un cambio nuevo y un paquete grande de correcciones críticas para builders. El nuevo flag --forward-subagent-text (y su variable CLAUDE_CODE_FORWARD_SUBAGENT_TEXT) lleva el texto y el thinking de subagentes al output stream-json, útil para monitorear pipelines multi-agente desde sistemas externos. En seguridad, se hardeneó la preview de permisos para neutralizar caracteres bidi-override, zero-width y comillas look-alike que podían alterar visualmente el mensaje de aprobación — relevante en flujos donde agentes piden permisos con texto de terceros. También se corrige que auto mode ignoraba la decisión `ask` de un hook PreToolUse para Bash no sandboxed (ahora el hook tiene piso). Otros fixes relevantes: subagentes con override de modelo ya no vuelven al modelo del padre al resumir; las sesiones en paralelo ya no se desloguean todas a la vez al despertar el equipo; los servidores MCP de plugins vuelven a conectar tras una sesión web inactiva; el bug de prompt-caching en Bedrock/Vertex/Mantle/Foundry que facturaba el bloque de sistema como tokens frescos en cada request queda cerrado; los agentes en background muertos por el usuario ya no se auto-respawnean; y /clear ahora resetea correctamente el contador de costo de sesión.",
+   code:["# Incluir output de subagentes en stream-json:","claude --output-format stream-json --forward-subagent-text -p 'tu tarea'","# o con variable de entorno:","export CLAUDE_CODE_FORWARD_SUBAGENT_TEXT=1","","# Always allow ahora persiste en todos los worktrees:","# La aprobación se guarda en .claude/settings.json de la raíz del repo"],
+   links:[["Changelog v2.1.211","https://code.claude.com/docs/en/changelog"]]}},
+{date:"2026-07-11",tag:"claude code",tagc:"clay",fresh:false,
  title:"v2.1.207: Auto mode de serie en Bedrock/Vertex/Foundry + parche de inyección en plugins",
  body:"Dos cambios que impactan directo en builders empresariales. Auto mode ahora está habilitado por defecto en Amazon Bedrock, Vertex AI y Microsoft Foundry: ya no necesitás la variable CLAUDE_CODE_ENABLE_AUTO_MODE para activarlo. Además, se cerró una vulnerabilidad de inyección de shell en hooks de plugins y MCP: la sintaxis ${user_config.*} en comandos de shell queda rechazada y tenés que migrar al formato exec (array de args) o a variables de entorno.",
  why:"Si usás plugins con hooks en formato shell y tenías ${user_config.*}, esta versión te rompe algo — migrá antes de actualizar.",
