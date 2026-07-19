@@ -520,11 +520,25 @@ kbd{font-family:'JetBrains Mono',monospace;font-size:.66rem;background:var(--car
 <script>
 /* ============================================================= DATA */
 /* ===== última sincronización de novedades (la actualiza el agente) ===== */
-const LAST_SYNC = "2026-07-16";
+const LAST_SYNC = "2026-07-19";
 
 /* ===== NOVEDADES: el agente actualizador agrega entradas arriba ===== */
 const NOVEDADES=[
-{date:"2026-07-15",tag:"claude code",tagc:"clay",fresh:true,
+{date:"2026-07-19",tag:"claude code",tagc:"clay",fresh:true,
+ title:"v2.1.215: /verify y /code-review ya no se disparan solos",
+ body:"Cambio de comportamiento: Claude ya no ejecuta automáticamente las skills /verify y /code-review al final de una tarea. Ahora tenés que invocarlas explícitamente cuando las necesitás. El comportamiento anterior podía generar consumo extra de tokens y revisiones no solicitadas en pipelines automáticos.",
+ why:"Tus pipelines y agentes desatendidos ya no consumen tokens en revisiones automáticas que no pediste.",
+ more:{detail:"Hasta v2.1.214, Claude Code ejecutaba /verify y /code-review automáticamente al completar tareas cuando esas skills estaban activas en la sesión. Desde v2.1.215 ese comportamiento cambió: las skills siguen disponibles pero se ejecutan solo cuando las invocás explícitamente. Esto da control total sobre cuándo se hace una verificación o revisión de código, evitando gastos extra de tokens en workflows donde no querés ese paso automático.",
+   code:["/verify               # verificá un cambio cuando vos lo decidís","/code-review medium   # revisá el diff con el nivel que necesitás","# ya no se ejecutan solas al terminar una tarea"],
+   links:[["Changelog v2.1.215","https://code.claude.com/docs/en/changelog"]]}},
+{date:"2026-07-18",tag:"claude code",tagc:"clay",fresh:true,
+ title:"v2.1.214: mega fix de permisos + EndConversation + OTel por mensaje",
+ body:"La versión con más cambios de seguridad en mucho tiempo: 7 correcciones de permisos (bypass en PowerShell 5.1, comandos de más de 10.000 caracteres, redirección de descriptores de archivo), la nueva herramienta EndConversation para que Claude corte sesiones abusivas, latido de progreso en llamadas largas de herramientas, y atributos OTel a nivel de mensaje para trazabilidad fina.",
+ why:"Los fixes de permisos cierran vectores de bypass reales en auto mode; los atributos OTel nuevos te permiten correlacionar llamadas a herramientas con mensajes específicos en tu telemetría.",
+ more:{detail:"v2.1.214 llega con el mayor lote de correcciones de permisos en mucho tiempo. Los bugs cerrados incluyen: reglas dir/** que auto-aprobaban escrituras en subdirectorios anidados en lugar de solo en <cwd>/dir; bypass en sesiones de PowerShell 5.1; comandos de más de 10.000 caracteres que se auto-aprobaban; formas de redirección de descriptores de archivo que el analizador de permisos no parseaba igual que bash; modificadores de variables zsh en comparaciones [[ ]] tratados como texto inerte; y diálogos de permiso en sesiones remotas que avanzaban antes de la confirmación local. La nueva herramienta EndConversation permite a Claude terminar sesiones con usuarios altamente abusivos o intentos de jailbreak, igual a como funciona en claude.ai desde 2025. En telemetría: tres atributos nuevos en los logs OTel (message.uuid, client_request_id, tool_source) para correlación a nivel de mensaje y procedencia de herramientas; y la variable CLAUDE_CODE_OTEL_CONTENT_MAX_LENGTH para controlar el límite de truncamiento (default 60 KB) en atributos de contenido. También: latido de progreso periódico en llamadas largas de herramientas para que no queden en silencio, y corrección de que tareas programadas rechazaban su propio prompt configurado como input no confiable.",
+   code:["# Nueva variable para controlar el límite de contenido en OTel:","export CLAUDE_CODE_OTEL_CONTENT_MAX_LENGTH=100000   # bytes (default: 60000)","# Atributos nuevos en logs OTel:","# message.uuid → correlación a nivel de mensaje","# client_request_id → ID de request del cliente","# tool_source → procedencia de la herramienta","","# Cambio en reglas de permisos (importante si usás allow rules):","# dir/**    → solo coincide con <cwd>/dir  (antes: cualquier nivel del árbol)","# **/dir/** → coincide en cualquier profundidad (la nueva forma correcta)"],
+   links:[["Changelog v2.1.214","https://code.claude.com/docs/en/changelog"],["Investigación EndConversation","https://www.anthropic.com/research/end-subset-conversations"]]}},
+{date:"2026-07-15",tag:"claude code",tagc:"clay",fresh:false,
  title:"v2.1.211: --forward-subagent-text, fix de prompt-caching en Bedrock/Vertex y permisos por repo",
  body:"La versión más cargada de fixes en mucho tiempo. Lo más impactante para builders: el nuevo flag --forward-subagent-text incluye el output de subagentes en el stream JSON (útil para monitorear pipelines multi-agente); se corrige el bug de prompt-caching en Bedrock, Vertex, Mantle y Foundry que facturaba el bloque de sistema como tokens frescos en cada request; y los permisos 'always allow' ahora se guardan en la raíz del repo y persisten en todos los worktrees de la sesión.",
  why:"El fix de prompt-caching en Bedrock/Vertex puede bajar tus costos directamente; el fix de modelo en subagentes hace los workflows multi-agente más predecibles.",
