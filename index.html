@@ -520,18 +520,18 @@ kbd{font-family:'JetBrains Mono',monospace;font-size:.66rem;background:var(--car
 <script>
 /* ============================================================= DATA */
 /* ===== última sincronización de novedades (la actualiza el agente) ===== */
-const LAST_SYNC = "2026-07-25";
+const LAST_SYNC = "2026-07-28";
 
 /* ===== NOVEDADES: el agente actualizador agrega entradas arriba ===== */
 const NOVEDADES=[
-{date:"2026-07-24",tag:"modelo",tagc:"berry",fresh:true,
+{date:"2026-07-24",tag:"modelo",tagc:"berry",fresh:false,
  title:"Claude Opus 5: el nuevo modelo insignia con 1M de contexto y control de esfuerzo",
  body:"Anthropic lanzó Opus 5 el 24 de julio: el nuevo modelo flagship con ventana de contexto de 1M tokens, hasta 128K tokens de salida síncrona y un control de esfuerzo de 5 niveles por request (low a max). Pasa a ser el modelo por defecto en Claude Code en lugar de Opus 4.8. El precio estándar de API se mantiene en $5 entrada / $25 salida por millón de tokens; fast mode cuesta $10/$50.",
  why:"El modelo más potente de Anthropic actualizado sin cambio de precio: más contexto, más salida y esfuerzo configurable por request.",
  more:{detail:"Opus 5 es el mayor salto de la familia Opus en mucho tiempo. Sus características principales: ventana de contexto nativa de 1M tokens; hasta 128K tokens de salida síncrona; effort control per-request en 5 niveles (low, medium, high, xhigh, max) que permite balancear velocidad y profundidad de razonamiento según la tarea; y el mejor perfil de benchmarks que Anthropic ha publicado para la familia Opus. El ID de la API es claude-opus-5, y es ahora el default del rol Opus en Claude Code y en las plataformas Bedrock, Vertex y Foundry. El precio de API estándar se mantiene respecto a la generación anterior: $5 por millón de tokens de entrada y $25 por millón de salida. En fast mode (que ahora usa Opus 5 en lugar de Opus 4.7) el precio es $10 entrada / $50 salida por millón. Disponible también en Amazon Bedrock, Google Vertex AI y Microsoft Foundry.",
    code:["# ID del modelo en la API:","claude-opus-5","","# Usar Opus 5 en Claude Code:","claude --model claude-opus-5 -p 'tu tarea'","","# Fast mode ahora apunta a Opus 5 (y Opus 4.8):","# /fast  en Claude Code activa el modo rápido con Opus 5"],
    links:[["Docs: novedades de Opus 5","https://platform.claude.com/docs/en/about-claude/models/whats-new-opus-5"],["Changelog Claude Code v2.1.219","https://code.claude.com/docs/en/changelog"]]}},
-{date:"2026-07-24",tag:"claude code",tagc:"clay",fresh:true,
+{date:"2026-07-24",tag:"claude code",tagc:"clay",fresh:false,
  title:"v2.1.219: subagentes hasta profundidad 3, hook DirectoryAdded y red estricta en sandbox",
  body:"Tres novedades para builders de multi-agentes en v2.1.219: el nesting de subagentes pasa de depth 0 (deshabilitado en v2.1.217) a 3 como default, habilitando pipelines más profundos sin configuración extra. El nuevo hook DirectoryAdded se dispara cuando se registra un directorio con /add-dir o register_repo_root. Y sandbox.network.strictAllowlist deniega automáticamente las conexiones a hosts no incluidos en la allowlist.",
  why:"El nesting de profundidad 3 habilita pipelines de agentes más complejos out-of-the-box; la red estricta da control total sobre las conexiones salientes del sandbox.",
