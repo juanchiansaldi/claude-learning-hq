@@ -52,3 +52,40 @@ en las viejas, sube `LAST_SYNC` a hoy, y NADA más. No reescribas otras seccione
 - No borres archivos sin confirmación. No toques `claude-hq-v3.html`.
 - No metas secrets ni API keys en el repo (es público).
 - Si un cambio toca más de un par de secciones, mostrá el plan antes de ejecutar.
+
+
+<!-- HQ-PROTOCOL v2 -->
+## 🛰 HQ — Torre de Control (protocolo obligatorio)
+
+Este proyecto reporta a **HQ**, la torre de control central de Juanchi en `~/Desktop/HQ`.
+Slug de este proyecto: **`learning-hq`**.
+
+**Al INICIO de cada sesión (obligatorio):**
+1. Si existe `~/Desktop/HQ/instructions/learning-hq.md`, leelo ANTES de arrancar: son directivas del cerebro central y tienen prioridad sobre el backlog local. Después de aplicarlas, marcálas como leídas agregando `> ✅ leída <fecha>` debajo de cada una.
+2. Para ver el estado del proyecto en la torre: `~/Desktop/HQ/bin/hq status`.
+
+**Si creás o cambiás INFRAESTRUCTURA (obligatorio, en el momento):**
+Cuenta nueva o proyecto nuevo en Supabase/Vercel/Clerk/Neon/Cloudflare/etc., o migración de cuenta — registralo YA en la torre (Juanchi está migrando Supabase a cuentas free-tier nuevas y necesita el mapa al día):
+
+```bash
+~/Desktop/HQ/bin/hq infra learning-hq --service "Supabase" --resource "proyecto <ref>" --account "email@delacuenta.com"
+```
+
+**Al FINAL de cada sesión (obligatorio):**
+Reportá lo que pasó — esto actualiza el dashboard central y las tareas del proyecto:
+
+```bash
+~/Desktop/HQ/bin/hq report learning-hq \
+  --done "texto (o id) de cada tarea que completaste" \
+  --new "cada pendiente nuevo que detectaste" \
+  --note "resumen de 1 línea de la sesión"
+```
+
+- Repetí `--done` / `--new` por cada ítem.
+- Si algo traba el avance: `--blocker "qué y por qué"`. Si se destrabó: `--unblock`.
+- El texto de `--done` matchea por substring contra las tareas abiertas en HQ.
+<!-- /HQ-PROTOCOL -->
+
+## Task Master AI Instructions
+**Import Task Master's development workflow commands and guidelines, treat as if import is in the main CLAUDE.md file.**
+@./.taskmaster/CLAUDE.md
