@@ -520,18 +520,18 @@ kbd{font-family:'JetBrains Mono',monospace;font-size:.66rem;background:var(--car
 <script>
 /* ============================================================= DATA */
 /* ===== última sincronización de novedades (la actualiza el agente) ===== */
-const LAST_SYNC = "2026-08-31";
+const LAST_SYNC = "2026-09-01";
 
 /* ===== NOVEDADES: el agente actualizador agrega entradas arriba ===== */
 const NOVEDADES=[
-{date:"2026-08-28",tag:"claude code",tagc:"clay",fresh:true,
+{date:"2026-08-28",tag:"claude code",tagc:"clay",fresh:false,
  title:"v2.1.251: hooks PreModelSwitch/PostModelSwitch para controlar cambios de modelo",
  body:"La v2.1.251 introduce dos hooks nuevos en el sistema de eventos de Claude Code: PreModelSwitch se dispara justo antes de que el agente cambie de modelo y puede bloquear o confirmar el cambio; PostModelSwitch se dispara una vez efectuado y sirve para auditoría o logging. Los hooks SessionStart resume suman datos de antigüedad de sesión y costo estimado de re-caché. También llegó streaming en vivo de subagentes en primer plano para clientes de Remote Control.",
  why:"Los hooks de modelo son la palanca clave para pipelines de orquestación multi-modelo: podés controlar cuándo y a qué modelo escala el agente sin parchear el código del agente.",
  more:{detail:"PreModelSwitch y PostModelSwitch se suman al sistema de hooks de Claude Code (como PreToolUse, PostToolUse, etc.). PreModelSwitch recibe información sobre el modelo actual y el propuesto; puede responder block (abortar el cambio), confirm (forzar aprobación explícita) o nada (permitir). PostModelSwitch confirma qué modelo quedó activo y cuándo. Los SessionStart resume hooks reciben ahora session_age (antigüedad en segundos) y estimated_recache_cost (costo estimado de re-caché al retomar la sesión), útil para decidir si conviene reanudar o iniciar sesión nueva. El live streaming de subagentes en primer plano agrega observabilidad real a pipelines multi-agente: los clientes de Remote Control ahora reciben en tiempo real las llamadas a herramientas y resultados de los subagentes que corren en primer plano (los de fondo siguen mostrando solo estado). También llegó: campo rate_limits.spend_limit en el statusline para usuarios detrás de gateways con límite de gasto, barra de límite en /usage, e información de prompt-cache por sesión en /cost (hit ratio, misses, tokens re-cacheados, estado warm/cold).",
    code:["# Configurar hook PreModelSwitch en settings.json:","{ \"hooks\": { \"PreModelSwitch\": [{ \"matcher\": \"\", \"hooks\": [{ \"type\": \"command\", \"command\": \"mi-script-de-control\" }] }] } }","","# El script recibe (stdin JSON):","# { current_model: 'claude-sonnet-5', proposed_model: 'claude-opus-5', reason: '...' }","","# Responder para bloquear el cambio:","# { action: 'block', message: 'Solo se permite Sonnet 5 en este proyecto' }","","# Responder para confirmar (pide aprobación al usuario):","# { action: 'confirm' }","","# Sin respuesta o exit 0: el cambio procede normalmente"],
    links:[["Changelog Claude Code v2.1.251","https://code.claude.com/docs/en/changelog"]]}},
-{date:"2026-08-28",tag:"claude code",tagc:"clay",fresh:true,
+{date:"2026-08-28",tag:"claude code",tagc:"clay",fresh:false,
  title:"v2.1.251: fixes críticos de seguridad en path traversal para archivos, plugins y Grep",
  body:"La v2.1.251 cierra cuatro vulnerabilidades de path traversal. Las herramientas de archivo (Read, Write, Edit) ahora validan permisos ANTES de seguir symlinks, eliminando el bypass donde el symlink se podía intercambiar después del chequeo. Los comandos de plugins del marketplace no pueden apuntar fuera del directorio del plugin. Grep y Glob aplican reglas de negación Read() a archivos alcanzados vía symlinks. El scriptPath del Workflow tool también valida permisos antes de leer.",
  why:"Si usás Claude Code con plugins externos, directorios con symlinks, o en entornos donde el agente trabaja con código de terceros, actualizá: estos bypasses existían en todas las versiones anteriores.",
