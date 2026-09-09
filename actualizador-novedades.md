@@ -56,11 +56,20 @@ claude
 >
 > 5. **Actualizá** `LAST_SYNC` a la fecha de hoy (formato `AAAA-MM-DD`).
 >
-> 6. **No toques nada más** del archivo. No cambies estilos, ni otras secciones, ni `app.js`.
+> 6. **No toques nada más** de `index.html`. No cambies estilos, ni otras secciones, ni `app.js`.
 >    Si no encontrás novedades nuevas, igual actualizá `LAST_SYNC` a hoy y dejá una nota en el
 >    resumen final ("sin novedades nuevas esta corrida").
 >
-> 7. Al terminar, mostrame un resumen: cuántas novedades agregaste y los títulos.
+> 6b. **Alimentá el cerebro.** Si una novedad trae algo *accionable* (un setting, un flag, un
+>    hook, una env var, un comando nuevo, un límite que cambió), agregalo a la nota que
+>    corresponda en `cerebro/claude-code/` (`settings-json-cheatsheet.md`, `hooks.md`,
+>    `env-vars.md`, `costo-y-cache.md`, `subagentes-y-multisesion.md`, `slash-commands.md`):
+>    una fila en la tabla o un bloque corto, con la versión de origen, y subí `actualizado:` en
+>    el frontmatter. Solo si es accionable; un anuncio o un fix transparente no va. Si además
+>    cambia el baseline recomendado, actualizá también `.claude/skills/claude-code-tuneup/SKILL.md`.
+>
+> 7. Al terminar, mostrame un resumen: cuántas novedades agregaste, los títulos y qué notas de
+>    `cerebro/` tocaste.
 
 ---
 

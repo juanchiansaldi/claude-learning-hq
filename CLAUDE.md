@@ -16,6 +16,10 @@ Público: Juan y cualquiera que contrate para aprender Claude. Idioma de TODO el
   `CONCEPTOS`, `ROADMAP`, `PATHS`, `AG_*`, `RETOS`, `NAV`) + la constante `LAST_SYNC`.
 - `app.js` — íconos, el logo SVG, funciones de render, estado en `localStorage`, navegación.
 - `actualizador-novedades.md` — prompt del auto-actualizador de la sección Novedades.
+- `cerebro/` — vault Obsidian-compatible con lo **accionable** de las novedades (settings, hooks,
+  env vars, comandos). Lo alimenta el actualizador (paso 6b) y lo lee la skill de abajo.
+- `.claude/skills/claude-code-tuneup/` — skill que aplica las notas de `cerebro/` a la config
+  de Claude Code del usuario/proyecto.
 - `claude-hq-v3.html` — prototipo viejo. NO se usa; no lo edites ni lo borres sin avisar.
 
 ## Cómo está armado (para no romperlo)
