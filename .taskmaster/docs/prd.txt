@@ -1,0 +1,16 @@
+# Albor Dev Academy: path "Dev de Albor Studio" en Claude Learning HQ
+
+Objetivo: que todo dev que entre a Albor Studio pase por un flujo de estudio único que enseña el ciclo SPECBOOT (LIDR sobre OpenSpec) adaptado a Albor, las mejores prácticas de vibe coding (worktrees, subagentes, skills, MCPs, mapeo de código) y las reglas de seguridad de la agencia. Fecha de arranque: 2026-09-09.
+
+Alcance de esta iteración (todo en español rioplatense, sin build ni dependencias nuevas):
+1. Nuevo path "dev-albor" en el array PATHS de index.html con 15 pasos; cada paso con detail, pasos numerados, comandos, prompt cuando aplica, links y "listo cuando".
+2. Cinco conceptos nuevos en CONCEPTOS: harness, SDD/OpenSpec, worktree, subagentes, mapeo del código.
+3. Comandos nuevos en SLASHES: /opsx:propose, /opsx:apply, /opsx:archive, /enrich-us, /verify, /adversarial-review, /pr-report.
+4. Texto de la sección Ruta 0→100 actualizado (cuatro caminos) en app.js y bump de la query de versión de app.js en index.html.
+5. Verificación en navegador real: consola sin errores, el path nuevo renderiza, el progreso se guarda al tildar un paso.
+6. Commit y push a master (GitHub Pages redeploya solo).
+7. Skills globales en ~/.claude/skills: albor-specboot, enrich-us, verify, adversarial-review, pr-report; bloque de protocolo y tabla de routing de skills en ~/.claude/CLAUDE.md.
+8. Piloto de OpenSpec en el repo AlborStudio: openspec init, config.yaml con el contexto del repo, commit y push.
+9. Registro de cierre: hq report en learning-hq y albor-studio; nota de contexto en BrainOS.
+
+Fuera de alcance: sistema de tickets sincronizado con PRs (se evalúa GitHub Issues + Projects en otra iteración); Vercel para la academia (ya vive en GitHub Pages).

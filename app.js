@@ -209,7 +209,7 @@ function secPaths(){
   return `<section id="sec-paths">
     <div class="eyebrow">onboarding por rol</div>
     <h2 class="pagetitle">Ruta 0→100</h2>
-    <p class="lede tight">Si contratás a alguien, mandalo por acá. Tres caminos según lo que va a hacer; cada uno enseña lo que vos ya sabés, en orden. Se marca el progreso solo.</p>
+    <p class="lede tight">Si contratás a alguien, mandalo por acá. Cuatro caminos según lo que va a hacer; cada uno enseña lo que vos ya sabés, en orden. El de Dev de Albor es obligatorio para quien programa con nosotros. Se marca el progreso solo.</p>
     <div class="pathtabs" id="pathtabs"></div>
     <div class="progressbar"><i id="pathbar"></i></div>
     <div id="pathbody"></div>
