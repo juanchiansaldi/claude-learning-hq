@@ -119,6 +119,39 @@
         "testStrategy": "hq status refleja las tareas y BrainOS tiene la nota.",
         "subtasks": [],
         "updatedAt": "2026-09-09T17:26:45.396Z"
+      },
+      {
+        "id": 10,
+        "title": "Paso 'Dónde vive el ticket: GitHub Issues + Projects' en el path Dev de Albor",
+        "description": "Nuevo paso 5 con plantilla, board, nombres con #issue y Closes #n.",
+        "status": "done",
+        "dependencies": [],
+        "priority": "medium",
+        "details": "",
+        "testStrategy": "Verificado en navegador local y en producción.",
+        "subtasks": []
+      },
+      {
+        "id": 11,
+        "title": "Bloque 'Cómo se usan (sin memorizar nada)' en Skills",
+        "description": "Tabla FRASES con 12 frases que disparan las skills del ciclo.",
+        "status": "done",
+        "dependencies": [],
+        "priority": "medium",
+        "details": "",
+        "testStrategy": "Verificado en navegador local y en producción.",
+        "subtasks": []
+      },
+      {
+        "id": 12,
+        "title": "URL oficial: Vercel en vez de GitHub Pages",
+        "description": "CLAUDE.md, README y referencias externas apuntan a https://claude-learning-hq.vercel.app/ (auto-deploy del push).",
+        "status": "done",
+        "dependencies": [],
+        "priority": "medium",
+        "details": "",
+        "testStrategy": "Verificado en navegador local y en producción.",
+        "subtasks": []
       }
     ],
     "metadata": {
@@ -128,7 +161,8 @@
       "completedCount": 9,
       "tags": [
         "master"
-      ]
+      ],
+      "updated": "2026-09-09T17:49:13.847657+00:00"
     }
   }
 }

@@ -378,6 +378,10 @@ function secSkills(){
     <h2 class="pagetitle">Skills</h2>
     <p class="lede">Una skill es una carpeta con un <code class="inline">SKILL.md</code> que Claude carga <b>solo cuando hace falta</b>. Es la forma de convertir lo que sabés (tu voz de marca, tu estándar de QA, tu manera de armar agentes) en algo que Claude aplica solo, en cada proyecto.</p>
 
+    <div class="sectit"><span class="n">0</span> Cómo se usan (sin memorizar nada)</div>
+    <p class="secsub">No hace falta saberse las 200. Cada skill tiene una <b>description</b> que dice cuándo se activa, y Claude la carga solo cuando lo que pedís matchea. Vos hablás normal. Para forzar una: <code class="inline">/nombre-de-la-skill</code>. Para ver la lista: escribí <code class="inline">/</code>. Estas frases disparan las del ciclo de Albor:</p>
+    <div class="card"><div style="display:grid;grid-template-columns:1fr auto;gap:9px 18px;align-items:center">${FRASES.map(f=>`<div style="font-size:.93rem">"${esc(f[0])}"</div><div><code class="inline">${esc(f[1])}</code></div>`).join('')}</div></div>
+
     <div class="sectit"><span class="n">1</span> Cómo crear una skill</div>
     <p class="secsub">La forma más fácil: pedíselo a Claude. La description tiene que decir <b>cuándo</b> se activa.</p>
     <div class="card">${promptBox(SKILL_M2_PROMPT,'Prompt para crear cualquier skill')}
@@ -394,7 +398,7 @@ function secSkills(){
     <div class="sectit"><span class="n">3</span> Skills y plugins oficiales</div>
     <p class="secsub">Claude ya trae skills internas (debug, code-review, etc.) y podés sumar más desde el marketplace.</p>
     <div class="card">${codeBlock(["/plugin marketplace add anthropics/claude-code","/plugin   # explorar e instalar","/reload-skills"])}
-      <div class="linkrow" style="margin-top:12px">${linkBtn(["Docs de skills","https://docs.claude.com/en/docs/claude-code/skills"])}${linkBtn(["Marketplace","https://github.com/anthropics/claude-code"])}</div>
+      <div class="linkrow" style="margin-top:12px">${linkBtn(["Docs de skills","https://code.claude.com/docs/en/skills"])}${linkBtn(["Marketplace","https://github.com/anthropics/claude-code"])}</div>
     </div>
 
     <div class="sectit"><span class="n">↗</span> MCP: las "manos" de Claude</div>

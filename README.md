@@ -4,7 +4,7 @@ La academia central de Claude: prompts que funcionan, skills, comandos, agentes 
 WhatsApp e Instagram, rutas de aprendizaje 0→100 y **novedades que se actualizan solas**.
 
 App de un solo archivo, sin build ni dependencias. Funciona abriendo `index.html`
-en el navegador o publicada en GitHub Pages.
+en el navegador o publicada en Vercel.
 
 ## Secciones
 - **Inicio** — dashboard con tu progreso y racha.

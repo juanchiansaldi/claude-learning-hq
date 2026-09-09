@@ -1220,6 +1220,20 @@ const ATAJOS=[
 ];
 
 /* ===== SKILLS recomendadas ===== */
+const FRASES=[
+["implementá X · hacé el ticket · nueva feature","albor-specboot → enrich-us → /opsx:propose"],
+["refiná esta historia · /enrich-us #12","enrich-us"],
+["tengo una idea · no sé cómo encararlo","brainstorming"],
+["hacé un plan antes de tocar código","writing-plans"],
+["¿funciona? · probalo · ¿está listo?","verify (+ Playwright)"],
+["rompelo · revisá antes del PR","adversarial-review / code-review"],
+["armá el PR","pr-report"],
+["dejó de andar · tira este error","systematic-debugging"],
+["mapeá este repo · no entiendo este código","codebase-onboarding / code-tour"],
+["que se vea premium · landing","impeccable / frontend-design + browse"],
+["antes de deployar a producción","security-review"],
+["subilo · deploy","vercel:deploy / ship"],
+];
 const SKILL_RECS=[
 {t:"voz-de-marca",tag:"berry",d:"Tono y estilo para todo texto público (DMs, captions, emails). Se activa al redactar.",
 prompt:`Creá una skill de proyecto en .claude/skills/voz-de-marca/ con un SKILL.md en formato oficial. La description debe decir que se activa al redactar texto público (captions de Instagram, mensajes de WhatsApp, emails, copy). Preguntame ejemplos de cómo escribimos antes de inventar; el SKILL.md incluye tono, palabras que sí/no usamos, y ejemplos "así sí / así no".`},
@@ -1564,10 +1578,16 @@ const PATHS=[
   steps:["Leé la skill albor-specboot (vive en ~/.claude/skills/ de la máquina de Juan; pedísela si trabajás en la tuya).","Dibujá el ciclo en un papel con los 7 pasos y los gates entre cada uno.","Regla 1: un cambio después de aplicar y antes de archivar se corrige primero en la spec, nunca con un 'fix rápido'.","Regla 2: quien revisa no es quien implementó (otra sesión u otro subagente).","Regla 3: cada paso cerrado se commitea y pushea. Nada queda en la compu sin subir."],
   prompt:"Leé la skill albor-specboot y explicame el ciclo SPECBOOT con un ejemplo concreto de este repo: qué produce cada paso, qué gate hay entre pasos y en qué paso participo yo como humano.",
   done:"Podés recitar los 7 pasos y decir qué gate hay entre cada uno sin mirar."},
+ {t:"Dónde vive el ticket: GitHub Issues + Projects",s:"Un issue por user story, un board con las etapas del ciclo, un PR que lo cierra.",
+  detail:"En Albor el ticket no vive en un chat ni en la cabeza de nadie: es un issue de GitHub en el repo del proyecto, creado con la plantilla 'User story'. El board de Projects muestra en qué paso del ciclo está cada uno. La rama, el cambio de OpenSpec y el PR llevan el número del issue, así todo queda trazable sin esfuerzo.",
+  steps:["Creá el issue con la plantilla 'User story' (link abajo): Como/quiero/para, criterios de aceptación, fuera de alcance y talla. La plantilla le pone sola la etiqueta user-story.","Agregalo al board 'Albor Studio · Tickets' en la columna Backlog. Cuando lo refinás con /enrich-us pasa a Refinada; con la propuesta aprobada, a En desarrollo; después Verificación, Review y Done.","Nombrá todo con el número del issue: rama feat/<n>-<slug>, cambio de OpenSpec <n>-<slug>, y en el PR la línea 'Closes #<n>' para que se cierre solo al mergear.","Los comentarios técnicos van en el issue o en el PR, no por WhatsApp. Lo que no está escrito ahí no existe.","Regla: un issue por user story. Si mezcla dos cosas, se parte en dos."],
+  code:["gh issue list -R juanchiansaldi/jca-studio --label talla:S","gh issue view 12 -R juanchiansaldi/jca-studio","git checkout -b feat/12-email-despacho","/enrich-us #12"],
+  links:[["Crear un issue en jca-studio","https://github.com/juanchiansaldi/jca-studio/issues/new/choose"],["Tus boards de Projects","https://github.com/users/juanchiansaldi/projects"]],
+  done:"Tu ticket es un issue con plantilla, talla y columna en el board, y sabés cómo lo cierra el PR."},
  {t:"Pasos 1 y 2: escribir y refinar la user story con /enrich-us",s:"De 'quiero un login' a algo implementable sin preguntas.",
   detail:"Una user story cruda es ambigua. /enrich-us la audita contra una checklist (funcionalidad completa, campos, endpoints, archivos, tests, no funcionales, definition of done) y devuelve Original + Enriquecida con criterios Given/When/Then. Eso es lo que entra a OpenSpec.",
-  steps:["Elegí una tarea real chica (de HQ, de un issue de GitHub o inventada para practicar).","Escribila como user story: 'Como <rol> quiero <acción> para <valor>'.","Corré /enrich-us pegando la historia.","Leé la versión Enriquecida: marcá qué te faltaba (casi siempre: errores, seguridad y qué NO entra).","Resolvé lo marcado como [CONFIRMAR] y guardá el resultado: es la entrada del paso siguiente."],
-  code:["/enrich-us Como cliente quiero recibir un email cuando mi pedido se despacha para saber que está en camino"],
+  steps:["Elegí un issue chico del board (talla:S) o creá uno para practicar con la plantilla User story.","Confirmá que la historia tenga la forma 'Como <rol> quiero <acción> para <valor>'.","Corré /enrich-us #<n>: lee el issue solo. También podés pegarle la historia.","Leé la versión Enriquecida: marcá qué te faltaba (casi siempre: errores, seguridad y qué NO entra).","Resolvé lo marcado como [CONFIRMAR] y guardá el resultado: es la entrada del paso siguiente."],
+  code:["/enrich-us #12","/enrich-us Como cliente quiero recibir un email cuando mi pedido se despacha para saber que está en camino"],
   done:"Tenés una user story enriquecida con criterios Given/When/Then y definition of done."},
  {t:"Paso 3: proponer con /opsx:propose y aprobar el diseño",s:"Los artefactos de la propuesta antes de una línea de código.",
   detail:"/opsx:propose crea openspec/changes/<nombre>/ con proposal.md (qué y por qué), design.md (cómo), specs/ (deltas: qué se agrega, cambia o saca) y tasks.md (la lista de tareas). Acá es donde el humano invierte tiempo: leer y corregir el diseño es diez veces más barato que corregir código.",
@@ -1709,6 +1729,6 @@ const NAV=[
  ]},
 ];
 </script>
-<script src="app.js?v=20260909-1"></script>
+<script src="app.js?v=20260909-2"></script>
 </body>
 </html>

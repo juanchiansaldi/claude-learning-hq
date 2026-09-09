@@ -4,11 +4,11 @@ Reglas para trabajar en este proyecto. Leelo antes de tocar nada.
 
 ## Qué es
 La academia central de Claude de Juan: una app web de **un solo archivo** (sin build, sin
-dependencias, sin framework). Funciona abriendo `index.html` o publicada en GitHub Pages.
+dependencias, sin framework). Funciona abriendo `index.html` o publicada en Vercel (auto-deploy del push a `master`).
 Público: Juan y cualquiera que contrate para aprender Claude. Idioma de TODO el contenido:
 **español rioplatense**, directo, sin relleno.
 
-🟢 En vivo: https://juanchiansaldi.github.io/claude-learning-hq/
+🟢 En vivo: https://claude-learning-hq.vercel.app/
 📦 Repo: https://github.com/juanchiansaldi/claude-learning-hq
 
 ## Estructura
@@ -38,14 +38,14 @@ nuevo de Claude desde `LAST_SYNC`, lo agrega arriba del array `NOVEDADES`, pone 
 en las viejas, sube `LAST_SYNC` a hoy, y NADA más. No reescribas otras secciones en esa corrida.
 
 ## Flujo de trabajo
-- Commits chicos, en español (feat/fix/chore). Rama `master` es la que publica Pages.
-- **Publicar = pushear**: `git add -A && git commit && git push`. Pages redeploya en ~30s.
+- Commits chicos, en español (feat/fix/chore). Rama `master` es la que publica en Vercel.
+- **Publicar = pushear**: `git add -A && git commit && git push`. Vercel redeploya en ~20s. GitHub Pages sigue prendido pero ya no es la URL oficial.
 - Después de cambios visuales, verificá en navegador (skill `browse`) antes de pushear:
   revisá que no haya errores de consola y que la sección cambiada renderice.
 - No agregues librerías ni build tools: la gracia es que sea un solo HTML que se abre y anda.
 - **Cache-busting:** cada vez que edites `app.js`, bumpeá la query de versión en
-  `index.html` (`<script src="app.js?v=...">`). GitHub Pages cachea con max-age=600, así que
-  sin bump el navegador puede servir un `app.js` viejo durante 10 min. El auto-actualizador
+  `index.html` (`<script src="app.js?v=...">`). Vercel cachea los estáticos, así que
+  sin bump el navegador puede servir un `app.js` viejo. El auto-actualizador
   no toca `app.js`, así que no necesita bumpear.
 
 ## Guardarraíles
