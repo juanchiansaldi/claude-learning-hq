@@ -2,7 +2,7 @@
   "master": {
     "tasks": [
       {
-        "id": 1,
+        "id": "1",
         "title": "Agregar path 'Dev de Albor Studio' a PATHS",
         "description": "Nuevo path dev-albor con 15 pasos (detail, pasos, code, prompt, links, done) en index.html.",
         "status": "done",
@@ -13,12 +13,12 @@
         "subtasks": []
       },
       {
-        "id": 2,
+        "id": "2",
         "title": "Agregar 5 conceptos nuevos a CONCEPTOS",
         "description": "harness, sdd (OpenSpec), worktree, subagentes, mapeo del código, con d, ej y code.",
         "status": "done",
         "dependencies": [
-          1
+          "1"
         ],
         "priority": "medium",
         "details": "Insertados antes del cierre de CONCEPTOS.",
@@ -26,12 +26,12 @@
         "subtasks": []
       },
       {
-        "id": 3,
+        "id": "3",
         "title": "Agregar comandos del ciclo a SLASHES",
         "description": "/opsx:propose, /opsx:apply, /opsx:archive, /enrich-us, /verify, /adversarial-review, /pr-report con demo.",
         "status": "done",
         "dependencies": [
-          1
+          "1"
         ],
         "priority": "medium",
         "details": "Insertados antes de ATAJOS.",
@@ -39,12 +39,12 @@
         "subtasks": []
       },
       {
-        "id": 4,
+        "id": "4",
         "title": "Actualizar lede de Ruta 0→100 y bump de versión de app.js",
         "description": "'Cuatro caminos' en app.js y app.js?v=20260909-1 en index.html.",
         "status": "done",
         "dependencies": [
-          1
+          "1"
         ],
         "priority": "low",
         "details": "Cache-busting obligatorio por GitHub Pages (max-age=600).",
@@ -52,36 +52,38 @@
         "subtasks": []
       },
       {
-        "id": 5,
+        "id": "5",
         "title": "Verificar en navegador real",
         "description": "Abrir la app servida localmente, ir a Ruta 0→100, tab Dev de Albor, tildar un paso y confirmar consola limpia y progreso guardado.",
-        "status": "in-progress",
+        "status": "done",
         "dependencies": [
-          1,
-          2,
-          3,
-          4
+          "1",
+          "2",
+          "3",
+          "4"
         ],
         "priority": "high",
         "details": "Servidor local en 127.0.0.1:8765 con python http.server. Verificación con el Browser pane.",
         "testStrategy": "Screenshot del path, 0 errores de consola, clhq_progress en localStorage.",
-        "subtasks": []
+        "subtasks": [],
+        "updatedAt": "2026-09-09T17:25:55.620Z"
       },
       {
-        "id": 6,
+        "id": "6",
         "title": "Commit y push a master (GitHub Pages)",
         "description": "Commit chico en español y push; Pages redeploya en ~30s.",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
-          5
+          "5"
         ],
         "priority": "high",
         "details": "Incluir .gitignore, app.js, index.html y .taskmaster/. No incluir el PDF suelto.",
         "testStrategy": "https://juanchiansaldi.github.io/claude-learning-hq/ muestra el tab nuevo.",
-        "subtasks": []
+        "subtasks": [],
+        "updatedAt": "2026-09-09T17:26:45.387Z"
       },
       {
-        "id": 7,
+        "id": "7",
         "title": "Skills globales y protocolo en ~/.claude",
         "description": "albor-specboot, enrich-us, verify, adversarial-review, pr-report en ~/.claude/skills; bloque ALBOR-DEV-PROTOCOL con routing en ~/.claude/CLAUDE.md; 4 skills de ECC copiadas sueltas.",
         "status": "done",
@@ -92,35 +94,41 @@
         "subtasks": []
       },
       {
-        "id": 8,
+        "id": "8",
         "title": "Piloto de OpenSpec en AlborStudio",
         "description": "openspec init --tools claude --language es, config.yaml con contexto del repo, commit y push.",
-        "status": "in-progress",
+        "status": "done",
         "dependencies": [],
         "priority": "medium",
         "details": "Crea openspec/, .claude/commands/opsx/ y .claude/skills/openspec-*.",
         "testStrategy": "/opsx:propose disponible en el repo; push en GitHub.",
-        "subtasks": []
+        "subtasks": [],
+        "updatedAt": "2026-09-09T17:25:55.623Z"
       },
       {
-        "id": 9,
+        "id": "9",
         "title": "Registro de cierre en HQ y BrainOS",
         "description": "hq report learning-hq y albor-studio; nota de contexto en BrainOS con las decisiones (ECC off, sin Antigravity, tickets con GitHub Issues a evaluar).",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
-          6,
-          8
+          "6",
+          "8"
         ],
         "priority": "medium",
         "details": "Usar el protocolo HQ de cada CLAUDE.md.",
         "testStrategy": "hq status refleja las tareas y BrainOS tiene la nota.",
-        "subtasks": []
+        "subtasks": [],
+        "updatedAt": "2026-09-09T17:26:45.396Z"
       }
     ],
     "metadata": {
-      "created": "2026-09-09T17:24:02.879538+00:00",
-      "updated": "2026-09-09T17:24:02.879538+00:00",
-      "description": "Tasks for master context"
+      "version": "1.0.0",
+      "lastModified": "2026-09-09T17:26:45.396Z",
+      "taskCount": 9,
+      "completedCount": 9,
+      "tags": [
+        "master"
+      ]
     }
   }
 }
