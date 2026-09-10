@@ -64,7 +64,7 @@ function extras(ex){if(!ex)return '';let h='';if(ex.code)h+=codeBlock(ex.code);i
 function ringSVG(pct){const r=56,c=2*Math.PI*r,off=c*(1-pct/100);return `<svg width="128" height="128"><circle cx="64" cy="64" r="${r}" fill="none" stroke="var(--line)" stroke-width="11"/><circle cx="64" cy="64" r="${r}" fill="none" stroke="var(--clay)" stroke-width="11" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${off}" style="transition:stroke-dashoffset .6s"/></svg>`}
 
 /* progreso global de tareas (roadmap + paths) */
-function allTaskKeys(){let keys=[];ROADMAP.forEach((p,pi)=>p.tasks.forEach((t,ti)=>keys.push('rm-'+pi+'-'+ti)));PATHS.forEach(p=>p.steps.forEach((s,si)=>keys.push('pt-'+p.id+'-'+si)));return keys}
+function allTaskKeys(){let keys=[];ROADMAP.forEach((p,pi)=>p.tasks.forEach((t,ti)=>keys.push('rm-'+pi+'-'+ti)));PROGRAMA.forEach((m,mi)=>m.temas.forEach((t,ti)=>keys.push('pg-'+mi+'-'+ti)));PATHS.forEach(p=>p.steps.forEach((s,si)=>keys.push('pt-'+p.id+'-'+si)));return keys}
 function doneCount(){return allTaskKeys().filter(k=>progress[k]).length}
 function toggleTask(k,rer){progress[k]=!progress[k];LS.set('progress',progress);if(rer)window[rer]();renderRail();}
 
@@ -106,7 +106,7 @@ function fmtDate(d){const m=['ene','feb','mar','abr','may','jun','jul','ago','se
 function buildAll(){
   const m=document.getElementById('main');
   m.innerHTML=[
-    secInicio(),secNovedades(),secPaths(),secRoadmap(),secConceptos(),
+    secInicio(),secNovedades(),secPaths(),secRoadmap(),secPrograma(),secConceptos(),
     secComandos(),secSkills(),secPlantillas(),secPrompts(),secAgentes(),secLab(),secReto()
   ].join('');
   bindLab();
@@ -118,6 +118,7 @@ function secInicio(){
   const quick=[
     ['novedades','spark','clay','Novedades de Claude','Lo último de Claude y Claude Code, actualizado solo.'],
     ['paths','route','pine','Ruta 0→100','El camino para que alguien aprenda todo lo que sabés.'],
+    ['programa','bulb','slate','Programa IA para Devs','El máster completo: 16 módulos, del setup al multi-agente.'],
     ['prompts','bolt','gold','Biblioteca de prompts','Webs hermosas, agentes, seguridad. Copiá y pegá.'],
     ['agentes','chat','berry','Agentes WPP/IG','Cómo construir el servicio que te van a pedir.'],
     ['comandos','terminal','slate','Comandos /','Qué hace cada slash: /loop, /goal, /agents…'],
@@ -145,7 +146,7 @@ function secInicio(){
         <div>
           <div class="eyebrow" style="margin-bottom:8px">tu progreso</div>
           <h3 class="serif" style="font-size:1.4rem;margin-bottom:6px">${pct<10?'Recién arrancás. Bienvenido.':pct<50?'Buen ritmo. Seguí así.':pct<100?'Ya sos peligroso con Claude.':'Dominás Claude. A enseñarle a otro.'}</h3>
-          <p style="color:var(--ink2);max-width:50ch">Completaste ${done} de ${total} tareas entre el roadmap y las rutas de aprendizaje. Todo se guarda en este navegador.</p>
+          <p style="color:var(--ink2);max-width:50ch">Completaste ${done} de ${total} tareas entre el roadmap, el programa y las rutas de aprendizaje. Todo se guarda en este navegador.</p>
           <div style="margin-top:14px;display:flex;gap:9px;flex-wrap:wrap">
             <button class="btn small" onclick="go('roadmap')">Ir al roadmap</button>
             <button class="btn ghost small" onclick="go('reto')">Reto del día</button>
@@ -411,6 +412,66 @@ function secSkills(){
   </section>`;
 }
 
+
+/* ---------- PROGRAMA (máster IA para devs) ---------- */
+function secPrograma(){
+  const horas=PROGRAMA.reduce((a,m)=>a+(parseFloat(m.h)||0),0);
+  const temas=PROGRAMA.reduce((a,m)=>a+m.temas.length,0);
+  return `<section id="sec-programa">
+    <div class="eyebrow">máster completo · ${PROGRAMA.length} módulos · ${temas} temas · ~${horas} h</div>
+    <h2 class="pagetitle">Programa IA para Devs</h2>
+    <p class="lede tight">El máster completo de IA para desarrolladores, módulo por módulo, siguiendo el temario de AI4Devs de LIDR. Cada tema trae <b>la clase</b> (los conceptos explicados), <b>ejemplos</b> en varios stacks (JavaScript, Python, Java, React, móvil y SQL), <b>qué hacer</b> para practicarlo y cuándo está listo. El <b>Roadmap</b> enseña a manejar Claude Code y el path <b>Dev de Albor</b> enseña nuestro ciclo de trabajo; esto es todo lo demás: pilares, specs, arquitectura, documentación, privacidad y regulación, TDD, bases de datos, backend, frontend, QA, DevSecOps, RAG y multi-agente. El progreso se guarda solo.</p>
+    <div class="linkrow" style="margin-bottom:18px">${linkBtn(["Temario original de LIDR","https://www.lidr.co/ia-devs/"])}${linkBtn(["Ir al path Dev de Albor","paths"])}</div>
+    <div id="pgbody"></div>
+  </section>`;
+}
+function renderPrograma(){
+  const el=document.getElementById('pgbody');if(!el)return;
+  const chev=svg('<polyline points="9 6 15 12 9 18"/>',2.4);
+  el.innerHTML=PROGRAMA.map((m,mi)=>{
+    const keys=m.temas.map((t,ti)=>'pg-'+mi+'-'+ti);
+    const done=keys.filter(k=>progress[k]).length,pct=Math.round(done/m.temas.length*100);
+    return `<div class="phase" id="pg${mi}">
+      <div class="ph" onclick="document.getElementById('pg${mi}').classList.toggle('open')">
+        <div class="pic">${svg(I[m.icon]||I.book,2)}</div>
+        <div class="pt"><div class="wk">Módulo ${m.n} · ${m.h}</div><h3 class="serif">${m.t}</h3><div class="ct" id="pgct-${mi}">${m.s} · ${done}/${m.temas.length} temas</div></div>
+        <div class="mini"><div class="bar"><i id="pgbar-${mi}" style="width:${pct}%"></i></div><span class="pp" id="pgpct-${mi}">${pct}%</span><span class="chev">${chev}</span></div>
+      </div>
+      <div class="body">${m.temas.map((t,ti)=>{const k='pg-'+mi+'-'+ti;const d=!!progress[k];return `
+        <div class="pstep ${d?'done':''}" id="ps-${k}">
+          <div class="prow">
+            <input type="checkbox" ${d?'checked':''} title="Marcar como hecho" onclick="event.stopPropagation();setProgramaTask(this,'${k}',${mi})">
+            <div class="pmain" onclick="this.closest('.pstep').classList.toggle('open')">
+              <div class="tt">${t.t}</div>
+              <div class="ts">${t.s}</div>
+            </div>
+            <span class="pchev" onclick="this.closest('.pstep').classList.toggle('open')">${chev}</span>
+          </div>
+          <div class="pdetail" onclick="event.stopPropagation()">
+            ${t.detail?`<p class="pintro">${t.detail}</p>`:''}
+            ${t.clase?`<div class="clase"><h5>La clase</h5><ul>${t.clase.map(c=>`<li>${c}</li>`).join('')}</ul></div>`:''}
+            ${t.ej?`<h5>Ejemplos</h5><div class="ejes">${t.ej.map(e=>`<div class="eje"><div class="et">${esc(e[0])}</div><div class="ed">${e[1]}</div></div>`).join('')}</div>`:''}
+            <h5 style="margin-top:15px">Qué hacer</h5>
+            <ol class="plist">${t.steps.map(x=>`<li>${esc(x)}</li>`).join('')}</ol>
+            ${t.code?`<div class="pcode">${codeBlock(t.code)}</div>`:''}
+            ${t.prompt?promptBox(t.prompt):''}
+            ${(t.links||t.go)?`<div class="linkrow">${(t.links||[]).map(linkBtn).join('')}${t.go?`<button class="linkbtn" onclick="go('${t.go}')">Ir a la sección →</button>`:''}</div>`:''}
+            ${t.done?`<div class="pdone"><b>✓ Listo cuando:</b> ${t.done}</div>`:''}
+          </div>
+        </div>`}).join('')}</div>
+    </div>`;
+  }).join('');
+}
+function setProgramaTask(cb,k,mi){
+  progress[k]=cb.checked;LS.set('progress',progress);
+  const st=cb.closest('.pstep');if(st)st.classList.toggle('done',cb.checked);
+  const m=PROGRAMA[mi];const keys=m.temas.map((t,ti)=>'pg-'+mi+'-'+ti);
+  const done=keys.filter(x=>progress[x]).length,pct=Math.round(done/m.temas.length*100);
+  document.getElementById('pgct-'+mi).textContent=m.s+' · '+done+'/'+m.temas.length+' temas';
+  document.getElementById('pgbar-'+mi).style.width=pct+'%';document.getElementById('pgpct-'+mi).textContent=pct+'%';
+  renderRail();rebuildInicio();
+}
+
 /* ---------- PROMPTS ---------- */
 function secPrompts(){
   return `<section id="sec-prompts">
@@ -602,6 +663,7 @@ function buildSearchIndex(){
   allPrompts().forEach(p=>idx.push({ty:"Prompt",ic:"bolt",tt:p.title,ts:p.desc||p.cat,sec:"prompts",q:p.title}));
   NOVEDADES.forEach(n=>idx.push({ty:"Novedad",ic:"spark",tt:n.title,ts:n.body,sec:"novedades"}));
   ROADMAP.forEach(ph=>ph.tasks.forEach(t=>idx.push({ty:"Roadmap",ic:"map",tt:t.t,ts:ph.wk+" · "+ph.title,sec:"roadmap"})));
+  PROGRAMA.forEach(m=>m.temas.forEach(t=>idx.push({ty:"Programa",ic:"bulb",tt:t.t,ts:"Módulo "+m.n+" · "+m.t,sec:"programa"})));
   PATHS.forEach(p=>p.steps.forEach(s=>idx.push({ty:"Ruta",ic:"route",tt:s.t,ts:p.t,sec:"paths"})));
   SKILL_RECS.forEach(s=>idx.push({ty:"Skill",ic:"puzzle",tt:s.t,ts:s.d,sec:"skills"}));
   SKILLS_HAVE.forEach(s=>idx.push({ty:"Skill",ic:"puzzle",tt:s.t,ts:s.d,sec:"skills"}));
@@ -660,7 +722,7 @@ function importData(input){
       if(Array.isArray(d.uprompts))LS.set('uprompts',d.uprompts);
       if(d.streak&&typeof d.streak==='object')LS.set('streak',d.streak);
       progress=LS.get('progress',{});userPrompts=LS.get('uprompts',[]);streak=LS.get('streak',streak);
-      buildAll();renderRail();renderRoadmap();renderPaths();renderPrompts();go(current);
+      buildAll();renderRail();renderRoadmap();renderPrograma();renderPaths();renderPrompts();go(current);
       toast('Datos importados ✓');
     }catch(e){toast('Archivo inválido ✗')}
     input.value='';
@@ -674,7 +736,7 @@ function init(){
   document.getElementById('logo-m').innerHTML=LOGO;
   buildAll();
   renderRail();
-  renderRoadmap();
+  renderRoadmap();renderPrograma();
   renderPaths();
   renderPrompts();
   const last=LS.get('last','inicio');

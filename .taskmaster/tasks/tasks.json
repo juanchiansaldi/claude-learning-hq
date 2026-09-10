@@ -152,6 +152,39 @@
         "details": "",
         "testStrategy": "Verificado en navegador local y en producción.",
         "subtasks": []
+      },
+      {
+        "id": "13",
+        "title": "Sección Programa IA4Devs con el temario completo de LIDR",
+        "description": "Los 13 módulos más los 2 labs del máster AI4Devs, con progreso propio, nav, tarjeta en Inicio y buscador.",
+        "status": "done",
+        "dependencies": [],
+        "priority": "high",
+        "details": "16 módulos (12 se parte en 1 y 2), 62 temas, ~72 h. Cada tema con detail, clase, ejemplos, pasos, código, prompt, links y criterio de listo.",
+        "testStrategy": "Verificado en navegador local: 16 módulos, 62 temas, 373 puntos de clase, 195 ejemplos, consola sin errores.",
+        "subtasks": []
+      },
+      {
+        "id": "14",
+        "title": "Contenido de clase en cada tema",
+        "description": "373 puntos de clase que explican los conceptos, no sólo ejercicios.",
+        "status": "done",
+        "dependencies": [],
+        "priority": "high",
+        "details": "Pedido de Juan: enseñar como lo haría LIDR, no sólo remitir a ejercicios.",
+        "testStrategy": "Verificado en navegador local: 16 módulos, 62 temas, 373 puntos de clase, 195 ejemplos, consola sin errores.",
+        "subtasks": []
+      },
+      {
+        "id": "15",
+        "title": "Ejemplos multi-stack",
+        "description": "195 ejemplos en JavaScript, Python, Java, React, móvil, SQL y varias plataformas, no sólo el stack de Albor.",
+        "status": "done",
+        "dependencies": [],
+        "priority": "high",
+        "details": "Pedido de Juan: ejemplos de todo, no sólo de Albor.",
+        "testStrategy": "Verificado en navegador local: 16 módulos, 62 temas, 373 puntos de clase, 195 ejemplos, consola sin errores.",
+        "subtasks": []
       }
     ],
     "metadata": {
@@ -162,7 +195,7 @@
       "tags": [
         "master"
       ],
-      "updated": "2026-09-09T17:49:13.847657+00:00"
+      "updated": "2026-09-10T04:10:11.564842+00:00"
     }
   }
 }
