@@ -382,7 +382,11 @@ function secSkills(){
     <p class="secsub">No hace falta saberse las 200. Cada skill tiene una <b>description</b> que dice cuándo se activa, y Claude la carga solo cuando lo que pedís matchea. Vos hablás normal. Para forzar una: <code class="inline">/nombre-de-la-skill</code>. Para ver la lista: escribí <code class="inline">/</code>. Estas frases disparan las del ciclo de Albor:</p>
     <div class="card"><div style="display:grid;grid-template-columns:1fr auto;gap:9px 18px;align-items:center">${FRASES.map(f=>`<div style="font-size:.93rem">"${esc(f[0])}"</div><div><code class="inline">${esc(f[1])}</code></div>`).join('')}</div></div>
 
-    <div class="sectit"><span class="n">1</span> Cómo crear una skill</div>
+    <div class="sectit"><span class="n">1</span> Las skills que ya tenemos</div>
+    <p class="secsub">Instaladas en tu cuenta (se sincronizan solas), en <code class="inline">~/.claude/skills</code> o dentro del repo. Hablá normal y se activan; la columna de la derecha es lo que las dispara. Auditá cuáles usás con <code class="inline">/skill-doctor</code>.</p>
+    <div class="grid c2">${SKILLS_HAVE.map(s=>`<div class="card flat"><div style="display:flex;align-items:center;gap:9px;margin-bottom:7px"><span class="tag ${s.tag}">${esc(s.g)}</span><h3 class="serif" style="font-size:1.08rem">${esc(s.t)}</h3></div><p style="font-size:.88rem;color:var(--ink2);margin-bottom:8px">${s.d}</p><code class="inline">${esc(s.how)}</code></div>`).join('')}</div>
+
+    <div class="sectit"><span class="n">2</span> Cómo crear una skill</div>
     <p class="secsub">La forma más fácil: pedíselo a Claude. La description tiene que decir <b>cuándo</b> se activa.</p>
     <div class="card">${promptBox(SKILL_M2_PROMPT,'Prompt para crear cualquier skill')}
       <div style="margin-top:14px">
@@ -391,11 +395,11 @@ function secSkills(){
       </div>
     </div>
 
-    <div class="sectit"><span class="n">2</span> Las skills que te conviene armar</div>
+    <div class="sectit"><span class="n">3</span> Las skills que te conviene armar</div>
     <p class="secsub">Las 4 que más rinden para tu trabajo (webs + agentes). Copiá el prompt y Claude la crea.</p>
     <div class="grid c2">${SKILL_RECS.map((s,i)=>`<div class="card flat"><div style="display:flex;align-items:center;gap:9px;margin-bottom:7px"><span class="tag ${s.tag}">skill</span><h3 class="serif" style="font-size:1.08rem">${s.t}</h3></div><p style="font-size:.88rem;color:var(--ink2);margin-bottom:6px">${s.d}</p><button class="btn small" onclick="copyText(SKILL_RECS[${i}].prompt)">Copiar prompt</button></div>`).join('')}</div>
 
-    <div class="sectit"><span class="n">3</span> Skills y plugins oficiales</div>
+    <div class="sectit"><span class="n">4</span> Skills y plugins oficiales</div>
     <p class="secsub">Claude ya trae skills internas (debug, code-review, etc.) y podés sumar más desde el marketplace.</p>
     <div class="card">${codeBlock(["/plugin marketplace add anthropics/claude-code","/plugin   # explorar e instalar","/reload-skills"])}
       <div class="linkrow" style="margin-top:12px">${linkBtn(["Docs de skills","https://code.claude.com/docs/en/skills"])}${linkBtn(["Marketplace","https://github.com/anthropics/claude-code"])}</div>
@@ -600,6 +604,7 @@ function buildSearchIndex(){
   ROADMAP.forEach(ph=>ph.tasks.forEach(t=>idx.push({ty:"Roadmap",ic:"map",tt:t.t,ts:ph.wk+" · "+ph.title,sec:"roadmap"})));
   PATHS.forEach(p=>p.steps.forEach(s=>idx.push({ty:"Ruta",ic:"route",tt:s.t,ts:p.t,sec:"paths"})));
   SKILL_RECS.forEach(s=>idx.push({ty:"Skill",ic:"puzzle",tt:s.t,ts:s.d,sec:"skills"}));
+  SKILLS_HAVE.forEach(s=>idx.push({ty:"Skill",ic:"puzzle",tt:s.t,ts:s.d,sec:"skills"}));
   PLANTILLAS.forEach(p=>idx.push({ty:"Plantilla",ic:p.ic||"layers",tt:p.t,ts:p.s,sec:"plantillas"}));
   return idx;
 }

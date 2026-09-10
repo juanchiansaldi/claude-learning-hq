@@ -1132,6 +1132,62 @@ text:`Entraste a un proyecto en curso que no conocés. ANTES de cambiar nada:
 3. PREGUNTÁ: ¿cuál es la tarea de hoy y qué NO debería tocar?
 4. Si no hay CLAUDE.md, proponé crear uno con las convenciones que detectaste.
 Recién después arrancamos.`},
+{cat:"Diaria",tag:"clay",title:"Rutina: actualizador de Novedades",desc:"El prompt que corre solo cada 3 días en la nube y mantiene esta app al día. Sirve de molde para cualquier rutina sobre un repo.",
+text:`Sos el actualizador automático de la sección Novedades de Claude Learning HQ. Estás en un checkout del repo.
+
+1. Leé actualizador-novedades.md y CLAUDE.md y seguilos al pie de la letra.
+2. Buscá en la web (WebSearch/WebFetch) novedades de Claude y Claude Code publicadas DESPUÉS de la fecha LAST_SYNC de index.html. Fuentes: code.claude.com/docs/en/changelog, anthropic.com/news, platform.claude.com/docs/en/release-notes. Quedate SOLO con lo relevante para quien construye webs y agentes (modelos, comandos, features, skills, MCP, precios, límites). Ignorá bugfixes menores.
+3. Por cada novedad, agregá un objeto al PRINCIPIO del array NOVEDADES con la forma exacta de los existentes (date, tag, tagc, fresh:true, title, body, why, more:{detail, code, links}). Español rioplatense.
+4. Poné fresh:false en todas las entradas que ya estaban.
+5. Subí LAST_SYNC a hoy.
+6. No toques nada más de index.html ni app.js. Sí seguí el paso 6b del actualizador: lo accionable va a cerebro/claude-code/.
+7. Verificá que index.html siga siendo JS válido. Commit 'chore: actualizar novedades AAAA-MM-DD' y push a master.
+
+Al final resumí cuántas novedades agregaste, sus títulos y qué notas de cerebro/ tocaste.`},
+{cat:"Diaria",tag:"clay",title:"Programar una rutina en la nube",desc:"Convertí cualquier tarea repetitiva sobre un repo en un agente con cron que corre aunque tengas la compu apagada.",
+text:`Programá un agente en la nube que corra [CADA CUÁNTO: cada 3 días / todos los lunes 9:00] sobre este repo y haga esto:
+
+[TAREA EN 3-5 LÍNEAS, CON LA CONDICIÓN DE ÉXITO]
+
+Reglas de la rutina:
+- Solo tocá [ARCHIVOS PERMITIDOS]. Nada más.
+- Commit en español ('chore: ...') y push directo a master. Si no podés pushear, abrí un PR.
+- Mandame notificación SOLO si encontraste o cambiaste algo; si no hay novedades, silencio.
+- Si algo falla (acceso, comando roto), avisame igual con el error.
+
+Antes de crearla, mostrame el cron y el prompt final que va a guardar, y esperá mi OK.`},
+{cat:"Diaria",tag:"pine",title:"Hacé a Claude más inteligente (tuneup)",desc:"Aplica lo último de Claude Code a tu configuración usando cerebro/ como fuente. Dispara la skill claude-code-tuneup.",
+text:`Hacé a Claude más inteligente: relevá mi configuración actual de Claude Code (claude --version, ~/.claude/settings.json, .claude/settings.json de este repo, env vars CLAUDE*/ANTHROPIC*) y compará contra las notas de cerebro/claude-code/.
+
+Mostrame una tabla: setting · valor actual · propuesto · por qué · versión que lo introdujo. Si mi versión es vieja, decime primero que corra claude update.
+
+Aplicá directo lo del repo; para ~/.claude/settings.json pedime OK. Validá el JSON al terminar. Lo que sea un comando interactivo (/skill-doctor, /claude-api cost-optimize) no lo corras: decime qué correr y qué mirar.`},
+{cat:"Diaria",tag:"gold",title:"Sesión de trabajo con Task Master",desc:"El ciclo de una sesión: próxima tarea, entenderla, implementar, verificar, cerrar. Nunca editar tasks.json a mano.",
+text:`Arrancamos una sesión de trabajo con Task Master en este repo.
+
+1. Corré /tm:next y mostrame la tarea con /tm:show <id>. Si tiene subtareas, arrancá por la primera pendiente.
+2. Antes de tocar código: plan de 3-6 pasos y qué archivos vas a modificar. Esperá mi OK.
+3. Marcala in-progress. Implementá. Si aprendés algo que sirva para la próxima vez, anotalo en la subtarea con update-subtask.
+4. Verificá en serio: tests/typecheck/build si existen, y si es visual, abrila en el navegador y contame qué viste.
+5. Marcala done y mostrame qué sigue con /tm:next. No arranques la siguiente sin preguntarme.`},
+{cat:"Diaria",tag:"slate",title:"Cierre de sesión: HQ + BrainOS",desc:"Lo último de cada sesión: reportar a la torre de control y guardar lo aprendido en el vault.",
+text:`Cerramos la sesión. Antes de terminar:
+
+1. Resumime en 5 líneas qué hicimos, qué quedó pendiente y qué se trabó.
+2. Reportá a HQ con el slug de este proyecto (mirá CLAUDE.md):
+   ~/Desktop/HQ/bin/hq report <slug> --done "..." --new "..." --note "..."
+   Un --done por tarea completada, un --new por pendiente nuevo. Si hubo bloqueo: --blocker "qué y por qué".
+3. Si aprendimos algo de negocio o de proceso (no código), proponeme una nota corta para BrainOS con título y 5-10 líneas; si es técnico de Claude, va a cerebro/ de learning-hq.
+4. Confirmá que todo está commiteado y pusheado. Si no, hacelo.`},
+{cat:"Diaria",tag:"pine",title:"De novedad a skill o nota del cerebro",desc:"Cuando aparece algo nuevo de Claude: decidir si es una skill, una setting o conocimiento, y dejarlo aplicado.",
+text:`Encontramos esto nuevo de Claude / Claude Code: [PEGÁ LA NOVEDAD O EL LINK]
+
+Decidí y ejecutá:
+- Si es un flujo repetible (pasos, checklist, formato de salida) → creá una skill en .claude/skills/<nombre>/ con description que diga cuándo se activa. Mostrame la description antes.
+- Si es una setting, flag, hook o env var → agregalo a la nota que corresponda en cerebro/claude-code/ (tabla con versión de origen) y, si mejora mi config, aplicalo con claude-code-tuneup.
+- Si es solo conocimiento (un concepto, un límite, un cambio de precio) → nota corta en cerebro/ con frontmatter y wikilinks a las notas relacionadas.
+
+No dupliques: buscá primero si ya existe una nota o skill que lo cubra y ampliala.`},
 ];
 
 /* ===== SLASH COMMANDS ===== */
@@ -1211,6 +1267,36 @@ demo:[["cm","/adversarial-review email-despacho-pedido"],["wn","Major: pedido ca
 {n:"/pr-report",what:"Descripción del PR para un humano: resumen, qué cambió, por qué, cómo se verificó.",
 when:"Paso 6, después de archivar. 150 a 300 palabras, sin ruido interno.",
 demo:[["cm","/pr-report"],["","Leyendo diff + testing-report.md"],["ok","✓ PR #48 creado: 'Email al despachar pedido'"]]},
+{n:"/schedule",hot:true,what:"Programa un agente en la nube que corre solo con cron, aunque tengas la compu apagada.",
+when:"Cualquier tarea repetitiva sobre un repo: el actualizador de Novedades de esta app corre así cada 3 días. Pedíselo en español: 'programá un agente que…'.",
+demo:[["cm","programá un agente que cada 3 días siga actualizador-novedades.md y pushee a master"],["","Creando rutina · cron: 0 9 */3 * *"],["ok","✓ Rutina activa · próxima corrida: jueves 09:00"],["dim","Te avisa por notificación solo si encuentra algo"]]},
+{n:"/tm:next",hot:true,what:"Task Master: muestra la próxima tarea disponible del backlog (.taskmaster/tasks.json).",
+when:"Al arrancar cada sesión de trabajo. Después: /tm:show <id> para el detalle, implementás, y /tm:to-done <id>.",
+demo:[["cm","/tm:next"],["","#10 · Paso 'GitHub Issues + Projects' en el path Dev de Albor"],["dim","deps: #1 ✓ · prioridad alta"],["cm","/tm:show 10"],["cm","/tm:to-done 10"],["ok","✓ 10 hecha · siguiente: #11"]]},
+{n:"/skill-doctor",hot:true,what:"Lista las skills cargadas que no se usaron en la sesión y cuántos tokens de contexto cuestan.",
+when:"Cada tanto, o cuando /cost muestra contexto alto sin razón. Podá las que no aportan: menos contexto = más barato y más rápido.",
+demo:[["cm","/skill-doctor"],["","Skills cargadas: 14"],["wn","  pptx        0 usos   ~3.1K tokens"],["wn","  dataviz     0 usos   ~4.2K tokens"],["ok","  claude-api  7 usos   ~2.0K tokens"],["dim","Sugerencia: desactivá pptx y dataviz en este proyecto"]]},
+{n:"/cost",what:"Gasto de la sesión y diagnóstico de por qué falló el prompt cache.",
+when:"Cuando la sesión sale más cara de lo esperado. Te dice la causa exacta (tool definitions, system prompt, TTL).",
+demo:[["cm","/cost"],["","Sesión: US$ 2.14 · 840K tokens · cache hit 71%"],["wn","prompt_cache: miss — system prompt modified (turno 12)"],["dim","Tip: no edites CLAUDE.md a mitad de sesión"]]},
+{n:"/diff",what:"Panel lateral con los cambios sin commitear, en vivo, sin salir de la sesión.",
+when:"Mientras Claude edita y querés ver qué está tocando. /diff de nuevo lo cierra.",
+demo:[["cm","/diff"],["","┃ src/app/pedidos/page.tsx   +42 −8"],["","┃ src/lib/email.ts           +17"],["dim","Panel abierto · /diff para cerrar"]]},
+{n:"/rewind",what:"Vuelve a un checkpoint anterior: archivos y conversación. Recupera la sesión hasta después de un /clear.",
+when:"Claude tomó un camino equivocado hace 3 turnos y querés volver sin deshacer a mano.",
+demo:[["cm","/rewind"],["dim","  ↑ antes de 'refactor del checkout'  hace 12 min"],["dim","  ↑ antes de '/clear'                 hace 40 min"],["ok","✓ Restaurado · 6 archivos volvieron a su estado"]]},
+{n:"/config key=value",what:"Cambia un setting inline, sin abrir settings.json.",
+when:"Ajustes rápidos: modelo, estilo de salida, límite de output de comandos. Ver cerebro/claude-code/settings-json-cheatsheet.md.",
+demo:[["cm","/config bashOutputMaxChars=131072"],["ok","✓ bashOutputMaxChars = 131072 (usuario)"],["cm","/config outputStyle=concise"],["ok","✓ outputStyle = concise"]]},
+{n:"/claude-code-tuneup",what:"Skill del repo: relevá tu settings.json y aplicá lo último de Claude Code leyendo cerebro/.",
+when:"Después de un 'claude update' o cuando salen settings nuevas en Novedades. Propone el diff y pide OK antes de tocar lo global.",
+demo:[["cm","/claude-code-tuneup"],["","Leyendo cerebro/claude-code/settings-json-cheatsheet.md"],["","setting              actual   propuesto"],["wn","bashOutputMaxChars   —        131072"],["wn","autoResumeOnLimitReset —      true"],["ok","✓ aplicado en ~/.claude/settings.json"]]},
+{n:"/btw",what:"Pregunta al costado sin interrumpir la tarea en curso ni ensuciar el contexto principal.",
+when:"'¿Qué hace este archivo?' mientras Claude sigue implementando. La respuesta no entra al hilo.",
+demo:[["cm","/btw qué diferencia hay entre worktree y branch?"],["dim","(respuesta al costado · el hilo principal sigue)"]]},
+{n:"/add-dir",what:"Suma otra carpeta al contexto de la sesión (otro repo, un monorepo hermano).",
+when:"Trabajás en dos repos a la vez: el backend y la landing, o el proyecto y HQ.",
+demo:[["cm","/add-dir ~/Desktop/HQ"],["ok","✓ ~/Desktop/HQ agregado · Claude puede leer y editar ahí"]]},
 ];
 const ATAJOS=[
 ["# texto","Agrega una nota a la memoria (CLAUDE.md) al instante. Ej: <code class='inline'># nunca uses any</code>"],
@@ -1245,6 +1331,31 @@ prompt:`Creá una skill de proyecto en .claude/skills/design-system/ cuya descri
 prompt:`Creá una skill de proyecto en .claude/skills/security-review/ con un SKILL.md cuya description diga que se activa al revisar código/PRs o antes de un deploy. Contenido: checklist OWASP Top 10, verificación tabla-por-tabla de RLS, validación con Zod, manejo de secrets, y formato de reporte [CRÍTICO/ALTO/MEDIO/BAJO] con archivo:línea.`},
 ];
 const SKILL_M2_PROMPT=`Creá una skill de proyecto en .claude/skills/<nombre>/ con un SKILL.md en formato oficial. La description tiene que decir claramente CUÁNDO debe activarse (pensá qué frases diría alguien que necesita esta skill). Después poné las instrucciones paso a paso. Antes de crear el archivo, mostrame la description y esperá mi OK.`;
+
+/* ===== SKILLS que ya tenemos (cuenta sincronizada, ~/.claude/skills y repos) ===== */
+const SKILLS_HAVE=[
+{g:"ciclo albor",tag:"clay",t:"albor-specboot",d:"El ciclo SPECBOOT completo, de ticket a PR. Orquesta a las demás y sabe en qué paso estás.",how:"implementá el #12 · hacé el ticket"},
+{g:"ciclo albor",tag:"clay",t:"enrich-us",d:"Refina una user story cruda hasta que se pueda implementar sin preguntas (Given/When/Then, talla, fuera de alcance).",how:"/enrich-us #12"},
+{g:"ciclo albor",tag:"clay",t:"verify",d:"Typecheck, tests, build y recorrido en navegador real. Escribe testing-report.md. Sin esto no hay PR.",how:"/verify · ¿está listo?"},
+{g:"ciclo albor",tag:"clay",t:"adversarial-review",d:"Review independiente que intenta romper el cambio: authz, casos negativos, spec vs código.",how:"/adversarial-review <cambio>"},
+{g:"ciclo albor",tag:"clay",t:"pr-report",d:"Descripción del PR para un humano, 150 a 300 palabras, sin ruido interno.",how:"/pr-report"},
+{g:"ciclo albor",tag:"clay",t:"brainstorming · writing-plans",d:"Explorar una idea con preguntas y bajarla a un plan concreto antes de tocar código.",how:"tengo una idea · hacé un plan"},
+{g:"ciclo albor",tag:"clay",t:"systematic-debugging",d:"Del síntoma a la causa raíz con evidencia, sin parches a ciegas.",how:"dejó de andar · tira este error"},
+{g:"ciclo albor",tag:"clay",t:"codebase-onboarding",d:"Mapa del repo (capas, rutas, tablas, cómo se testea) → docs/MAPA.md + CLAUDE.md.",how:"mapeá este repo"},
+{g:"código",tag:"slate",t:"code-review",d:"Revisa el diff o un PR buscando bugs reales. Con <b>--fix</b> aplica los arreglos; con <b>--comment</b> los deja en el PR.",how:"/code-review --fix"},
+{g:"código",tag:"slate",t:"simplify",d:"Limpia el código que cambiaste: reuso, simplificación, eficiencia. Solo calidad; no busca bugs.",how:"/simplify"},
+{g:"código",tag:"slate",t:"security-review",d:"Auditoría de seguridad de los cambios pendientes en la rama, con severidad y archivo:línea.",how:"/security-review · antes de deployar"},
+{g:"código",tag:"slate",t:"claude-api",d:"Referencia viva de la API de Claude: IDs de modelo, precios, caching, tool use. La fuente de verdad de esta app; nunca de memoria.",how:"se activa sola al nombrar Claude/Anthropic"},
+{g:"código",tag:"slate",t:"dataviz",d:"Gráficos, dashboards y KPIs consistentes y accesibles, con paleta validada en claro y oscuro.",how:"hacé un gráfico · un dashboard"},
+{g:"código",tag:"slate",t:"design",d:"Canvas de diseño editable (mockups, landings, posters, flyers) publicado como Artifact para retocar a mano.",how:"/design · mockup de la landing"},
+{g:"documentos",tag:"gold",t:"docx · pptx · xlsx · pdf",d:"Crear, leer y editar Word, PowerPoint, Excel y PDF: tablas, formularios, OCR, merge. Se activan al nombrar el archivo.",how:"armá un .docx · leé este PDF"},
+{g:"config",tag:"pine",t:"claude-code-tuneup",d:"Aplica lo último de Claude Code a tu settings.json leyendo las notas de <b>cerebro/</b>. Vive en este repo.",how:"hacé a Claude más inteligente"},
+{g:"config",tag:"pine",t:"skill-creator",d:"Crea, mejora y evalúa skills: redacta la description, arma casos de prueba y mide si dispara bien.",how:"creá una skill para X"},
+{g:"config",tag:"pine",t:"fewer-permission-prompts",d:"Escanea tus transcripts y arma un allowlist en .claude/settings.json para que pregunte menos.",how:"/fewer-permission-prompts"},
+{g:"config",tag:"pine",t:"session-start-hook",d:"Hook de arranque para que Claude Code web instale dependencias y pueda correr tests y linters.",how:"prepará el repo para Claude web"},
+{g:"config",tag:"pine",t:"tm:* (Task Master)",d:"40+ comandos para el backlog del repo: next, show, expand, set-status. Las tareas viven en .taskmaster/.",how:"/tm:next · /tm:show 3 · /tm:to-done 3"},
+{g:"config",tag:"pine",t:"import-memory · morning",d:"Importar la memoria de otro asistente a Claude · brief matutino (agenda, mails, pendientes) como artifact.",how:"/import-memory · /morning"},
+];
 
 /* ===== CONCEPTOS ===== */
 const CONCEPTOS=[
@@ -1298,6 +1409,15 @@ const CONCEPTOS=[
 {k:"mapeo",t:"Mapeo del código",d:"Entender un repo antes de tocarlo: arquitectura, puntos de entrada, modelo de datos, convenciones. El mapa va a docs/MAPA.md y al CLAUDE.md para que cada sesión arranque con contexto. Nunca modifiques lo que no mapeaste.",
  ej:"Entrás al repo de un cliente nuevo. Antes de la primera feature: 'mapeá este repo' y obtenés docs/MAPA.md con capas, rutas, tablas y cómo se corren los tests, más un CLAUDE.md propuesto. La primera feature sale el doble de rápido y sin romper convenciones.",
  code:["/init"]},
+{k:"rutinas",t:"Rutinas programadas",d:"Un agente de Claude Code que corre solo en la nube, con cron, sobre un repo. Se crea con <b>/schedule</b> o pidiéndolo en español. Cuando encuentra algo te manda una notificación; si no, silencio. No necesita tu compu prendida.",
+ ej:"La sección Novedades de esta app la mantiene una rutina: cada 3 días lee actualizador-novedades.md, busca en la web lo nuevo de Claude, agrega las cards, alimenta cerebro/ y pushea a master. Vercel deploya solo. Vos solo recibís el aviso con los títulos.",
+ code:["programá un agente que cada 3 días siga actualizador-novedades.md","/schedule   # ver y editar rutinas"]},
+{k:"hq",t:"HQ + BrainOS",d:"<b>HQ</b> es la torre de control en ~/Desktop/HQ: cada proyecto tiene un slug, un backlog y un dashboard; se le reporta al final de cada sesión con <b>hq report</b>. <b>BrainOS</b> es el vault de Obsidian con el conocimiento de negocio. La carpeta <b>cerebro/</b> de este repo alimenta ese vault con lo técnico de Claude.",
+ ej:"Arrancás una sesión en learning-hq: leés ~/Desktop/HQ/instructions/learning-hq.md si existe (directivas del cerebro central) y corrés hq status. Terminás: hq report learning-hq --done 'skills en la app' --note 'sesión de 1 h'. El dashboard central queda al día sin que abras nada.",
+ code:["~/Desktop/HQ/bin/hq status","~/Desktop/HQ/bin/hq report learning-hq --done \"...\" --new \"...\" --note \"...\"","ln -s <repo>/cerebro <vault>/claude-learning-hq"]},
+{k:"taskmaster",t:"Task Master",d:"Backlog del repo en <b>.taskmaster/tasks.json</b>, con dependencias y subtareas, que Claude lee y actualiza con los comandos <b>/tm:*</b>. Se genera desde un PRD y se trabaja de a una tarea por sesión.",
+ ej:"Tenés 12 tareas para esta app. Cada sesión: /tm:next te da la que sigue (respetando dependencias), /tm:show 10 el detalle, implementás, /tm:to-done 10. Si una tarea es grande, /tm:expand-task 10 la parte en subtareas. Nunca editás tasks.json a mano.",
+ code:["task-master next","task-master show 10","task-master set-status --id=10 --status=done","task-master expand --id=10 --research"]},
 ];
 
 /* ===== MCPs útiles ===== */
@@ -1729,6 +1849,6 @@ const NAV=[
  ]},
 ];
 </script>
-<script src="app.js?v=20260909-2"></script>
+<script src="app.js?v=20260910-1"></script>
 </body>
 </html>
