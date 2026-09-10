@@ -1545,6 +1545,18 @@ const ROADMAP=[
   steps:["Pensá algo que quieras chequear cada tanto.","Corré /loop con un intervalo (ej. de abajo).","Mirá cómo corre en cada ciclo.","Frenalo cuando ya no lo necesites."],
   code:["/loop 10m revisá si hay PRs nuevos y avisame"],
   done:"Usaste /loop para vigilar algo en intervalos."},
+ {t:"Programar una rutina en la nube",s:"Que trabaje aunque tengas la compu apagada.",
+  detail:"/loop vive mientras la sesión siga abierta; una rutina programada corre en la nube con cron, sola. Esta misma app se mantiene así: cada 3 días un agente busca las novedades de Claude, actualiza la sección, y pushea. Vos solo recibís la notificación si encontró algo.",
+  steps:["Elegí una tarea repetitiva sobre un repo (revisar dependencias, resumir issues nuevos, actualizar un changelog).","Pedísela a Claude en español: 'programá un agente que cada X haga Y'.","Pedile que te muestre el cron y el prompt final ANTES de crearla.","Exigí dos cosas en el prompt: que acote qué archivos puede tocar, y que te notifique solo si hubo cambios.","Esperá la primera corrida y revisá el commit que dejó."],
+  code:["programá un agente que cada 3 días revise las dependencias de este repo y abra un PR si hay CVEs"],
+  go:"comandos",
+  done:"Tenés una rutina corriendo sola que dejó al menos un commit."},
+ {t:"Armar tu cerebro: skills + vault",s:"Que lo que aprendés no se pierda en un chat.",
+  detail:"Lo que descubrís trabajando se evapora si queda en una conversación. Dos destinos: si es un flujo repetible (pasos, checklist, formato de salida) va a una skill; si es conocimiento (una setting, un límite, una decisión) va a una nota en un vault de Obsidian que Claude pueda leer. En este repo el vault es la carpeta cerebro/ y la skill que lo aplica es claude-code-tuneup.",
+  steps:["Creá una carpeta cerebro/ (o usá tu vault de Obsidian) con notas en markdown y frontmatter.","Cada vez que aprendas algo accionable, decidí: ¿skill o nota?","Escribí la nota con la fuente y la fecha; sin eso no sabés si envejeció.","Hacé que una skill lea esas notas para aplicarlas (mirá .claude/skills/claude-code-tuneup/).","Enganchá la carpeta a Obsidian con un symlink para leerla desde el celular."],
+  code:["ln -s <repo>/cerebro <tu-vault>/claude-learning-hq"],
+  go:"skills",
+  done:"Tenés al menos 3 notas en el vault y una skill que las usa."},
 ]},
 {wk:"Semana 11–12",icon:"agents",title:"Construir un producto real",tasks:[
  {t:"Elegir: web hermosa o agente de WhatsApp/Instagram",s:"Llevar un proyecto de 0 a deploy.",
@@ -1823,6 +1835,12 @@ const RETOS=[
 "Hacé una auditoría de seguridad en modo solo-lectura de un proyecto viejo.",
 "Configurá un hook que formatee el código al guardar.",
 "Usá subagentes: uno que revise seguridad y otro que corra los tests, en paralelo.",
+"Corré /skill-doctor y desactivá dos skills que no usás. Mirá cuánto contexto recuperás.",
+"Programá una rutina en la nube que revise algo de un repo cada 3 días y te avise solo si hay cambios.",
+"Corré /cost después de una sesión larga y averiguá por qué falló el prompt cache.",
+"Escribí en tu vault (o en cerebro/) la primera nota de algo que aprendiste esta semana con Claude.",
+"Abrí /diff mientras Claude edita y seguí los cambios en vivo, sin otra terminal.",
+"Usá /rewind para volver 3 turnos atrás en vez de deshacer los archivos a mano.",
 ];
 
 /* ===== NAV ===== */

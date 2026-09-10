@@ -59,6 +59,9 @@ claude
 > 6. **No toques nada más** de `index.html`. No cambies estilos, ni otras secciones, ni `app.js`.
 >    Si no encontrás novedades nuevas, igual actualizá `LAST_SYNC` a hoy y dejá una nota en el
 >    resumen final ("sin novedades nuevas esta corrida").
+>    **Alcance de esta regla:** aplica a `index.html` y `app.js`. Los archivos de `cerebro/` son
+>    salida esperada de esta corrida (paso 6b), no "tocar otra cosa". Si el prompt que te invocó
+>    dice "no toques nada más", interpretalo así.
 >
 > 6b. **Alimentá el cerebro.** Si una novedad trae algo *accionable* (un setting, un flag, un
 >    hook, una env var, un comando nuevo, un límite que cambió), agregalo a la nota que
@@ -88,3 +91,37 @@ Para que corra solo cada pocos días, tenés opciones:
 - **Cron del sistema (macOS):** un `launchd`/`cron` local que abra Claude Code con este prompt.
 
 > Sugerencia: cada 3–4 días alcanza. Claude saca pocas novedades grandes por semana.
+
+---
+
+## Prompt de la rutina programada (pegar tal cual en `/schedule`)
+
+La rutina de la nube guarda su propio prompt, que **no vive en este repo**. Si la editás,
+usá este texto — ya incluye el paso 6b (alimentar `cerebro/`):
+
+```text
+Sos el actualizador automático de la sección Novedades de la app Claude Learning HQ.
+Estás en un checkout del repo claude-learning-hq.
+
+1. Leé `actualizador-novedades.md` y `CLAUDE.md` y seguilos al pie de la letra.
+2. Buscá en la web (WebSearch/WebFetch) novedades de Claude y Claude Code publicadas DESPUÉS
+   de la fecha de `LAST_SYNC` en index.html. Fuentes: code.claude.com/docs/en/changelog,
+   anthropic.com/news, platform.claude.com/docs/en/release-notes. Quedate SOLO con lo
+   relevante para quien construye webs y agentes (modelos, comandos, features de Claude Code,
+   skills, MCP, precios, límites). Ignorá bugfixes menores.
+3. Por cada novedad, agregá un objeto al PRINCIPIO del array NOVEDADES con la forma exacta de
+   los existentes: {date, tag, tagc, fresh:true, title, body, why, more:{detail, code, links}}.
+   El campo `more` es obligatorio. Español rioplatense.
+4. Poné fresh:false en TODAS las entradas que ya estaban.
+5. Actualizá LAST_SYNC a hoy (AAAA-MM-DD).
+6. No toques otras secciones de index.html ni app.js. SÍ ejecutá el paso 6b del
+   actualizador: lo accionable va a las notas de cerebro/claude-code/.
+7. Si no encontrás novedades, igual actualizá LAST_SYNC.
+8. Verificá que index.html siga siendo JS válido (node --check sobre el bloque <script>).
+   Commit en español ('chore: actualizar novedades AAAA-MM-DD') y push a master.
+
+Al final resumí cuántas novedades agregaste, sus títulos y qué notas de cerebro/ tocaste.
+```
+
+> El paso 6 es el que importa: la versión vieja decía *"NO toques nada más: ni estilos, ni
+> app.js, ni otras secciones, ni otros archivos"*, y ese "ni otros archivos" bloqueaba `cerebro/`.
