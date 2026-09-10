@@ -1,7 +1,7 @@
 ---
 tags: [claude-code, settings, config]
 fuente: claude-learning-hq/novedades
-actualizado: 2026-09-09
+actualizado: 2026-09-10
 ---
 
 # settings.json — cheatsheet
@@ -40,6 +40,17 @@ Dónde va cada cosa:
 | `spellcheck: true` | Subraya errores mientras escribís el prompt (usa aspell/hunspell/ispell del sistema). | v2.1.235 |
 | `restricted: true` | Sin Bash/Task/WebFetch, archivos solo en cwd, no permite bypassPermissions. Para revisar código ajeno. Equivale al flag `claude --restricted`. | v2.1.248 |
 | `fallbackModel` | Modelo de respaldo si el principal no está disponible. | — |
+
+## Control de esfuerzo y rendering
+
+| Setting | Qué hace | Desde |
+|---|---|---|
+| `maxEffortLevel` | Fija el techo de nivel de esfuerzo global o por modelo (`low`/`medium`/`high`/`xhigh`/`max`). Los usuarios pueden bajar pero no superar el máximo. Ideal para orgs con extended-thinking que quieren controlar el gasto. | v2.1.267 |
+
+```json
+{ "maxEffortLevel": "high" }
+{ "modelSettings": { "claude-opus-4-1": { "maxEffortLevel": "xhigh" } } }
+```
 
 ## Modelos y precios (org / equipo)
 
