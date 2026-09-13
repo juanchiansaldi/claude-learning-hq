@@ -29,6 +29,7 @@ Dónde va cada cosa:
 | Setting | Qué hace | Desde |
 |---|---|---|
 | `bashOutputMaxChars` | Cuántos caracteres de un comando Bash ve Claude inline antes de mandarlos a archivo. Máx 128K (`131072`). Sin esto, builds/tests largos se cortan y Claude pierde el error. | v2.1.261 |
+| `bashEditDiffEnabled` | Incluye en el resultado de la herramienta Bash un diff de los archivos que modificó el comando. Claude ve exactamente qué cambió sin un Read extra. | v2.1.269 |
 | `taskOutputMaxChars` | Lo mismo para tareas en segundo plano. | v2.1.261 |
 
 ## Sesión y UX

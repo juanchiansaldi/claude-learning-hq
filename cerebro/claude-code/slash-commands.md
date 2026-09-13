@@ -1,13 +1,14 @@
 ---
 tags: [claude-code, comandos]
 fuente: claude-learning-hq/novedades
-actualizado: 2026-09-09
+actualizado: 2026-09-13
 ---
 
 # Slash commands nuevos (jun–sep 2026)
 
 | Comando | Para qué | Desde |
 |---|---|---|
+| `/output-style [nombre]` | Lista estilos disponibles (sin arg) o cambia el estilo activo (concise, verbose, etc.). Funciona en headless, Remote Control y sesiones en nube. | v2.1.269 |
 | `/skill-doctor` | Skills cargadas sin usar + costo en tokens. Correlo cada tanto y podá. | v2.1.261 |
 | `/diff` | Panel lateral con los cambios sin commitear, togglable, en fullscreen. | v2.1.260 |
 | `/cost` | Gasto de la sesión + diagnóstico de por qué falló el prompt cache. | v2.1.260 |

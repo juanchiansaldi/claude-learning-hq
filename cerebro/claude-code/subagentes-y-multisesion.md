@@ -1,14 +1,14 @@
 ---
 tags: [claude-code, agentes, subagentes, workflow]
 fuente: claude-learning-hq/novedades
-actualizado: 2026-09-09
+actualizado: 2026-09-13
 ---
 
 # Subagentes, multi-sesión y Workflow
 
 ## Límites actuales
 
-- Máx **20 subagentes concurrentes** (v2.1.217).
+- Máx **20 subagentes concurrentes** por defecto. Se puede subir hasta **256** con `CLAUDE_CODE_WORKFLOW_MAX_CONCURRENT_AGENTS` (v2.1.269).
 - Nesting (subagente que lanza subagente) **deshabilitado por defecto**; habilitado llega hasta
   profundidad 3 (v2.1.219).
 - Los subagentes **heredan el permission mode del padre**; el parámetro `mode` en Task quedó

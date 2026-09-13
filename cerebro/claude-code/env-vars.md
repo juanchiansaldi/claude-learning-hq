@@ -1,7 +1,7 @@
 ---
 tags: [claude-code, env, config]
 fuente: claude-learning-hq/novedades
-actualizado: 2026-09-09
+actualizado: 2026-09-13
 ---
 
 # Variables de entorno útiles
@@ -18,6 +18,9 @@ Van en `~/.zshrc` / `~/.bashrc`, o dentro de un hook `SessionStart` vía `$CLAUD
 | `ANTHROPIC_DEFAULT_FABLE_MODEL="claude-fable-5-1[1m]"` | Pin del modelo Fable con ventana 1M para agentes `model: fable` | v2.1.260 |
 | `API_TIMEOUT_MS` | Cuánto espera el reintento si la API no manda headers (default 10 min) | v2.1.261 |
 | `PLAYWRIGHT_BROWSERS_PATH` / `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1` | En Claude Code web: Chromium ya está en `/opt/pw-browsers` | — |
+| `CLAUDE_CODE_WORKFLOW_MAX_CONCURRENT_AGENTS` | Sube el límite de agentes concurrentes del Workflow tool. Acepta 1–256. Usar para fan-outs intensivos donde la inferencia es el bottleneck. | v2.1.269 |
+| `OTEL_METRICS_INCLUDE_REPOSITORY` | Etiqueta métricas y eventos OpenTelemetry con atributos `vcs.*` del repo activo. Combinar con `OTEL_LOG_TOOL_DETAILS` para commits con `vcs.ref.head.*`. | v2.1.269 |
+| `CLAUDE_CODE_GATEWAY_MODEL_DISCOVERY_TIMEOUT_MS` | Extiende el timeout del endpoint `/v1/models` en gateways LLM propios. Default: 3000 ms. | v2.1.269 |
 
 ## En la nube (Claude Code on the web)
 
