@@ -1,7 +1,7 @@
 ---
 tags: [claude-code, agentes, subagentes, workflow]
 fuente: claude-learning-hq/novedades
-actualizado: 2026-09-13
+actualizado: 2026-09-16
 ---
 
 # Subagentes, multi-sesión y Workflow
@@ -48,11 +48,32 @@ export CLAUDE_CODE_ENABLE_TODO_TOOLS=1
 
 Patrón: sesión orquestadora → sesión de tests / sesión de review / sesión de docs.
 
+## Agentes: omitClaudeMd (v2.1.271)
+
+`omitClaudeMd: true` en el frontmatter de un agente (o en `--agents` JSON) hace que el
+subagente no cargue los CLAUDE.md del usuario ni del proyecto. Las policies de org sí aplican.
+
+```yaml
+# .claude/agents/mi-agente.md
+---
+description: Agente aislado
+omitClaudeMd: true
+---
+```
+
+## Monitor watches — deadline obligatorio (v2.1.271)
+
+- Máximo **30 minutos** por watch (10 min en `-p` headless).
+- Ya no existe la opción `persistent` sin timeout.
+- Si necesitás monitoreo más largo: usá `NotifyMonitor` para re-armar al vencer.
+
 ## Workflow tool
 
 - `agent('tarea', { schema })` valida el JSON Schema **antes** de lanzar el agente; si es
   imposible de satisfacer falla rápido (v2.1.260).
 - Tamaño de workflow configurable en `/config` ("Dynamic workflow size") (v2.1.202).
+- **Desde v2.1.271**: default `small` en Pro; guideline `medium` = **10 agentes** (antes 15).
+- Los workflows se **pausan** al llegar al límite de uso y se reanudan automáticamente al resetear (v2.1.271).
 - Requiere opt-in explícito del usuario ("usá un workflow", "ultracode").
 
 ## Agentes en background
