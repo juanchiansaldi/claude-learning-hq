@@ -1,7 +1,7 @@
 ---
 tags: [claude-code, env, config]
 fuente: claude-learning-hq/novedades
-actualizado: 2026-09-16
+actualizado: 2026-09-21
 ---
 
 # Variables de entorno útiles
@@ -22,7 +22,7 @@ Van en `~/.zshrc` / `~/.bashrc`, o dentro de un hook `SessionStart` vía `$CLAUD
 | `OTEL_METRICS_INCLUDE_REPOSITORY` | Etiqueta métricas y eventos OpenTelemetry con atributos `vcs.*` del repo activo. Combinar con `OTEL_LOG_TOOL_DETAILS` para commits con `vcs.ref.head.*`. | v2.1.269 |
 | `CLAUDE_CODE_GATEWAY_MODEL_DISCOVERY_TIMEOUT_MS` | Extiende el timeout del endpoint `/v1/models` en gateways LLM propios. Default: 3000 ms. | v2.1.269 |
 | `CLAUDE_CODE_GATEWAY_HINT_HEADERS=1` | Activa cinco headers de contexto en cada request a tu LLM gateway: `x-claude-code-request-class`, `x-claude-code-agent-type`, `x-claude-code-prev-tool-durations`, `x-claude-code-compaction`, `x-claude-code-context-compacted`. Para routing inteligente por tipo de tarea. | v2.1.273 |
-| `CLAUDE_CODE_AUTO_MODE_SERVER=1` | Fuerza el clasificador server-side del proveedor en auto mode (Bedrock/Vertex AI/Foundry). Por defecto desde v2.1.273 se usa el clasificador local de Claude Code (más rápido). | v2.1.273 |
+| `CLAUDE_CODE_AUTO_MODE_SERVER=0` | **Desde v2.1.278:** el clasificador server-side es el default en API/Enterprise/Bedrock/Vertex/Foundry y es gratuito. Poner `=0` para desactivarlo (p.ej. si tu gateway no pasa los campos `safeguards`/`safeguard_results` sin modificar). Antes de v2.1.278 el valor `=1` activaba el server-side; ese uso se revierte. | v2.1.278 |
 
 ## En la nube (Claude Code on the web)
 
