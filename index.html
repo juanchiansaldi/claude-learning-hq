@@ -520,11 +520,11 @@ kbd{font-family:'JetBrains Mono',monospace;font-size:.66rem;background:var(--car
 <script>
 /* ============================================================= DATA */
 /* ===== última sincronización de novedades (la actualiza el agente) ===== */
-const LAST_SYNC = "2026-09-21";
+const LAST_SYNC = "2026-09-22";
 
 /* ===== NOVEDADES: el agente actualizador agrega entradas arriba ===== */
 const NOVEDADES=[
-{date:"2026-09-19",tag:"claude code",tagc:"clay",fresh:true,
+{date:"2026-09-19",tag:"claude code",tagc:"clay",fresh:false,
  title:"v2.1.278: auto mode sin cargo por clasificador y diagnóstico en `/status`",
  body:"La v2.1.278 hace que el clasificador del auto mode sea gratis para usuarios de la API y Enterprise: en lugar de facturar como tokens separados, los chequeos de seguridad se procesan en el servidor como parte del request normal. Si el servidor no puede alcanzar la sesión (por un gateway que modifica headers), Claude Code muestra un aviso y cae al clasificador local (facturado como siempre). El comando `/status` suma la fila 'Auto mode server' para ver si el clasificador server-side está activo.",
  why:"Si usás auto mode con la API de Claude o en Enterprise/Bedrock/Vertex/Foundry, actualizá: los chequeos de seguridad del auto mode ya no se cobran aparte. Si tenés un gateway LLM propio, revisá si necesita ajustes para que no caiga al fallback.",
