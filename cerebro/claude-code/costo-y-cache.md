@@ -1,7 +1,7 @@
 ---
 tags: [claude-code, costo, prompt-caching, api]
 fuente: claude-learning-hq/novedades
-actualizado: 2026-09-09
+actualizado: 2026-09-25
 ---
 
 # Costo y prompt caching
@@ -47,6 +47,26 @@ export ANTHROPIC_DEFAULT_FABLE_MODEL="claude-fable-5-1[1m]"
 ```
 Con `model: fable` en el agente, el pin `[1m]` se respeta desde v2.1.260. Auto-compact
 dispara antes del límite de 1M para no cortar la sesión.
+
+## Claude Opus 5.5 (2026-09-22)
+
+Nuevo modelo por defecto para Opus. 40% más barato que Opus 5:
+
+| Token | Precio |
+|---|---|
+| Input | $4/MTok |
+| Output | $20/MTok |
+| Cache read | $0.20/MTok (60% menos que Opus 5) |
+
+```bash
+# En la API:
+# model: 'claude-opus-5-5'
+# En Claude Code:
+{ "model": "claude-opus-5-5" }
+```
+
+Ventana de contexto: 1M tokens. Rendimiento similar a Fable 5.1 en agentic coding.
+Pro/Team Standard ahora arrancan con Opus por defecto desde v2.1.280.
 
 ## Precio real vs. lista
 

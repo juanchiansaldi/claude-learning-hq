@@ -1,7 +1,7 @@
 ---
 tags: [claude-code, settings, config]
 fuente: claude-learning-hq/novedades
-actualizado: 2026-09-10
+actualizado: 2026-09-25
 ---
 
 # settings.json — cheatsheet
@@ -40,6 +40,8 @@ Dónde va cada cosa:
 | `outputStyle: "concise"` | Claude arranca directo con el resultado, sin preámbulo. | v2.1.237 |
 | `spellcheck: true` | Subraya errores mientras escribís el prompt (usa aspell/hunspell/ispell del sistema). | v2.1.235 |
 | `restricted: true` | Sin Bash/Task/WebFetch, archivos solo en cwd, no permite bypassPermissions. Para revisar código ajeno. Equivale al flag `claude --restricted`. | v2.1.248 |
+| `attribution: false` | Oculta las líneas de co-autoría de Claude en commits y PRs. Útil en repos donde el equipo no quiere las trazas de Claude en git log. | v2.1.281 |
+| `maxProseWidth` | Nro. de chars para limitar el ancho del texto en terminales anchas. Tablas y código ignoran este límite. | v2.1.282 |
 | `fallbackModel` | Modelo de respaldo si el principal no está disponible. | — |
 
 ## Control de esfuerzo y rendering
