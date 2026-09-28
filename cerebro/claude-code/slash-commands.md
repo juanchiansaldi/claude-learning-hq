@@ -1,13 +1,14 @@
 ---
 tags: [claude-code, comandos]
 fuente: claude-learning-hq/novedades
-actualizado: 2026-09-13
+actualizado: 2026-09-28
 ---
 
 # Slash commands nuevos (jun–sep 2026)
 
 | Comando | Para qué | Desde |
 |---|---|---|
+| `/doctor prompt-audit` (o `/checkup prompt-audit`) | Audita todos los CLAUDE.md del proyecto, skills, agentes y comandos buscando patrones de prompting escritos para modelos viejos. Prioriza rutas obsoletas e instrucciones contradictorias. | v2.1.283 |
 | `/output-style [nombre]` | Lista estilos disponibles (sin arg) o cambia el estilo activo (concise, verbose, etc.). Funciona en headless, Remote Control y sesiones en nube. | v2.1.269 |
 | `/skill-doctor` | Skills cargadas sin usar + costo en tokens. Correlo cada tanto y podá. | v2.1.261 |
 | `/diff` | Panel lateral con los cambios sin commitear, togglable, en fullscreen. | v2.1.260 |

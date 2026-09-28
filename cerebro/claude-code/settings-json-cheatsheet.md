@@ -1,7 +1,7 @@
 ---
 tags: [claude-code, settings, config]
 fuente: claude-learning-hq/novedades
-actualizado: 2026-09-25
+actualizado: 2026-09-28
 ---
 
 # settings.json — cheatsheet
@@ -59,6 +59,8 @@ Dónde va cada cosa:
 
 | Setting | Qué hace | Desde |
 |---|---|---|
+| `availableModelsMatch: "exact"` | Managed setting. Hace que cada entrada de `availableModels` permita solo la versión exacta del modelo nombrado. Las versiones nuevas quedan bloqueadas hasta que se agreguen explícitamente a la lista. | v2.1.283 |
+| `deniedModels` | Managed setting. Array de IDs de modelos bloqueados aunque `availableModels` los permita. Complementa `availableModelsMatch`. | v2.1.283 |
 | `modelPicker` | Lista ordenada de modelos que aparecen en `/model`, con `id` y `label`. Acepta IDs de Bedrock/Vertex. | v2.1.243 |
 | `modelPricing` | Precios contractuales por modelo → `/cost` y statusline muestran números reales. Managed setting. | v2.1.243 |
 | `promptCacheTtl` / `subagentPromptCacheTtl` | TTL del caché del hilo principal (3600) vs subagentes (300). Solo API key / cloud providers. Ver [[costo-y-cache]]. | v2.1.243 |
