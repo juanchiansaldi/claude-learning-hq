@@ -520,11 +520,18 @@ kbd{font-family:'JetBrains Mono',monospace;font-size:.66rem;background:var(--car
 <script>
 /* ============================================================= DATA */
 /* ===== última sincronización de novedades (la actualiza el agente) ===== */
-const LAST_SYNC = "2026-09-28";
+const LAST_SYNC = "2026-10-01";
 
 /* ===== NOVEDADES: el agente actualizador agrega entradas arriba ===== */
 const NOVEDADES=[
-{date:"2026-09-25",tag:"claude code",tagc:"clay",fresh:true,
+{date:"2026-09-30",tag:"claude code",tagc:"clay",fresh:true,
+ title:"v2.1.286: `--bare` rediseñado, fix de 400 errors en tools y bookmarks en VSCode",
+ body:"La v2.1.286 rediseña `--bare`: ahora conecta solo los MCP servers nombrados en la línea de comandos, no envía system reminders y no arranca tareas en background — ideal para ejecución aislada en CI o subagentes. Fix crítico: las 400 errors de API cuando una herramienta devuelve un objeto, número o booleano en lugar de texto ya están resueltas. La extensión VSCode suma bookmarks para guardar respuestas de Claude. El contador '2 of 5' en permission prompts apilados mejora la visibilidad en sesiones interactivas.",
+ why:"El fix de tool 400 errors es clave si construís herramientas MCP que devuelven datos estructurados. El `--bare` rediseñado simplifica la ejecución aislada de agentes con MCP específicos.",
+ more:{detail:"Tres cambios destacados para builders en v2.1.286: (1) `--bare` rediseñado: en lugar de solo quitar la UI interactiva, ahora conecta únicamente los MCP servers nombrados en la línea de comandos, no envía system reminders al modelo, no arranca tareas en background, y un comando shell que toca su timeout se detiene en lugar de pasar a background. Útil para ejecución limpia y aislada en CI o scripts. (2) Fix crítico de API 400 errors: cuando una herramienta o hook devolvía un objeto, número o booleano (en lugar de texto), la API retornaba 400 y rompía la sesión — incluyendo sesiones reanudadas. Esto afectaba directamente a builders que construyen herramientas MCP o hooks que devuelven datos estructurados. (3) VSCode Bookmarks: guardás respuestas de Claude con un clic y quedan en un panel lateral 'Bookmarks' para consultarlas sin scrollear. Además: el contador '2 of 5' en permission prompts apilados, fix para subagentes foreground a los que faltaban las herramientas de task-tracking (TaskCreate/Get/Update/List), fix para cloud session routines que mostraban 'Succeeded' cuando el container nunca arrancó, y fix de MCP error messages que exponían tokens Bearer/Basic.",
+   code:["# --bare: conecta solo MCP servers nombrados, sin system reminders ni background tasks:","claude --bare --mcp-server mi-servidor -p 'tu tarea'","","# Antes: --bare solo quitaba la UI interactiva","# Ahora: --bare = MCP mínimo + sin reminders + sin background tasks + timeout = stop","","# Ejemplo en CI con MCP específicos:","claude --bare --mcp-server db-reader --mcp-server file-tools -p 'analizar datos'","","# Verificar que la herramienta devuelve texto (no objeto) para evitar 400 errors:","# Mal: return { result: 'ok' }   → 400 error","# Bien: return JSON.stringify({ result: 'ok' })  → ok"],
+   links:[["Changelog Claude Code v2.1.286","https://code.claude.com/docs/en/changelog"]]}},
+{date:"2026-09-25",tag:"claude code",tagc:"clay",fresh:false,
  title:"v2.1.283: `/doctor prompt-audit`, gateway prompt ID y gobernanza de modelos",
  body:"La v2.1.283 trae `/doctor prompt-audit` para auditar CLAUDE.md, skills, agentes y comandos buscando instrucciones escritas para modelos viejos que hoy son antipatrones. El nuevo header `x-claude-code-prompt-id` (con `CLAUDE_CODE_GATEWAY_HINT_HEADERS=1`) agrupa en el gateway todos los requests de un mismo prompt. `availableModelsMatch: \"exact\"` y `deniedModels` dan control granular de versiones en deployments administrados. Los dynamic workflows reintentán el modelo configurado tras un fallback en lugar de quedar pegados al modelo de reemplazo.",
  why:"Si administrás Claude Code para un equipo o tenés un LLM gateway propio, esta versión suma las herramientas clave de gobernanza de modelos y debug de prompts que faltaban.",
