@@ -1,7 +1,7 @@
 ---
 tags: [claude-code, env, config]
 fuente: claude-learning-hq/novedades
-actualizado: 2026-09-28
+actualizado: 2026-10-04
 ---
 
 # Variables de entorno útiles
@@ -23,6 +23,7 @@ Van en `~/.zshrc` / `~/.bashrc`, o dentro de un hook `SessionStart` vía `$CLAUD
 | `CLAUDE_CODE_GATEWAY_MODEL_DISCOVERY_TIMEOUT_MS` | Extiende el timeout del endpoint `/v1/models` en gateways LLM propios. Default: 3000 ms. | v2.1.269 |
 | `CLAUDE_CODE_GATEWAY_HINT_HEADERS=1` | Activa seis headers de contexto en cada request a tu LLM gateway: `x-claude-code-request-class`, `x-claude-code-agent-type`, `x-claude-code-prev-tool-durations`, `x-claude-code-compaction`, `x-claude-code-context-compacted` (desde v2.1.273) + `x-claude-code-prompt-id` (desde v2.1.283, agrupa todos los requests de un mismo prompt usuario). Para routing inteligente y correlación de requests. | v2.1.273 / v2.1.283 |
 | `CLAUDE_CODE_AUTO_MODE_SERVER=0` | **Desde v2.1.278:** el clasificador server-side es el default en API/Enterprise/Bedrock/Vertex/Foundry y es gratuito. Poner `=0` para desactivarlo (p.ej. si tu gateway no pasa los campos `safeguards`/`safeguard_results` sin modificar). Antes de v2.1.278 el valor `=1` activaba el server-side; ese uso se revierte. | v2.1.278 |
+| `CLAUDE_CODE_DISABLE_STRUCTURED_OUTPUTS=1` | Desactiva el uso de structured outputs. Usar si tu gateway, Mantle u otro provider los rechaza y la sesión falla en session titles, memory recall o prompt hooks. | v2.1.288 |
 
 ## En la nube (Claude Code on the web)
 

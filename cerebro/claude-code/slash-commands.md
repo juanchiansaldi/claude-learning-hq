@@ -1,7 +1,7 @@
 ---
 tags: [claude-code, comandos]
 fuente: claude-learning-hq/novedades
-actualizado: 2026-09-28
+actualizado: 2026-10-04
 ---
 
 # Slash commands nuevos (jun–sep 2026)
@@ -21,6 +21,7 @@ actualizado: 2026-09-28
 | `/config key=value` | Cambia un setting inline sin abrir el archivo. | jun 2026 |
 | `/rewind` | Vuelve a un checkpoint; recupera la sesión después de `/clear`. | jun 2026 |
 | `/goal` | Fija un objetivo persistente para la sesión (preview). | may 2026 |
+| `/code-review --max-findings <n>\|all` | Controla cuántos findings reporta el code review (`--max-findings 5`, `--max-findings all`, `--max-findings default` para volver al límite estándar). La elección persiste hasta pasarle `default`. | v2.1.288 |
 | `/code-review --fix` | Revisa el diff y aplica los arreglos. | may 2026 |
 | `/verify` · `/review` | Ya no se disparan solos: hay que invocarlos. | v2.1.215 |
 | `/permissions` | Ahora abre mientras Claude trabaja; aplica al turno en curso. | v2.1.234 |
