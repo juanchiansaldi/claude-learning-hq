@@ -63,13 +63,27 @@ claude
 >    salida esperada de esta corrida (paso 6b), no "tocar otra cosa". Si el prompt que te invocó
 >    dice "no toques nada más", interpretalo así.
 >
-> 6b. **Alimentá el cerebro.** Si una novedad trae algo *accionable* (un setting, un flag, un
->    hook, una env var, un comando nuevo, un límite que cambió), agregalo a la nota que
->    corresponda en `cerebro/claude-code/` (`settings-json-cheatsheet.md`, `hooks.md`,
->    `env-vars.md`, `costo-y-cache.md`, `subagentes-y-multisesion.md`, `slash-commands.md`):
->    una fila en la tabla o un bloque corto, con la versión de origen, y subí `actualizado:` en
->    el frontmatter. Solo si es accionable; un anuncio o un fix transparente no va. Si además
->    cambia el baseline recomendado, actualizá también `.claude/skills/claude-code-tuneup/SKILL.md`.
+> 6b. **Alimentá el cerebro** (OBLIGATORIO para todo lo accionable). Seguí estos tres pasos:
+>
+>    **B1 — Notas específicas:** si la novedad trae un setting, flag, hook, env var, comando nuevo
+>    o límite que cambió, agregalo a la nota correspondente en `cerebro/claude-code/`:
+>    `settings-json-cheatsheet.md`, `hooks.md`, `env-vars.md`, `costo-y-cache.md`,
+>    `subagentes-y-multisesion.md`, `slash-commands.md`. Una fila o bloque corto, con versión
+>    de origen, y subí `actualizado:` en el frontmatter. Solo si es accionable; un fix
+>    transparente no va.
+>
+>    **B2 — delta.md** (SIEMPRE que algo del baseline cambie): si la novedad implica que algo se
+>    debería hacer diferente a como se hacía antes (nuevo modelo recomendado, nuevo setting útil,
+>    comportamiento que cambió), agregá una fila a `cerebro/claude-code/delta.md` con:
+>    fecha | área | anterior | nuevo | origen. Actualizá también `actualizado:` en su frontmatter.
+>
+>    **B3 — modelos.md** (cuando cambie el lineup): si hay un nuevo modelo, un cambio de pricing
+>    que altera la decisión de uso, o un cambio de modelo default en Claude Code, actualizá la
+>    tabla de `cerebro/claude-code/modelos.md`. Actualizá `actualizado:` en el frontmatter.
+>
+>    **B4 — tuneup SKILL.md** (cuando cambie el baseline): si el paso B2 agrega algo que debería
+>    estar en la sección "Baseline por defecto" del skill `claude-code-tuneup`, actualizalo
+>    también. Esto asegura que el próximo tuneup ya incluya la mejora automáticamente.
 >
 > 7. Al terminar, mostrame un resumen: cuántas novedades agregaste, los títulos y qué notas de
 >    `cerebro/` tocaste.
@@ -115,7 +129,12 @@ Estás en un checkout del repo claude-learning-hq.
 4. Poné fresh:false en TODAS las entradas que ya estaban.
 5. Actualizá LAST_SYNC a hoy (AAAA-MM-DD).
 6. No toques otras secciones de index.html ni app.js. SÍ ejecutá el paso 6b del
-   actualizador: lo accionable va a las notas de cerebro/claude-code/.
+   actualizador completo:
+   - Lo accionable va a las notas de cerebro/claude-code/ (settings, hooks, env-vars, etc.)
+   - Si cambia el baseline (nuevo modelo recomendado, nuevo setting útil), anotá el cambio
+     en cerebro/claude-code/delta.md (tabla: fecha | área | anterior | nuevo | origen).
+   - Si hay un nuevo modelo o cambio de uso recomendado, actualizá cerebro/claude-code/modelos.md.
+   - Si el baseline del tuneup cambia, actualizá .claude/skills/claude-code-tuneup/SKILL.md.
 7. Si no encontrás novedades, igual actualizá LAST_SYNC.
 8. Verificá que index.html siga siendo JS válido (node --check sobre el bloque <script>).
    Commit en español ('chore: actualizar novedades AAAA-MM-DD') y push a master.
