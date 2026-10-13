@@ -520,18 +520,18 @@ kbd{font-family:'JetBrains Mono',monospace;font-size:.66rem;background:var(--car
 <script>
 /* ============================================================= DATA */
 /* ===== última sincronización de novedades (la actualiza el agente) ===== */
-const LAST_SYNC = "2026-10-10";
+const LAST_SYNC = "2026-10-13";
 
 /* ===== NOVEDADES: el agente actualizador agrega entradas arriba ===== */
 const NOVEDADES=[
-{date:"2026-10-08",tag:"claude code",tagc:"clay",fresh:true,
+{date:"2026-10-08",tag:"claude code",tagc:"clay",fresh:false,
  title:"Hooks: fix en Stop/SubagentStop y `agentId` en `tool.check`",
  body:"Un fix crítico corrige los hooks de prompt escritos como instrucciones: ahora bloquean correctamente las acciones que deben bloquear. Stop y SubagentStop se evalúan mejor, reduciendo los casos en que Claude para antes de tiempo. Se suma `agentId` al evento `tool.check` de hooks de plugins para saber qué subagente disparó el pedido. Los workflow agents son interceptables desde el hook `agent.spawn` de mods.",
  why:"Si usás hooks para controlar el comportamiento de tus agentes, estos fixes aseguran que los hooks de Stop funcionen correctamente y que puedas aplicar lógica distinta según qué subagente hace el pedido.",
  more:{detail:"Cuatro cambios de hooks del changelog del 8 de octubre: (1) Fix crítico: los hooks de tipo prompt escritos como instrucciones (en lugar de código) dejaban pasar acciones que debían bloquear — ahora los bloquean correctamente. (2) Stop y SubagentStop: la evaluación de estos prompt hooks se mejoró para que Claude no corte antes de tiempo cuando el hook lo instruye a continuar; reduce falsos positivos de parada en pipelines largos y sesiones de múltiples turnos. (3) `agentId` en `tool.check`: el evento `tool.check` de los plugin hooks ahora incluye el campo `agentId` para identificar el subagente que disparó el pedido — útil para lógica de permiso diferente por subagente vs sesión principal. (4) Workflow agents en `agent.spawn`: los agentes del Workflow tool ahora pasan por el hook `agent.spawn` de los mods, por lo que un mod puede rechazarlos antes de que arranquen. Adicional: `onFailure: 'block'` disponible en hooks de comando y HTTP.",
    code:["# agentId en plugin hook (hooks.js):","function tool_check({ agentId, tool }) {","  if (agentId !== 'main') {","    if (tool === 'Bash') return { deny: true };","  }","  return { allow: true };","}","","# onFailure: 'block' en command hook (settings.json):","# hooks > PreToolUse: [{ command: './check.sh', onFailure: 'block' }]"],
    links:[["Changelog Claude Code","https://code.claude.com/docs/en/changelog"]]}},
-{date:"2026-10-07",tag:"modelo",tagc:"berry",fresh:true,
+{date:"2026-10-07",tag:"modelo",tagc:"berry",fresh:false,
  title:"Claude Haiku 5.5: modelo chico con effort controls y 75% más barato",
  body:"Claude Haiku 5.5 (`claude-haiku-5-5`) llega como el modelo pequeño más rápido y capaz de Anthropic: $0.10/$0.50 por MTok input/output para prompts de hasta 100K tokens, un 75% más barato que Haiku 4.5. Es el primer Haiku con controles de esfuerzo, pensado para clasificación, routing, compactación y computer use repetitivo. Junto al lanzamiento, Anthropic cortó a la mitad el precio de cache read de Sonnet 5.5.",
  why:"Si construís pipelines de alto volumen con subagentes de clasificación, routing o compaction, Haiku 5.5 baja radicalmente el costo. El primer Haiku con effort controls te permite ajustar costo vs inteligencia por cada llamada.",
